@@ -1,0 +1,165 @@
+<div class="lg:flex p-4 gsap-contenido max-w-5xl mx-auto">
+
+  <div class="w-full lg:w-1/2 bg-white mr-2 shadow rounded border border-gray-400">
+
+    <!-- Cuerpo de formulario -->
+    <form [formGroup]="usuarioForm" class="pb-2">
+      <div class="flex items-center p-2 bg-gray-800 border border-gray-800 rounded-t">
+        <button routerLink="/dashboard/usuarios" class="p-2 text-white hover:text-secondaryColor">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+          </svg>
+        </button>
+        <h1 class="ml-1 text-xl text-white"> Nuevo usuario </h1>
+      </div>
+      <div class="px-4 p-2 text-sm">
+        <div class="flex flex-col lg:flex-row">
+          <div class="w-full mx-2 flex-1 svelte-1l8159u">
+            <div class="font-semibold bold mt-3 text-gray-600 text-sm">
+              <span class="text-red-500"> * </span> Nombre de usuario
+            </div>
+            <div class="bg-white p-1">
+              <input placeholder="Ej. lmoreno" class="input-generico w-full" formControlName="usuario">
+              <p *ngIf="usuario?.touched && usuario?.errors?.['required']" class="text-error mt-1"> Campo obligatorio
+              </p>
+              <p *ngIf="usuario?.touched && usuario?.errors?.['minlength']" class="text-error mt-1"> Minimo {{
+                usuario?.errors?.['minlength'].requiredLength }} caracteres </p>
+            </div>
+          </div>
+          <div class="w-full mx-2 flex-1 svelte-1l8159u">
+            <div class="font-semibold mt-3 text-gray-600 text-sm">
+              <span class="text-red-500"> * </span> Email
+            </div>
+            <div class="bg-white p-1">
+              <input type="email" formControlName="email" placeholder="Ej. lucasmoreno@gmail.com"
+                class="input-generico w-full">
+            </div>
+            <p *ngIf="email?.touched && email?.errors?.['required']" class="text-error"> Campo obligatorio </p>
+            <p *ngIf="email?.touched && email?.errors?.['email']" class="text-error"> Debe colocar un email </p>
+          </div>
+        </div>
+        <div class="flex flex-col lg:flex-row">
+          <div class="w-full mx-2 flex-1 svelte-1l8159u">
+            <div class="font-semibold mt-3 text-gray-600 text-sm">
+              <span class="text-red-500"> * </span> Apellido
+            </div>
+            <div class="bg-white p-1">
+              <input placeholder="Ej. Moreno" formControlName="apellido" class="input-generico w-full">
+              <p *ngIf="apellido?.touched && apellido?.errors?.['required']" class="text-error mt-1"> Campo obligatorio
+              </p>
+            </div>
+          </div>
+          <div class="w-full mx-2 flex-1 svelte-1l8159u">
+            <div class="font-semibold mt-3 text-gray-600 text-sm">
+              <span class="text-red-500"> * </span> Nombre
+            </div>
+            <div class="bg-white p-1">
+              <input placeholder="Ej. Lucas" formControlName="nombre" class="input-generico w-full">
+              <p *ngIf="nombre?.touched && nombre?.errors?.['required']" class="text-error mt-1"> Campo obligatorio
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col lg:flex-row">
+          <div class="w-full mx-2 flex-1">
+            <div class="font-semibold mt-3 text-gray-600 text-sm">
+              <span class="text-red-500"> * </span> DNI
+            </div>
+            <div class="bg-white p-1">
+              <input placeholder="Ej. 34060398" formControlName="dni" class="input-generico w-full">
+              <p *ngIf="dni?.touched && dni?.errors?.['required']" class="text-error mt-1"> Campo obligatorio
+              </p>
+            </div>
+          </div>
+          <div class="w-full mx-2 flex-1">
+            <div class="font-semibold mt-2 text-gray-600 text-sm">
+              <span class="text-red-500"> * </span> Rol
+            </div>
+            <div class="bg-white my-2 flex">
+              <select class="input-generico w-full" formControlName="role">
+                <option value="USER_ROLE"> Usuario estandar </option>
+                <option value="ADMIN_ROLE"> Administrador </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col lg:flex-row">
+          <div class="w-full mx-2 flex-1">
+            <div class="font-semibold mt-2 text-gray-600 text-sm">
+              <span class="text-red-500"> * </span> Contraseña
+            </div>
+            <div class="bg-white p-1">
+              <input type="password" formControlName="password" autocomplete="false" placeholder="******"
+                class="input-generico w-full">
+              <p *ngIf="password?.touched && password?.errors?.['required']" class="text-error mt-1"> Campo obligatorio
+              </p>
+              <p *ngIf="password?.touched && password?.errors?.['minlength']" class="text-error mt-1"> Minimo {{
+                password?.errors?.['minlength'].requiredLength }} caracteres </p>
+            </div>
+          </div>
+          <div class="w-full mx-2 flex-1">
+            <div class="font-semibold mt-2 text-gray-600 text-sm">
+              <span class="text-red-500"> * </span> Repetir contraseña
+            </div>
+            <div class="bg-white p-1">
+              <input type="password" formControlName="repetir" autocomplete="false" placeholder="******"
+                class="input-generico w-full">
+              <p *ngIf="repetir?.touched && repetir?.errors?.['required']" class="text-error mt-1"> Campo obligatorio
+              </p>
+              <p *ngIf="repetir?.touched && repetir?.errors?.['minlength']" class="text-error mt-1"> Minimo {{
+                repetir?.errors?.['minlength'].requiredLength }} caracteres </p>
+            </div>
+          </div>
+        </div>
+        <button (click)="nuevoUsuario()" class="boton-crear w-full mt-3">
+          Crear usuario
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="w-full lg:w-1/2 mt-2 lg:mt-0 h-full">
+    <!-- Creacion de usuario -->
+    <div class="bg-white border shadow border-gray-400 p-4 rounded ">
+      <div class="flex mb-2">
+        <div *ngIf="usuarioForm.value.role === 'ADMIN_ROLE'"
+          class="bg-blue-100 flex items-center justify-center w-32 h-32 rounded-full shadow border border-blue-300">
+          <p class="text-6xl font-semibold text-blue-900"> A </p>
+        </div>
+        <div *ngIf="usuarioForm.value.role === 'USER_ROLE'"
+          class="bg-orange-100 flex items-center justify-center w-32 h-32 rounded-full shadow border border-orange-300">
+          <p class="text-6xl font-semibold text-orange-500"> E </p>
+        </div>
+        <div class="ml-4 mt-2">
+          <div class="mt-1">
+
+            <!-- Usuario de sistema -->
+            <div class="text-xl lg:text-3xl">
+              <p *ngIf="usuarioForm.value.usuario.trim() !== ''" class="font-semibold"> {{ usuarioForm.value.usuario }}
+              </p>
+              <p class="text-gray-400" *ngIf="usuarioForm.value.usuario.trim() == ''"> Nombre de usuario </p>
+            </div>
+
+            <!-- Apellido y Nombre -->
+            <div class="text-md lg:text-2xl">
+              <p *ngIf="usuarioForm.value.nombre.trim() || usuarioForm.value.apellido.trim()" class="capitalize"> {{
+                usuarioForm.value.nombre.toLowerCase() }} {{ usuarioForm.value.apellido.toLowerCase() }} </p>
+              <p class="text-gray-400"
+                *ngIf="usuarioForm.value.nombre.trim() == '' && usuarioForm.value.apellido.trim() == ''"> Apellido y
+                Nombre </p>
+            </div>
+
+            <!-- Correo electronico -->
+            <div class="text-xs lg:text-lg text-gray-400">
+              <p *ngIf="usuarioForm.value.email.trim() !== ''"> {{ usuarioForm.value.email.toLowerCase() }} </p>
+              <p *ngIf="usuarioForm.value.email.trim() == ''"> Correo electrónico </p>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

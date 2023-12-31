@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.text-error {
+  @apply text-red-500 text-xs italic font-semibold;
+}
+
+.input-generico {
+  @apply p-2 border border-gray-400 focus:ring-1 focus:ring-secondaryColor rounded transform outline-none duration-500 focus:border-secondaryColor focus:outline-none
+}
+
+.boton-editar {
+  @apply p-2 bg-orange-500 hover:opacity-90 text-white rounded shadow
+}
+
+.boton-nuevo-header {
+  @apply p-3 bg-gray-100 text-gray-900 hover:text-secondaryColor rounded
+}
+
+.boton-crear {
+  @apply p-2 bg-green-700 hover:opacity-90 text-sm text-white rounded shadow
+}
+
+.boton-editar {
+  @apply p-2 bg-orange-700 hover:opacity-90 text-sm text-white rounded shadow
+}
