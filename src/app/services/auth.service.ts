@@ -49,7 +49,6 @@ export class AuthService {
       map((resp: any) => {
         const { userId, usuario, apellido, nombre, role } = resp.usuario;
         this.usuario = new UsuarioOnline(userId, usuario, nombre, apellido, role);
-        console.log(this.usuario);
         localStorage.setItem('token', resp.token);
         return true;
       }),

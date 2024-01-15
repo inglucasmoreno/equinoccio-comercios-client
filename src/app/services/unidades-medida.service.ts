@@ -22,11 +22,16 @@ export class UnidadesMedidaService {
     })
   }
 
-  listarUnidades({ direccion = 1, columna = 'descripcion' }): Observable<any> {
+  listarUnidades({
+    direccion = 'desc',
+    columna = 'descripcion',
+    activo = ''
+  }): Observable<any> {
     return this.http.get(urlApi, {
       params: {
         direccion: String(direccion),
-        columna
+        columna,
+        activo
       },
       headers: this.getToken
     })

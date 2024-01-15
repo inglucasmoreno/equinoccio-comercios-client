@@ -22,7 +22,7 @@ export class MarcasService {
     })
   }
 
-  listarMarcas({ direccion = 1, columna = 'descripcion' }): Observable<any> {
+  listarMarcas({ direccion = 'desc', columna = 'descripcion' }): Observable<any> {
     return this.http.get(urlApi, {
       params: {
         direccion: String(direccion),

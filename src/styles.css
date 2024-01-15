@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  font-family: 'Nunito', sans-serif;
+}
+
 .text-error {
   @apply text-red-500 text-xs italic font-semibold;
 }
@@ -24,4 +28,8 @@
 
 .boton-editar {
   @apply p-2 bg-orange-700 hover:opacity-90 text-sm text-white rounded shadow
+}
+
+.boton-eliminar {
+  @apply p-2 bg-red-700 hover:opacity-90 text-sm text-white rounded shadow
 }

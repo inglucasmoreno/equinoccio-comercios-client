@@ -22,7 +22,13 @@ export class ProductosService {
     })
   }
 
-  listarProductos({ direccion = 1, columna = 'descripcion' }): Observable<any> {
+  generarCodigo(): Observable<any> {
+    return this.http.get(`${urlApi}/generar/codigo`, {
+      headers: this.getToken
+    })
+  }
+
+  listarProductos({ direccion = 'desc', columna = 'descripcion' }): Observable<any> {
     return this.http.get(urlApi, {
       params: {
         direccion: String(direccion),

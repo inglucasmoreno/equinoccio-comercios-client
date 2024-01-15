@@ -89,6 +89,7 @@ export const routes: Routes = [
 
       // Productos
 
+      // Listado de productos
       {
         path: 'productos',
         title: 'Productos',

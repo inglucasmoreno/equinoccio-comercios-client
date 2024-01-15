@@ -4,7 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../services/alert.service';
 import { DataService } from '../../services/data.service';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { FechaPipe } from '../../pipes/fecha.pipe';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -12,6 +12,8 @@ import { RouterModule } from '@angular/router';
 import { PastillaEstadoComponent } from '../../components/pastilla-estado/pastilla-estado.component';
 import { TarjetaListaComponent } from '../../components/tarjeta-lista/tarjeta-lista.component';
 import { FiltroProductosPipe } from '../../pipes/filtro-productos.pipe';
+import { UnidadesMedidaService } from '../../services/unidades-medida.service';
+import { MonedaPipe } from '../../pipes/moneda.pipe';
 
 @Component({
   standalone: true,
@@ -19,8 +21,8 @@ import { FiltroProductosPipe } from '../../pipes/filtro-productos.pipe';
   imports: [
     CommonModule,
     FormsModule,
-    ReactiveFormsModule,
     FechaPipe,
+    MonedaPipe,
     ModalComponent,
     NgxPaginationModule,
     RouterModule,
@@ -44,10 +46,26 @@ export default class ProductosComponent implements OnInit {
   public productos: any = [];
   public productoSeleccionado: any;
   public descripcion: string = '';
+  public unidadesMedida: any[] = [];
 
   // Paginacion
   public paginaActual: number = 1;
   public cantidadItems: number = 10;
+
+  // Producto
+  public productoForm: any = {
+    codigo: '',
+    descripcion: '',
+    cantidad: 0,
+    alertaStock: "false",
+    cantidadMinima: null,
+    precioCompra: null,
+    precioVenta: null,
+    porcentajeGanancia: null,
+    balanza: "false",
+    alicuota: "21",
+    unidadMedidaId: "",
+  }
 
   // Filtrado
   public filtro = {
@@ -61,12 +79,9 @@ export default class ProductosComponent implements OnInit {
     columna: 'descripcion'
   }
 
-  // Formulario de producto
-  public productoForm: FormGroup;
-
   constructor(
-    private fb: FormBuilder,
     private productosService: ProductosService,
+    private unidadesMedidaService: UnidadesMedidaService,
     private authService: AuthService,
     private alertService: AlertService,
     private dataService: DataService
@@ -75,56 +90,54 @@ export default class ProductosComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.ubicacionActual = 'Dashboard - Productos';
     this.alertService.loading();
-
-    // Inicializacion de formulario
-    this.productoForm = this.fb.group({
-      codigo: ['', [Validators.required]],
-      descripcion: ['', Validators.required],
-      cantidad: [0, Validators.required],
-      alertaStock: [false, Validators.required],
-      precioCompra: [0, Validators.required],
-      precioVenta: [0, [Validators.required]],
-      porcentajeGanancia: [5, [Validators.required]],
-      balanza: [false, [Validators.required]],
-      alicuota: [21, [Validators.required]],
-      marcaId: ['', [Validators.required]],
-      unidadMedidaId: ['', [Validators.required]],
-    });
-
     this.listarProductos();
   }
 
   // Abrir modal
   abrirModal(estado: string, producto: any = null): void {
-    this.reiniciarFormulario();
-    this.productoForm.reset();
-    this.idProducto = '';
 
-    if (estado === 'editar') this.getProducto(producto);
-    else this.showModalProducto = true;
+    this.alertService.loading();
 
-    this.estadoFormulario = estado;
+    this.unidadesMedidaService.listarUnidades({ activo: 'true' }).subscribe({
+      next: ({ unidades }) => {
+        this.unidadesMedida = unidades;
+
+        this.idProducto = '';
+
+        this.reiniciarFormulario();
+
+        this.estadoFormulario = estado;
+
+        if (estado === 'editar') this.getProducto(producto);
+        else {
+          this.showModalProducto = true;
+          this.alertService.close();
+        }
+
+
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    });
   }
 
   // Traer datos de producto
   getProducto(producto: any): void {
-    this.alertService.loading();
     this.idProducto = producto.id;
     this.productoSeleccionado = producto;
     this.productosService.getProducto(producto.id).subscribe({
       next: ({ producto }) => {
-        this.productoForm = this.fb.group({
-          codigo: [producto.codigo, [Validators.required]],
-          descripcion: [producto.descripcion, Validators.required],
-          cantidad: [producto.cantidad, Validators.required],
-          precioCompra: [producto.precioCompra, Validators.required],
-          precioVenta: [producto.precioVenta, [Validators.required]],
-          porcentajeGanancia: [producto.porcentajeGanancia, [Validators.required]],
-          balanza: [producto.balanza, [Validators.required]],
-          alicuota: [producto.alicuota, [Validators.required]],
-          marcaId: [producto.marcaId, [Validators.required]],
-          unidadMedidaId: [producto.unidadMedidaId, [Validators.required]],
-        });
+        this.productoForm = {
+          codigo: producto.codigo,
+          descripcion: producto.descripcion,
+          cantidad: producto.cantidad,
+          alertaStock: producto.alertaStock.toString(),
+          cantidadMinima: producto.cantidadMinima,
+          precioCompra: producto.precioCompra,
+          precioVenta: producto.precioVenta,
+          porcentajeGanancia: producto.porcentajeGanancia,
+          balanza: producto.balanza.toString(),
+          alicuota: producto.alicuota.toString(),
+          unidadMedidaId: producto.unidadMedidaId,
+        }
         this.alertService.close();
         this.showModalProducto = true;
       }, error: ({ error }) => this.alertService.errorApi(error.message)
@@ -146,44 +159,79 @@ export default class ProductosComponent implements OnInit {
     })
   }
 
-  // Nuevo producto
   nuevoProducto(): void {
 
-    // this.alertService.loading();
+    const message = this.verificarProductoForm();
+
+    if (message !== '') {
+      this.alertService.info(message);
+      return
+    }
 
     const data = {
-      ...this.productoForm.value,
+      ...this.productoForm,
+      alertaStock: this.productoForm.alertaStock == "true" ? true : false,
+      balanza: this.productoForm.balanza == "true" ? true : false,
+      alicuota: Number(this.productoForm.alicuota),
+      unidadMedidaId: Number(this.productoForm.unidadMedidaId),
       creatorUserId: this.authService.usuario.userId,
     }
 
-    console.log(data);
+    this.alertService.loading();
 
-    // this.productosService.nuevoProducto(data).subscribe({
-    //   next: () => {
-    //     this.alertService.loading();
-    //     this.listarProductos();
-    //   }, error: ({ error }) => this.alertService.errorApi(error.message)
-    // })
+    this.productosService.nuevoProducto(data).subscribe({
+      next: ({ producto }) => {
+        this.productos = [producto, ...this.productos];
+        this.ordenarProductos();
+        this.reiniciarFormulario();
+        this.alertService.success('Producto creado correctamente');
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    })
 
   }
 
   // Actualizar producto
   actualizarProducto(): void {
 
-    // this.alertService.loading();
+    this.alertService.loading();
 
     const data = {
-      ...this.productoForm.value,
+      ...this.productoForm,
+      alertaStock: this.productoForm.alertaStock == "true" ? true : false,
+      balanza: this.productoForm.balanza == "true" ? true : false,
+      alicuota: Number(this.productoForm.alicuota),
+      unidadMedidaId: Number(this.productoForm.unidadMedidaId),
+      cantidadMinima: this.productoForm.alertaStock === 'true' ? Number(this.productoForm.cantidadMinima) : null,
+      creatorUserId: this.authService.usuario.userId,
     }
 
-    console.log(data);
+    this.productosService.actualizarProducto(this.idProducto, data).subscribe({
+      next: () => {
+        this.alertService.loading();
+        this.listarProductos();
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    });
 
-    // this.productosService.actualizarProducto(this.idProducto, data).subscribe({
-    //   next: () => {
-    //     this.alertService.loading();
-    //     this.listarProductos();
-    //   }, error: ({ error }) => this.alertService.errorApi(error.message)
-    // });
+  }
+
+  // Verificaciones
+  verificarProductoForm(): string {
+
+    let message = '';
+
+    const {
+      descripcion,
+      unidadMedidaId,
+      precioVenta,
+      cantidad
+    } = this.productoForm;
+
+    if (descripcion.trim() === "") message = 'Debes colocar una descripción';
+    else if (unidadMedidaId === "") message = 'Debes seleccionar una unidad de medida';
+    else if (!precioVenta || precioVenta < 0) message = 'Debes colocar un precio de venta';
+    else if (cantidad < 0) message = 'Debes colocar una cantidad';
+
+    return message;
 
   }
 
@@ -206,9 +254,62 @@ export default class ProductosComponent implements OnInit {
       });
   }
 
-  // Reiniciando formulario
+  // Calcular precio de venta
+  calcularPrecioVenta(): void {
+    if (this.productoForm.precioCompra == null || this.productoForm.porcentajeGanancia == null) return;
+    const precioCompra = Number(this.productoForm.precioCompra);
+    const porcentajeGanancia = Number(this.productoForm.porcentajeGanancia);
+    const precioVenta = precioCompra + (precioCompra * (porcentajeGanancia / 100));
+    this.productoForm.precioVenta = Number(precioVenta.toFixed(2));
+  }
+
+  submit(): void {
+    if (this.estadoFormulario === 'crear') this.nuevoProducto();
+    else this.actualizarProducto();
+  }
+
+  generarCodigo(): void {
+    if(this.estadoFormulario === 'editar'){
+      this.productoForm.codigo =  this.productoSeleccionado.id.toString().padStart(13, '0');
+    }else{
+      this.alertService.loading();
+      this.productosService.generarCodigo().subscribe({
+        next: ({ codigo }) => {
+          this.productoForm.codigo = codigo;
+          this.alertService.close();
+        }, error: ({ error }) => this.alertService.errorApi(error.message)
+      })
+    }
+
+  }
+
+  cambioAlerta(): void {
+    console.log('llega');
+    if(this.productoForm.alertaStock === 'false'){
+      this.productoForm.cantidadMinima = null;
+    }
+  }
+
+  // Reiniciar formulario - Productos
   reiniciarFormulario(): void {
-    this.productoForm.reset();
+    this.productoForm = {
+      codigo: '',
+      descripcion: '',
+      cantidad: 0,
+      alertaStock: "false",
+      cantidadMinima: null,
+      precioCompra: null,
+      precioVenta: null,
+      porcentajeGanancia: null,
+      balanza: "false",
+      alicuota: "21",
+      unidadMedidaId: "",
+    }
+  }
+
+  // Ordenar productos por descripcion
+  ordenarProductos(): void {
+    this.ordenarPorColumna('descripcion');
   }
 
   // Filtrar Activo/Inactivo

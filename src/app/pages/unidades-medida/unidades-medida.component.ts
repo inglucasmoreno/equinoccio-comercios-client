@@ -127,13 +127,13 @@ export default class UnidadesMedidaComponent implements OnInit {
 
     const data = {
       descripcion: this.descripcion,
-      creatorUserId: this.authService.usuario.userId,
     }
 
     this.unidadMedidaService.nuevaUnidad(data).subscribe({
-      next: () => {
-        this.alertService.loading();
-        this.listarUnidades();
+      next: ({ unidad }) => {
+        this.unidades = [unidad, ...this.unidades];
+        this.showModalUnidad = false;
+        this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
 
