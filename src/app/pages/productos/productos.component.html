@@ -400,8 +400,8 @@
                 cantidadItems, currentPage: paginaActual}; track producto.id){
                 <tr class="animate__animated animate__fadeIn">
                   <td class="px-5 py-2 border-b border-gray-200 text-xs">
-                    <p class="text-gray-900 w-max whitespace-no-wrap">
-                      {{ producto.codigo }}
+                    <p [ngClass]="{'text-gray-400 italic':!producto.codigo, 'text-gray-900':!producto.codigo}" class="w-max whitespace-no-wrap">
+                      {{ producto.codigo ? producto.codigo : 'Sin código' }}
                     </p>
                   </td>
                   <td class="px-5 py-2 border-b border-gray-200 text-xs">

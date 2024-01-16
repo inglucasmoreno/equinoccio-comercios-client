@@ -70,7 +70,7 @@ export default class NuevoUsuarioComponent implements OnInit {
 
     // Formulario reactivo
     this.usuarioForm = this.fb.group({
-      usuario: ['', [Validators.required, Validators.minLength(5)]],
+      usuario: ['', [Validators.required, Validators.minLength(4)]],
       apellido: ['', Validators.required],
       nombre: ['', Validators.required],
       dni: ['', Validators.required],
@@ -102,8 +102,9 @@ export default class NuevoUsuarioComponent implements OnInit {
       this.alertService.loading();  // Comienzo de loading
       this.usuariosService.nuevoUsuario(this.usuarioForm.value).subscribe({
         next: () => {
-          if (role === 'ADMIN_ROLE') this.router.navigateByUrl('dashboard/usuarios');
-          else this.router.navigateByUrl('dashboard/usuarios/permisos/' + usuario.id);
+          // if (role === 'ADMIN_ROLE') this.router.navigateByUrl('dashboard/usuarios');
+          // else this.router.navigateByUrl('dashboard/usuarios/permisos/' + usuario.id);
+          this.router.navigateByUrl('dashboard/usuarios');
           this.alertService.close();  // Finaliza el loading
         }, error: ({ error }) => {
           this.alertService.errorApi(error.message);

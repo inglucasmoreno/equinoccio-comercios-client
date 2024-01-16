@@ -1,0 +1,107 @@
+<app-modal [showModal]="showModalIngreso">
+  <div class="flex items-center justify-between bg-gray-800 rounded-t p-2">
+    <h1 class=" text-white px-2 py-1 rounded-t text-lg"> Actualizando datos </h1>
+    <svg (click)="showModalIngreso = false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="cursor-pointer feather feather-x text-white mr-2">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </div>
+  <div class="p-2 text-sm">
+    <div class="w-full">
+      <div class="flex flex-wrap -mx-3 mb-4 mt-2">
+        <div class="w-full px-3">
+          <label class="block tracking-wide text-gray-700 text-xs font-bold mb-2"> <span class="text-red-500"> * </span> Fecha de ingreso </label>
+          <input (keyup.enter)="actualizarIngreso()" [(ngModel)]="ingresoForm.fechaIngreso" type="date" class="input-generico w-full" />
+        </div>
+      </div>
+      <div class="flex flex-wrap -mx-3 mb-4">
+        <div class="w-full px-3">
+          <label class="block tracking-wide text-gray-700 text-xs font-bold mb-2"> Nro de factura </label>
+          <input (keyup.enter)="actualizarIngreso()"  [(ngModel)]="ingresoForm.nroFactura" class="input-generico w-full" type="text" placeholder="Ej. Nro no obligatorio" />
+        </div>
+      </div>
+      <div class="flex flex-wrap -mx-3 mb-4">
+        <div class="w-full px-3">
+          <label class="block tracking-wide text-gray-700 text-xs font-bold mb-2"> Comentarios </label>
+          <input (keyup.enter)="actualizarIngreso()"  [(ngModel)]="ingresoForm.comentario" class="input-generico w-full" type="text" placeholder="Comentario no obligatorio" />
+        </div>
+      </div>
+      <div class="flex flex-wrap -mx-3">
+        <div class="w-full px-3 flex justify-end">
+          <button (click)="actualizarIngreso()" type="button" class="boton-editar w-full"> Actualizar </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-modal>
+
+<div>
+  <div class="w-11/12 md:w-1/2 mx-auto mt-4">
+    <div class="bg-gray-800 flex items-center justify-between text-white w-full p-2 rounded-t">
+      <div class="flex items-center">
+        <button routerLink="/dashboard/ingresos" title="Regresar" class="hover:text-secondaryColor">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+          </svg>
+        </button>
+        <div class="ml-2">
+          <h1 class="text-xl"> Detalles de ingreso </h1>
+          <p class="w-max p-1 mt-1 rounded bg-yellow-100 text-black text-xs border-yellow-300"> Pendiente </p>
+        </div>
+      </div>
+      <button title="Completar ingreso"
+        class="p-2 bg-gray-100 mr-1 text-black hover:text-secondaryColor border-gray-300 rounded">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+        </svg>
+      </button>
+    </div>
+    <div class="text-sm p-2 border border-gray-400 border-t-0">
+      <div>
+        <div class="bg-gray-100 p-2 flex items-center justify-between w-full border border-gray-400 mt-2">
+          <h2> Datos generales </h2>
+          <button (click)="abrirModalIngreso()" title="Editar datos" class="boton-editar">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+            </svg>
+          </button>
+        </div>
+        <div class="mt-2 p-2 border border-gray-400 w-full flex items-center justify-between">
+          <p class="mt-1"> <span class="font-semibold"> Nro de ingreso: </span> {{ ingreso?.id }} </p>
+          <p class="mt-1"> <span class="font-semibold"> Fecha: </span> {{ ingreso?.fechaIngreso && (ingreso?.fechaIngreso | fecha) }} </p>
+        </div>
+          <p class="p-2 border border-t-0 border-gray-400"> <span class="font-semibold"> Nro de factura: </span> {{ ingreso?.nroFactura ? ingreso?.nroFactura : 'Sin factura' }} </p>
+          <p class="p-2 border border-t-0 border-gray-400"> <span class="font-semibold"> Comentarios: </span> {{ ingreso?.comentario ? ingreso?.comentario : 'Sin comentarios' }} </p>
+      </div>
+      <div>
+        <div class="bg-gray-100 p-2 flex items-center justify-between w-full border border-gray-400 mt-2">
+          <h2> Listado de productos </h2>
+          <button title="Agregar producto"
+            class="boton-crear">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+          </button>
+        </div>
+        
+        
+        @for(producto of productos; track producto.id){
+          <div>
+            
+          </div>
+        }
+        @empty {
+          <p class="p-2 text-gray-500 italic border border-t-0 border-gray-400"> No se encontraron productos </p>
+        }
+
+      </div>
+    </div>
+  </div>
+</div>

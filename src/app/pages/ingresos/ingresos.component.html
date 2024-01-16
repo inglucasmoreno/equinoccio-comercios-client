@@ -1,9 +1,10 @@
-<!-- Modal: Crear / Editar unidad -->
-<app-modal [showModal]="showModalUnidad">
-  <div (keyup.enter)="estadoFormulario === 'crear' ? nuevaUnidad() : actualizarUnidad()">
+<!-- Modal: Crear / Editar ingreso -->
+<app-modal [showModal]="showModalIngreso">
+  <div (keyup.enter)="estadoFormulario === 'crear' ? nuevoIngreso() : actualizarIngreso()">
     <div class="flex items-center justify-between bg-gray-800 rounded-t p-2">
-      <h1 class=" text-white px-2 py-1 rounded-t text-lg"> {{ estadoFormulario == 'crear' ? 'Creando unidad' : 'Editando unidad' }} </h1>
-      <svg (click)="showModalUnidad = false" width="20" height="20" viewBox="0 0 24 24" fill="none"
+      <h1 class=" text-white px-2 py-1 rounded-t text-lg"> {{ estadoFormulario == 'crear' ? 'Creando ingreso' :
+        'Editando ingreso' }} </h1>
+      <svg (click)="showModalIngreso = false" width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
         class="cursor-pointer feather feather-x text-white mr-2">
         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -11,35 +12,48 @@
       </svg>
     </div>
     <div class="px-4 pt-2 max-h-96 overflow-y-auto text-sm">
-      <p class="font-semibold"> <span class="text-red-500"> * </span> Descripción </p>
-      <input [(ngModel)]="descripcion" class="input-generico w-full mt-2 mb-2" placeholder="Ej. Kilogramo" type="text">
-      <div *ngIf="unidadSeleccionada && estadoFormulario === 'editar'" class="xl:flex items-center">
+      <div>
+        <p class="font-semibold"> <span class="text-red-500"> * </span> Fecha de ingreso </p>
+        <input [(ngModel)]="ingresoForm.fechaIngreso" class="input-generico w-full mt-2" placeholder="Ej. Pepsi"
+          type="date">
+      </div>
+      <div class="mt-3">
+        <p class="font-semibold"> Nro de factura </p>
+        <input [(ngModel)]="ingresoForm.nroFactura" class="input-generico w-full my-2"
+          placeholder="Campo no obligatorio" type="text">
+      </div>
+      <div class="mt-1">
+        <p class="font-semibold"> Comentarios </p>
+        <input [(ngModel)]="ingresoForm.comentario" class="input-generico w-full my-2"
+          placeholder="Campo no obligatorio" type="text">
+      </div>
+      <div *ngIf="ingresoSeleccionado && estadoFormulario === 'editar'" class="xl:flex items-center mb-2 mt-1">
         <div class="xl:w-1/2">
           <p class="font-semibold text-sm"> Fecha de alta </p>
           <div class="border text-sm mt-2 border-gray-400 rounded p-2 bg-gray-100">
-            {{ unidadSeleccionada.createdAt | fecha }}
+            {{ ingresoSeleccionado.createdAt | fecha }}
           </div>
         </div>
-        <div class="xl:ml-4 xl:w-1/2 xl:mt-0">
+        <div class="xl:ml-4 xl:w-1/2 mt-4 xl:mt-0">
           <p class="font-semibold text-sm"> Usuario creador </p>
           <div class="border text-sm capitalize mt-2 border-gray-400 rounded p-2 bg-gray-100">
-            {{ unidadSeleccionada.creatorUser.apellido.toLowerCase() }} {{
-            unidadSeleccionada.creatorUser.nombre.toLowerCase() }}
+            {{ ingresoSeleccionado.creatorUser.apellido.toLowerCase() }} {{
+            ingresoSeleccionado.creatorUser.nombre.toLowerCase() }}
           </div>
         </div>
       </div>
     </div>
-    <div class="px-4 pb-2">
-      <button *ngIf="estadoFormulario == 'crear'" (click)="nuevaUnidad()" class="boton-crear w-full mt-1"> Crear unidad
+    <div class="px-2 pb-2">
+      <button *ngIf="estadoFormulario == 'crear'" (click)="nuevoIngreso()" class="boton-crear w-full mt-2"> Crear
+        ingreso
       </button>
-      <button *ngIf="estadoFormulario == 'editar'" (click)="actualizarUnidad()" class="boton-editar w-full mt-4">
-        Actualizar unidad </button>
+      <button *ngIf="estadoFormulario == 'editar'" (click)="actualizarIngreso()" class="boton-editar w-full mt-2">
+        Actualizar ingreso </button>
     </div>
   </div>
 </app-modal>
 
-
-<!-- Listado de unidades -->
+<!-- Listado de marcas -->
 <div class="md:max-w-7xl mx-auto">
   <app-tarjeta-lista>
     <div class="container mx-auto">
@@ -47,12 +61,12 @@
         <div class="flex items-center justify-between bg-gray-800 px-4 py-3 rounded-t">
           <div class="ml-2 text-white">
             <h2 class="text-xl md:text-2xl leading-tight">
-              Unidades de medida
+              Ingresos
             </h2>
-            <p> Total de unidades: {{ unidades.length }} </p>
+            <p> Total de ingresos: {{ ingresos.length }} </p>
           </div>
           <div>
-            <button title="Nueva unidad" (click)="abrirModal('crear')" class="boton-nuevo-header">
+            <button title="Nueva marca" (click)="abrirModal('crear')" class="boton-nuevo-header">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -106,21 +120,68 @@
                 <tr class="border">
                   <th
                     class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
-                    <div (click)="ordenarPorColumna('descripcion')"
-                      class="cursor-pointer flex items-center focus:outline-none">
-                      <span> Descripción </span>
+                    <div (click)="ordenarPorColumna('id')" class="cursor-pointer flex items-center focus:outline-none">
+                      <span> Nro ingreso </span>
                       <span class="ml-2 text-gray-600">
-                        <svg *ngIf="ordenar.columna == 'descripcion' && ordenar.direccion == 'asc'" width="15"
+                        <svg *ngIf="ordenar.columna == 'id' && ordenar.direccion == 'asc'" width="15" height="15"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'id' && ordenar.direccion == 'desc'" width="15" height="15"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'id'" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                          class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('nroFactura')"
+                      class="cursor-pointer flex items-center focus:outline-none">
+                      <span> Nro de factura </span>
+                      <span class="ml-2 text-gray-600">
+                        <svg *ngIf="ordenar.columna == 'nroFactura' && ordenar.direccion == 'asc'" width="15"
                           height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                           stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
                           <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
-                        <svg *ngIf="ordenar.columna == 'descripcion' && ordenar.direccion == 'desc'" width="15"
+                        <svg *ngIf="ordenar.columna == 'nroFactura' && ordenar.direccion == 'desc'" width="15"
                           height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                           stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
                           <polyline points="18 15 12 9 6 15"></polyline>
                         </svg>
-                        <svg *ngIf="ordenar.columna != 'descripcion'" width="15" height="15" viewBox="0 0 24 24"
+                        <svg *ngIf="ordenar.columna != 'nroFactura'" width="15" height="15" viewBox="0 0 24 24"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('comentarios')"
+                      class="cursor-pointer flex items-center focus:outline-none">
+                      <span> Comentarios </span>
+                      <span class="ml-2 text-gray-600">
+                        <svg *ngIf="ordenar.columna == 'comentarios' && ordenar.direccion == 'asc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'comentarios' && ordenar.direccion == 'desc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'comentarios'" width="15" height="15" viewBox="0 0 24 24"
                           fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                           stroke-linejoin="round" class="feather feather-minus">
                           <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -130,23 +191,23 @@
                   </th>
                   <th
                     class="px-5 border-b-2 border-gray-200 bg-gray-100 text-sm font-semibold text-gray-900 tracking-wider">
-                    <div (click)="ordenarPorColumna('createdAt')"
+                    <div (click)="ordenarPorColumna('fechaIngreso')"
                       class="cursor-pointer w-max flex items-center justify-center focus:outline-none">
                       <span>
-                        Fecha de creación
+                        Fecha de ingreso
                       </span>
                       <span class="ml-2">
-                        <svg *ngIf="ordenar.columna == 'createdAt' && ordenar.direccion == 'asc'" width="15" height="15"
-                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                          stroke-linejoin="round" class="feather feather-chevron-down">
+                        <svg *ngIf="ordenar.columna == 'fechaIngreso' && ordenar.direccion == 'asc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
                           <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
-                        <svg *ngIf="ordenar.columna == 'createdAt' && ordenar.direccion == 'desc'" width="15"
+                        <svg *ngIf="ordenar.columna == 'fechaIngreso' && ordenar.direccion == 'desc'" width="15"
                           height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                           stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
                           <polyline points="18 15 12 9 6 15"></polyline>
                         </svg>
-                        <svg *ngIf="ordenar.columna != 'createdAt'" width="15" height="15" viewBox="0 0 24 24"
+                        <svg *ngIf="ordenar.columna != 'fechaIngreso'" width="15" height="15" viewBox="0 0 24 24"
                           fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                           stroke-linejoin="round" class="feather feather-minus">
                           <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -156,23 +217,23 @@
                   </th>
                   <th
                     class="px-5 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-900 tracking-wider">
-                    <div (click)="ordenarPorColumna('activo')"
+                    <div (click)="ordenarPorColumna('estado')"
                       class="cursor-pointer flex items-center focus:outline-none">
                       <span>
                         Estado
                       </span>
                       <span class="ml-2">
-                        <svg *ngIf="ordenar.columna == 'activo' && ordenar.direccion == 'asc'" width="15" height="15"
+                        <svg *ngIf="ordenar.columna == 'estado' && ordenar.direccion == 'asc'" width="15" height="15"
                           viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                           stroke-linejoin="round" class="feather feather-chevron-down">
                           <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
-                        <svg *ngIf="ordenar.columna == 'activo' && ordenar.direccion == 'desc'" width="15" height="15"
+                        <svg *ngIf="ordenar.columna == 'estado' && ordenar.direccion == 'desc'" width="15" height="15"
                           viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                           stroke-linejoin="round" class="feather feather-chevron-up">
                           <polyline points="18 15 12 9 6 15"></polyline>
                         </svg>
-                        <svg *ngIf="ordenar.columna != 'activo'" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                        <svg *ngIf="ordenar.columna != 'estado'" width="15" height="15" viewBox="0 0 24 24" fill="none"
                           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                           class="feather feather-minus">
                           <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -186,32 +247,55 @@
                   </th>
                 </tr>
               </thead>
-              <tbody *ngIf="unidades">
-                @for(unidad of unidades | filtroUnidadesMedida:filtro.parametro:filtro.activo | paginate: {itemsPerPage:
-                cantidadItems, currentPage: paginaActual}; track unidad.id){
+              <tbody *ngIf="ingresos">
+                @for(ingreso of ingresos | filtroUnidadesMedida:filtro.parametro:filtro.activo | paginate:
+                {itemsPerPage:
+                cantidadItems, currentPage: paginaActual}; track ingreso.id){
                 <tr class="animate__animated animate__fadeIn">
                   <td class="px-5 py-2 border-b border-gray-200 text-xs">
                     <p class="text-gray-900 w-max whitespace-no-wrap">
-                      {{ unidad.descripcion }}
+                      {{ ingreso.id }}
+                    </p>
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <p [ngClass]="{'italic text-gray-500':ingreso.nroFactura === ''}"
+                      class="text-gray-900 w-max whitespace-no-wrap">
+                      {{ ingreso.nroFactura ? ingreso.nroFactura : 'Sin factura' }}
+                    </p>
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <p [ngClass]="{'italic text-gray-500':ingreso.comentario === ''}"
+                      class="text-gray-900 w-max whitespace-no-wrap">
+                      {{ ingreso.comentario ? ingreso.comentario : 'Sin comentarios'}}
                     </p>
                   </td>
                   <td class="px-5 py-2 border-b border-gray-200 text-xs">
                     <p class="text-gray-900 whitespace-no-wrap">
-                      {{ unidad.createdAt | fecha }}
+                      {{ ingreso.fechaIngreso | fecha }}
                     </p>
                   </td>
                   <td class="px-5 py-2 border-b border-gray-200 text-xs">
-                    <app-pastilla-estado [activo]=unidad.activo
-                      (click)="actualizarEstado(unidad)"></app-pastilla-estado>
+                    <p *ngIf="ingreso.estado === 'Pendiente'"
+                      class="text-gray-900 bg-yellow-100 border border-yellow-300 p-2 rounded w-max"> {{ ingreso.estado
+                      }} </p>
+                    <p *ngIf="ingreso.estado === 'Completado'"
+                      class="text-gray-900 bg-green-100 border border-green-300 p-2 rounded w-max"> {{ ingreso.estado }}
+                    </p>
                   </td>
                   <td class="px-5 py-2 border-b border-gray-200 text-xs text-center">
                     <span class="flex items-center justify-center text-gray-900 whitespace-no-wrap">
-                      <button (click)="abrirModal('editar', unidad)" title="Editar usuario" class="boton-editar ml-2">
+                      <button (click)="abrirModal('editar', ingreso)" title="Editar" class="boton-editar ml-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                           stroke="currentColor" class="w-5 h-5">
                           <path stroke-linecap="round" stroke-linejoin="round"
                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                         </svg>
+                      </button>
+                      <button [routerLink]="['/dashboard/detalles-ingreso', ingreso.id]" title="Detalles" class="bg-purple-500 p-2 hover:opacity-90 text-white rounded shadow ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>                        
                       </button>
                     </span>
                   </td>
@@ -220,7 +304,7 @@
                 <tr class="p-4 text-white"> a </tr>
                 <tr class="w-full">
                   <td colspan="4" class="text-gray-500 text-sm p-2 border border-gray-300 text-center bg-gray-50 mt-4">
-                    No se encontraron unidades de medida </td>
+                    No se encontraron ingresos </td>
                 </tr>
                 }
               </tbody>
@@ -228,7 +312,7 @@
           </div>
         </div>
       </div>
-      <div *ngIf="unidades.length > cantidadItems"
+      <div *ngIf="ingresos.length > cantidadItems"
         class="px-5 text-sm py-5 mt-4 bg-white border-t flex shadow flex-col xs:flex-row items-center xs:justify-between">
         <pagination-controls nextLabel="Siguiente" previousLabel="Anterior"
           (pageChange)="paginaActual = $event"></pagination-controls>

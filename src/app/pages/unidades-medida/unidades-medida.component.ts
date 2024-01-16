@@ -127,6 +127,7 @@ export default class UnidadesMedidaComponent implements OnInit {
 
     const data = {
       descripcion: this.descripcion,
+      creatorUserId: this.authService.usuario.userId
     }
 
     this.unidadMedidaService.nuevaUnidad(data).subscribe({

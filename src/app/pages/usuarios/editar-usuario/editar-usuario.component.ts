@@ -74,7 +74,7 @@ export default class EditarUsuarioComponent implements OnInit {
 
     // Formulario reactivo
     this.usuarioForm = this.fb.group({
-      usuario: ['', [Validators.required, Validators.minLength(5)]],
+      usuario: ['', [Validators.required, Validators.minLength(4)]],
       apellido: ['', Validators.required],
       nombre: ['', Validators.required],
       dni: ['', Validators.required],

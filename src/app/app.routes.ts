@@ -96,6 +96,20 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/productos/productos.component'),
       },
 
+      // Ingresos
+      {
+        path: 'ingresos',
+        title: 'Ingresos',
+        loadComponent: () => import('./pages/ingresos/ingresos.component'),
+      },
+
+      // Detalles - Ingreso
+      {
+        path: 'detalles-ingreso/:id',
+        title: 'Detalles de ingreso',
+        loadComponent: () => import('./pages/ingresos/detalles-ingreso/detalles-ingreso.component'),
+      },
+      
     ]
   },
 
