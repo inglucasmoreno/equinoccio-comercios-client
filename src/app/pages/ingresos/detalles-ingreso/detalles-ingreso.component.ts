@@ -11,6 +11,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { PastillaEstadoComponent } from '../../../components/pastilla-estado/pastilla-estado.component';
 import { TarjetaListaComponent } from '../../../components/tarjeta-lista/tarjeta-lista.component';
 import { add, format } from 'date-fns';
+import { ProductosService } from '../../../services/productos.service';
 
 @Component({
   standalone: true,
@@ -30,9 +31,12 @@ import { add, format } from 'date-fns';
 })
 export default class DetallesIngresoComponent implements OnInit {
 
+  // Modals
+  public showModalIngreso: boolean = false;
+  public showModalProductos: boolean = false;
+  
   public ingreso: any = {};
   public productos: any[] = [];
-  public showModalIngreso: boolean = false;
 
   public ingresoForm: any = {
     fechaIngreso: format(new Date(), 'yyyy-MM-dd'),
@@ -43,6 +47,7 @@ export default class DetallesIngresoComponent implements OnInit {
   constructor(
     private dataService: DataService,
     private ingresosService: IngresosService,
+    private productosService: ProductosService,
     private alertService: AlertService,
     private activatedRoute: ActivatedRoute,
   ) { }
@@ -66,6 +71,18 @@ export default class DetallesIngresoComponent implements OnInit {
   abrirModalIngreso(): void {
     this.showModalIngreso = true;
     this.reiniciarFormulario();
+  }
+
+  abrirModalProductos(): void {
+    this.alertService.loading();
+    this.productosService.listarProductos({}).subscribe({
+      next: ({ productos }) => {
+        this.productos = productos;
+        console.log(this.productos);
+        this.showModalProductos = true;
+        this.alertService.close();
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    })
   }
 
   actualizarIngreso(): void {

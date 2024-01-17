@@ -1,3 +1,18 @@
+<app-modal [showModal]="showModalProductos">
+  <div class="flex items-center justify-between bg-gray-800 rounded-t p-2">
+    <h1 class=" text-white px-2 py-1 rounded-t text-lg"> Agregando producto </h1>
+    <svg (click)="showModalProductos = false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="cursor-pointer feather feather-x text-white mr-2">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </div>
+  <div class="p-2">
+    Listado de productos
+  </div>
+</app-modal>
+
 <app-modal [showModal]="showModalIngreso">
   <div class="flex items-center justify-between bg-gray-800 rounded-t p-2">
     <h1 class=" text-white px-2 py-1 rounded-t text-lg"> Actualizando datos </h1>
@@ -82,7 +97,7 @@
       <div>
         <div class="bg-gray-100 p-2 flex items-center justify-between w-full border border-gray-400 mt-2">
           <h2> Listado de productos </h2>
-          <button title="Agregar producto"
+          <button (click)="abrirModalProductos()" title="Agregar producto"
             class="boton-crear">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="w-5 h-5">
