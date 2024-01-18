@@ -44,4 +44,11 @@ export class IngresosProductosService {
     })
   }
 
+  eliminarIngresoProducto(id: number): Observable<any> {
+    console.log(id);
+    return this.http.delete(`${urlApi}/${id}`, {
+      headers: this.getToken
+    })
+  }
+
 }

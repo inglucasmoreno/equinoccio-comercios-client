@@ -32,6 +32,12 @@ export class IngresosService {
     })
   }
 
+  completarIngreso(id: string): Observable<any> {
+    return this.http.get(`${urlApi}/completar/${id}`, {
+      headers: this.getToken
+    })
+  }
+
   nuevoIngreso(data: any): Observable<any> {
     return this.http.post(urlApi, data, {
       headers: this.getToken

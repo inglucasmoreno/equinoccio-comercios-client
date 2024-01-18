@@ -12,6 +12,11 @@ import { PastillaEstadoComponent } from '../../../components/pastilla-estado/pas
 import { TarjetaListaComponent } from '../../../components/tarjeta-lista/tarjeta-lista.component';
 import { add, format } from 'date-fns';
 import { ProductosService } from '../../../services/productos.service';
+import { MonedaPipe } from '../../../pipes/moneda.pipe';
+import { FiltroProductosPipe } from '../../../pipes/filtro-productos.pipe';
+import { IngresosProductosService } from '../../../services/ingresos-productos.service';
+import { AuthService } from '../../../services/auth.service';
+import { FiltroIngresosProductosPipe } from '../../../pipes/filtro-ingresos-productos.pipe';
 
 @Component({
   standalone: true,
@@ -25,6 +30,9 @@ import { ProductosService } from '../../../services/productos.service';
     RouterModule,
     PastillaEstadoComponent,
     TarjetaListaComponent,
+    MonedaPipe,
+    FiltroProductosPipe,
+    FiltroIngresosProductosPipe
   ],
   templateUrl: './detalles-ingreso.component.html',
   styleUrls: []
@@ -34,9 +42,30 @@ export default class DetallesIngresoComponent implements OnInit {
   // Modals
   public showModalIngreso: boolean = false;
   public showModalProductos: boolean = false;
-  
+
+  // Ingreso
   public ingreso: any = {};
+
+  // Productos
   public productos: any[] = [];
+  public productoSeleccionado: any = null;
+  public relacionSeleccionada: any = null;
+  public productosCarrito: any[] = [];
+
+  // Forms
+  public estadoForm: string = 'crear';
+  public productoForm: any = {
+    actualizarPrecio: 'false',
+    precioCompra: null,
+    precioVenta: null,
+    porcentajeGanancia: null,
+    cantidad: null,
+  }
+
+  public filtros: any = {
+    productos: '',
+    productosCarrito: ''
+  }
 
   public ingresoForm: any = {
     fechaIngreso: format(new Date(), 'yyyy-MM-dd'),
@@ -46,8 +75,10 @@ export default class DetallesIngresoComponent implements OnInit {
 
   constructor(
     private dataService: DataService,
+    private authService: AuthService,
     private ingresosService: IngresosService,
     private productosService: ProductosService,
+    private ingresosProductosService: IngresosProductosService,
     private alertService: AlertService,
     private activatedRoute: ActivatedRoute,
   ) { }
@@ -60,6 +91,8 @@ export default class DetallesIngresoComponent implements OnInit {
         this.ingresosService.getIngreso(id).subscribe({
           next: ({ ingreso }) => {
             this.ingreso = ingreso;
+            this.productosCarrito = ingreso.IngresosProductos;
+            this.ordenarProductosCarrito();
             this.reiniciarFormulario();
             this.alertService.close();
           }, error: ({ error }) => this.alertService.errorApi(error.message)
@@ -68,21 +101,134 @@ export default class DetallesIngresoComponent implements OnInit {
     })
   }
 
+  20176652536
+
   abrirModalIngreso(): void {
     this.showModalIngreso = true;
     this.reiniciarFormulario();
   }
 
-  abrirModalProductos(): void {
+  abrirModalProductos(estado: string = 'crear', producto: any = null): void {
+
+    this.estadoForm = estado;
+    this.filtros.productos = '';
+
+    if (this.estadoForm === 'crear') {
+      this.alertService.loading();
+      this.productoSeleccionado = null;
+      this.productosService.listarProductos({ columna: 'descripcion', direccion: 'asc' }).subscribe({
+        next: ({ productos }) => {
+          this.productos = productos;
+          this.showModalProductos = true;
+          this.alertService.close();
+        }, error: ({ error }) => this.alertService.errorApi(error.message)
+      })
+    } else { // -> Editar producto
+      this.productoSeleccionado = producto.producto;
+      this.relacionSeleccionada = producto;
+      this.productoForm = {
+        actualizarPrecio: producto.actualizarPrecio ? 'true' : 'false',
+        precioCompra: producto.precioCompra || producto.precioCompra !== 0 ? producto.precioCompra : null,
+        precioVenta: producto.precioVentaNuevo || producto.precioVentaNuevo !== 0 ? producto.precioVentaNuevo : null,
+        porcentajeGanancia: producto.porcentajeGanancia || producto.porcentajeGanancia !== 0 ? producto.porcentajeGanancia : null,
+        cantidad: producto.cantidad || producto.cantidad !== 0 ? producto.cantidad : null,
+      }
+      this.showModalProductos = true;
+    }
+
+  }
+
+  agregarProducto(): void {
+
+    // Verificacion - Si se actualiza el precio y no hay precio de venta
+    if (this.productoForm.actualizarPrecio === 'true' && (!this.productoForm.precioVenta || this.productoForm <= 0)) return this.alertService.info('Debe ingresar un precio de venta');
+
+    // Verificacion - Cantidad vacia
+    if (!this.productoForm.cantidad) return this.alertService.info('Debe ingresar una cantidad');
+
     this.alertService.loading();
-    this.productosService.listarProductos({}).subscribe({
-      next: ({ productos }) => {
-        this.productos = productos;
-        console.log(this.productos);
-        this.showModalProductos = true;
+
+    const data = {
+      ingresoId: this.ingreso.id,
+      productoId: this.productoSeleccionado.id,
+      precioCompra: this.productoForm.precioCompra ? this.productoForm.precioCompra : 0,
+      actualizarPrecio: this.productoForm.actualizarPrecio === 'true' ? true : false,
+      porcentajeGanancia: this.productoForm.actualizarPrecio === 'true' ? this.productoForm.porcentajeGanancia : 0,
+      precioVentaAnterior: this.productoSeleccionado.precioVenta,
+      precioVentaNuevo: this.productoForm.actualizarPrecio === 'true' ? this.productoForm.precioVenta : this.productoSeleccionado.precioVenta,
+      cantidad: this.productoForm.cantidad,
+      creatorUserId: this.authService.usuario.userId
+    }
+
+    this.ingresosProductosService.nuevoIngresoProducto(data).subscribe({
+      next: ({ relacion }) => {
+        this.productosCarrito.push(relacion);
+        this.reiniciarFormularioProducto();
+        this.productoSeleccionado = null;
+        this.showModalProductos = false;
+        this.ordenarProductosCarrito();
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
+
+  }
+
+  actualizarProducto(): void {
+
+    // Verificacion - Si se actualiza el precio y no hay precio de venta
+    if (this.productoForm.actualizarPrecio === 'true' && (!this.productoForm.precioVenta || this.productoForm <= 0)) return this.alertService.info('Debe ingresar un precio de venta');
+
+    // Verificacion - Cantidad vacia
+    if (!this.productoForm.cantidad) return this.alertService.info('Debe ingresar una cantidad');
+
+    this.alertService.loading();
+
+    const data = {
+      precioCompra: this.productoForm.precioCompra ? this.productoForm.precioCompra : 0,
+      actualizarPrecio: this.productoForm.actualizarPrecio === 'true' ? true : false,
+      porcentajeGanancia: this.productoForm.actualizarPrecio === 'true' ? this.productoForm.porcentajeGanancia : 0,
+      precioVentaAnterior: this.relacionSeleccionada.precioVentaAnterior,
+      precioVentaNuevo: this.productoForm.actualizarPrecio === 'true' ? this.productoForm.precioVenta : this.relacionSeleccionada.precioVentaNuevo,
+      cantidad: this.productoForm.cantidad,
+      creatorUserId: this.authService.usuario.userId
+    }
+
+    this.ingresosProductosService.actualizarIngresoProducto(this.relacionSeleccionada.id, data).subscribe({
+      next: ({ relacion }) => {
+        this.productosCarrito = this.productosCarrito.map(producto => {
+          if (producto.id === relacion.id) {
+            producto.precioCompra = relacion.precioCompra;
+            producto.actualizarPrecio = relacion.actualizarPrecio;
+            producto.porcentajeGanancia = relacion.porcentajeGanancia;
+            producto.precioVentaAnterior = relacion.precioVentaAnterior;
+            producto.precioVentaNuevo = relacion.precioVentaNuevo;
+            producto.cantidad = relacion.cantidad;
+          }
+          return producto;
+        });
+        this.reiniciarFormularioProducto();
+        this.productoSeleccionado = null;
+        this.showModalProductos = false;
+        this.alertService.close();
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    });
+
+  }
+
+  eliminarProducto(): void {
+    this.alertService.question({ msg: 'Estas por eliminar un producto del ingreso', buttonText: 'Eliminar' })
+      .then(({ isConfirmed }) => {
+        if (isConfirmed) {
+          this.alertService.loading();
+          this.ingresosProductosService.eliminarIngresoProducto(this.relacionSeleccionada.id).subscribe({
+            next: () => {
+              this.productosCarrito = this.productosCarrito.filter(producto => producto.id !== this.relacionSeleccionada.id);
+              this.showModalProductos = false;
+              this.alertService.close();
+            }, error: ({ error }) => this.alertService.errorApi(error.message)
+          })
+        }
+      });
   }
 
   actualizarIngreso(): void {
@@ -90,21 +236,89 @@ export default class DetallesIngresoComponent implements OnInit {
     this.ingresosService.actualizarIngreso(this.ingreso.id, this.ingresoForm).subscribe({
       next: () => {
         // Reemplazar datos de ingreso
-        this.ingreso.fechaIngreso = format(add(new Date(this.ingresoForm.fechaIngreso),{ days: 2 }), 'yyyy-MM-dd');
+        this.ingreso.fechaIngreso = format(add(new Date(this.ingresoForm.fechaIngreso), { days: 2 }), 'yyyy-MM-dd');
         this.ingreso.nroFactura = this.ingresoForm.nroFactura;
         this.ingreso.comentario = this.ingresoForm.comentario.toUpperCase();
         this.showModalIngreso = false;
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
-    });  
+    });
+  }
+
+  completarIngreso(): void {
+    this.alertService.question({ msg: 'Estas por completar el ingreso', buttonText: 'Completar' })
+      .then(({ isConfirmed }) => {
+        if (isConfirmed) {
+          this.alertService.loading();
+          this.ingresosService.completarIngreso(this.ingreso.id).subscribe({
+            next: () => {
+              this.ingreso.estado = 'Completado';
+              this.alertService.close();
+            }, error: ({ error }) => this.alertService.errorApi(error.message)
+          });
+        }
+      });
+  }
+
+  seleccionarProducto(producto: any): void {
+    this.productoSeleccionado = producto;
+    this.productoForm = {
+      actualizarPrecio: 'false',
+      precioCompra: null,
+      precioVenta: producto.precioVenta,
+      porcentajeGanancia: producto.porcentajeGanancia,
+      cantidad: null
+    }
+    this.productoSeleccionado = producto;
+  }
+
+  deseleccionarProducto(): void {
+    this.filtros.productos = '';
+    this.productoSeleccionado = null;
+    this.reiniciarFormularioProducto();
+  }
+
+  submitForm(): void {
+    if (this.estadoForm === 'crear') {
+      this.agregarProducto();
+    } else {
+      this.actualizarProducto();
+    }
+  }
+
+  calcularPrecioVenta(): void {
+    if (this.productoForm.precioCompra == null || this.productoForm.porcentajeGanancia == null) return;
+    const precioCompra = Number(this.productoForm.precioCompra);
+    const porcentajeGanancia = Number(this.productoForm.porcentajeGanancia);
+    const precioVenta = precioCompra + (precioCompra * (porcentajeGanancia / 100));
+    this.productoForm.precioVenta = Number(precioVenta.toFixed(2));
+  }
+
+  ordenarProductosCarrito(): void {
+    this.productosCarrito = this.productosCarrito.sort((a, b) => {
+      if (a.producto.descripcion > b.producto.descripcion) return 1;
+      if (a.producto.descripcion < b.producto.descripcion) return -1;
+      return 0;
+    })
   }
 
   reiniciarFormulario(): void {
     const { fechaIngreso, nroFactura, comentario } = this.ingreso;
-    this.ingresoForm = { 
-      fechaIngreso: format(fechaIngreso, 'yyyy-MM-dd'), 
-      nroFactura, 
-      comentario };
+    this.ingresoForm = {
+      fechaIngreso: format(fechaIngreso, 'yyyy-MM-dd'),
+      nroFactura,
+      comentario
+    };
+  }
+
+  reiniciarFormularioProducto(): void {
+    this.productoForm = {
+      actualizarPrecio: 'false',
+      precioCompra: null,
+      precioVenta: null,
+      porcentajeGanancia: null,
+      cantidad: null,
+    }
   }
 
 }

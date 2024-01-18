@@ -11,7 +11,7 @@
 }
 
 .input-generico {
-  @apply p-2 border border-gray-400 focus:ring-1 focus:ring-secondaryColor rounded transform outline-none duration-500 focus:border-secondaryColor focus:outline-none
+  @apply p-2 border border-gray-400 focus:ring-1 bg-white focus:ring-secondaryColor rounded transform outline-none duration-500 focus:border-secondaryColor focus:outline-none
 }
 
 .boton-editar {

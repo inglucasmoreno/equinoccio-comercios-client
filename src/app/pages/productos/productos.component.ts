@@ -284,7 +284,6 @@ export default class ProductosComponent implements OnInit {
   }
 
   cambioAlerta(): void {
-    console.log('llega');
     if(this.productoForm.alertaStock === 'false'){
       this.productoForm.cantidadMinima = null;
     }
