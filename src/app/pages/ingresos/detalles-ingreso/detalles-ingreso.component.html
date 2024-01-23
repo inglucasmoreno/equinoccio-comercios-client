@@ -4,7 +4,8 @@
     <h1 class=" text-white px-2 py-1 rounded-t text-lg"> {{ estadoForm === 'crear' ? 'Agregando producto' : 'Editando
       producto' }} </h1>
     <div>
-      <button *ngIf="estadoForm === 'editar' && ingreso.estado === 'Pendiente'" title="Eliminar producto" (click)="eliminarProducto()"
+      <button *ngIf="estadoForm === 'editar' && ingreso.estado === 'Pendiente'" title="Eliminar producto"
+        (click)="eliminarProducto()"
         class="bg-red-700 hover:opacity-90 mr-2 text-white p-2 rounded border border-red-800">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
           class="w-5 h-5">
@@ -66,7 +67,8 @@
         <div class="px-2 pb-2">
           <div class="mt-1">
             <p class="font-semibold"> Actualizacion de precio </p>
-            <select [disabled]="ingreso.estado === 'Completado'" [(ngModel)]="productoForm.actualizarPrecio" class="input-generico w-full mt-2">
+            <select [disabled]="ingreso.estado === 'Completado'" [(ngModel)]="productoForm.actualizarPrecio"
+              class="input-generico w-full mt-2">
               <option value="false"> Mantener precio actual </option>
               <option value="true"> Actualizar precio </option>
             </select>
@@ -76,15 +78,15 @@
           <div class="flex items-center mt-2">
             <div class="w-1/2">
               <p class="font-semibold"> Precio de compra </p>
-              <input [disabled]="ingreso.estado === 'Completado'" (keyup.enter)="submitForm()" (keyup)="calcularPrecioVenta()"
-                [(ngModel)]="productoForm.precioCompra" type="number" class="input-generico mt-2 w-full"
-                placeholder="Ej. 2000">
+              <input [disabled]="ingreso.estado === 'Completado'" (keyup.enter)="submitForm()"
+                (keyup)="calcularPrecioVenta()" [(ngModel)]="productoForm.precioCompra" type="number"
+                class="input-generico mt-2 w-full" placeholder="Ej. 2000">
             </div>
             <div class="w-1/2 ml-2">
               <p class="font-semibold"> Porcentaje de ganancia (%) </p>
-              <input [disabled]="ingreso.estado === 'Completado'" (keyup.enter)="submitForm()" (keyup)="calcularPrecioVenta()"
-                [(ngModel)]="productoForm.porcentajeGanancia" type="number" class="input-generico mt-2 w-full"
-                placeholder="Ej. 10">
+              <input [disabled]="ingreso.estado === 'Completado'" (keyup.enter)="submitForm()"
+                (keyup)="calcularPrecioVenta()" [(ngModel)]="productoForm.porcentajeGanancia" type="number"
+                class="input-generico mt-2 w-full" placeholder="Ej. 10">
             </div>
           </div>
           <div class="mt-3">
@@ -99,15 +101,16 @@
           @if(productoForm.actualizarPrecio === 'false'){
           <div class="mt-3">
             <p class="font-semibold"> Precio compra </p>
-            <input [disabled]="ingreso.estado === 'Completado'" (keyup.enter)="submitForm()" (keyup)="calcularPrecioVenta()" [(ngModel)]="productoForm.precioCompra"
-              type="number" class="input-generico mt-2 w-full" placeholder="Ej. 2000">
+            <input [disabled]="ingreso.estado === 'Completado'" (keyup.enter)="submitForm()"
+              (keyup)="calcularPrecioVenta()" [(ngModel)]="productoForm.precioCompra" type="number"
+              class="input-generico mt-2 w-full" placeholder="Ej. 2000">
           </div>
           }
 
           <div class="mt-3">
             <p class="font-semibold"> <span class="text-red-500"> * </span> Cantidad </p>
-            <input [disabled]="ingreso.estado === 'Completado'" (keyup.enter)="submitForm()" type="number" [(ngModel)]="productoForm.cantidad"
-              class="input-generico mt-2 w-full" placeholder="Ej. 10">
+            <input [disabled]="ingreso.estado === 'Completado'" (keyup.enter)="submitForm()" type="number"
+              [(ngModel)]="productoForm.cantidad" class="input-generico mt-2 w-full" placeholder="Ej. 10">
           </div>
         </div>
       </div>
@@ -173,7 +176,8 @@
   </div>
 </app-modal>
 
-<div>
+<!-- Pagina principal -->
+<div class="gsap-contenido">
   <div class="w-11/12 md:w-1/2 mx-auto mt-4">
     <div class="bg-gray-800 flex items-center justify-between text-white w-full p-2 rounded-t">
       <div class="flex items-center">
@@ -185,8 +189,10 @@
         </button>
         <div class="ml-2">
           <h1 class="text-xl"> Detalles de ingreso </h1>
-          <p *ngIf="ingreso.estado === 'Pendiente'" class="w-max p-1 mt-1 rounded bg-yellow-100 text-black text-xs border-yellow-300"> Pendiente </p>
-          <p *ngIf="ingreso.estado === 'Completado'"  class="w-max p-1 mt-1 rounded bg-green-100 text-black text-xs border-green-300"> Completado </p>
+          <p *ngIf="ingreso.estado === 'Pendiente'"
+            class="w-max p-1 mt-1 rounded bg-yellow-100 text-black text-xs border-yellow-300"> Pendiente </p>
+          <p *ngIf="ingreso.estado === 'Completado'"
+            class="w-max p-1 mt-1 rounded bg-green-100 text-black text-xs border-green-300"> Completado </p>
         </div>
       </div>
       <button *ngIf="ingreso.estado === 'Pendiente'" (click)="completarIngreso()" title="Completar ingreso"
@@ -201,7 +207,8 @@
       <div>
         <div class="bg-gray-100 p-2 flex items-center justify-between w-full border border-gray-400 mt-2">
           <h2> Datos generales </h2>
-          <button *ngIf="ingreso.estado === 'Pendiente'" (click)="abrirModalIngreso()" title="Editar datos" class="boton-editar">
+          <button *ngIf="ingreso.estado === 'Pendiente'" (click)="abrirModalIngreso()" title="Editar datos"
+            class="boton-editar">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round"
@@ -225,7 +232,8 @@
             <h2> Listado de productos </h2>
             <p class="mt-1 text-xs font-semibold"> Cantidad de producto: {{ productosCarrito.length }} </p>
           </div>
-          <button *ngIf="ingreso.estado === 'Pendiente'" (click)="abrirModalProductos('crear')" title="Agregar producto" class="boton-crear">
+          <button *ngIf="ingreso.estado === 'Pendiente'" (click)="abrirModalProductos('crear')" title="Agregar producto"
+            class="boton-crear">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -242,25 +250,35 @@
 
           <div (click)="abrirModalProductos('editar', relacion)"
             class="border flex items-center justify-between border-gray-400 mt-2 p-2 hover:border-secondaryColor hover:bg-purple-50 cursor-pointer">
-            <div>
-              <p class="font-semibold"> {{ relacion.producto.descripcion }} </p>
-              <p class="text-gray-600 text-xs mt-1 italic"> {{ relacion.producto.unidadMedida.descripcion }} </p>
-              @if(relacion.actualizarPrecio){
-              <div class="flex items-center mt-1">
-                <p class="text-xs mt-1 w-max bg-orange-100 p-1 border border-orange-400"> ${{
-                  relacion.precioVentaAnterior
-                  | moneda }} </p>
+
+            <div class="flex items-center justify-center">
+              <div class="bg-green-50 border border-green-700 p-2 rounded text-green-700">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="w-5 h-5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                  stroke="currentColor" class="w-14 h-14">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
                 </svg>
-                <p class="text-xs mt-1 ml-1 w-max bg-green-100 p-1 border border-green-400"> ${{
-                  relacion.precioVentaNuevo
-                  | moneda }} </p>
               </div>
-              }@else{
-              <p class="text-gray-600 text-xs mt-1 italic"> ${{ relacion.precioVentaAnterior | moneda }} </p>
-              }
+              <div class="ml-3">
+                <p class="font-semibold"> {{ relacion.producto.descripcion }} </p>
+                <p class="text-gray-600 text-xs mt-1 italic"> {{ relacion.producto.unidadMedida.descripcion }} </p>
+                @if(relacion.actualizarPrecio){
+                <div class="flex items-center mt-1">
+                  <p class="text-xs mt-1 w-max bg-orange-100 p-1 border border-orange-400"> ${{
+                    relacion.precioVentaAnterior
+                    | moneda }} </p>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25 21 12m0 0-3.75 3.75M21 12H3" />
+                  </svg>
+                  <p class="text-xs mt-1 ml-1 w-max bg-green-100 p-1 border border-green-400"> ${{
+                    relacion.precioVentaNuevo
+                    | moneda }} </p>
+                </div>
+                }@else{
+                <p class="text-gray-600 text-xs mt-1 italic"> ${{ relacion.precioVentaAnterior | moneda }} </p>
+                }
+              </div>
             </div>
             <p class="mt-1 w-max p-2 text-xs bg-gray-100 border border-gray-400 rounded"> <span class="font-semibold">
                 Cantidad: </span> {{ relacion.cantidad }} </p>

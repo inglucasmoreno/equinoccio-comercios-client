@@ -78,10 +78,10 @@
           <div class="my-2 flex sm:flex-row flex-col">
             <div class="flex flex-row mb-1 sm:mb-0">
               <div class="relative">
-                <select #txtActivo (change)="filtrarActivos(txtActivo.value)"
+                <select [(ngModel)]="filtro.estado"
                   class="h-full text-sm rounded-r border-t border-l rounded-l sm:rounded-r-none sm:border-r-0 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
-                  <option value='true'> Activos </option>
-                  <option value='false'> Inactivos </option>
+                  <option value='Pendiente'> Pendientes </option>
+                  <option value='Completado'> Completados </option>
                   <option value=''> Todos </option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -167,21 +167,21 @@
                   </th>
                   <th
                     class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
-                    <div (click)="ordenarPorColumna('comentarios')"
+                    <div (click)="ordenarPorColumna('comentario')"
                       class="cursor-pointer flex items-center focus:outline-none">
                       <span> Comentarios </span>
                       <span class="ml-2 text-gray-600">
-                        <svg *ngIf="ordenar.columna == 'comentarios' && ordenar.direccion == 'asc'" width="15"
+                        <svg *ngIf="ordenar.columna == 'comentario' && ordenar.direccion == 'asc'" width="15"
                           height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                           stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
                           <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
-                        <svg *ngIf="ordenar.columna == 'comentarios' && ordenar.direccion == 'desc'" width="15"
+                        <svg *ngIf="ordenar.columna == 'comentario' && ordenar.direccion == 'desc'" width="15"
                           height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                           stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
                           <polyline points="18 15 12 9 6 15"></polyline>
                         </svg>
-                        <svg *ngIf="ordenar.columna != 'comentarios'" width="15" height="15" viewBox="0 0 24 24"
+                        <svg *ngIf="ordenar.columna != 'comentario'" width="15" height="15" viewBox="0 0 24 24"
                           fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                           stroke-linejoin="round" class="feather feather-minus">
                           <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -248,7 +248,7 @@
                 </tr>
               </thead>
               <tbody *ngIf="ingresos">
-                @for(ingreso of ingresos | filtroUnidadesMedida:filtro.parametro:filtro.activo | paginate:
+                @for(ingreso of ingresos | filtroIngresos:filtro.parametro:filtro.estado | paginate:
                 {itemsPerPage:
                 cantidadItems, currentPage: paginaActual}; track ingreso.id){
                 <tr class="animate__animated animate__fadeIn">
@@ -291,7 +291,7 @@
                             d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                         </svg>
                       </button>
-                      <button [routerLink]="['/dashboard/detalles-ingreso', ingreso.id]" title="Detalles" class="bg-purple-500 p-2 hover:opacity-90 text-white rounded shadow ml-2">
+                      <button [routerLink]="['/dashboard/ingresos/detalles', ingreso.id]" title="Detalles" class="bg-purple-500 p-2 hover:opacity-90 text-white rounded shadow ml-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
                           <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />

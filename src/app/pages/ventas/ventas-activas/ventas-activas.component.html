@@ -1,0 +1,384 @@
+<!-- Modal: Detalles de venta -->
+<app-modal [showModal]="showModalVenta">
+  <div class="flex items-center justify-between bg-gray-800 rounded-t p-2">
+    <h1 class=" text-white px-2 py-1 rounded-t text-lg"> Detalles de venta </h1>
+    <svg (click)="showModalVenta = false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="cursor-pointer feather feather-x text-white mr-2">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </div>
+  <div class="p-2 text-xs md:text-sm ">
+    <div class="flex items-center">
+      <div class="p-2 md:flex md:items-center md:justify-between w-full">
+        <p>
+          <span class="font-semibold"> Fecha: </span>
+          {{ ventaSeleccionada?.fechaVenta | fecha }}
+        </p>
+        <p class="mt-2 md:mt-0">
+          <span class="font-semibold"> Generador: </span> <span> {{
+            ventaSeleccionada?.creatorUser.apellido }} {{ ventaSeleccionada?.creatorUser.nombre }} </span>
+        </p>
+      </div>
+    </div>
+    <div class="px-2 pt-1 mt-2">
+      <p>
+        <span class="font-semibold"> Comprobante: </span>
+        <span class="p-1 bg-gray-100 border border-gray-400 ml-1 rounded">
+          {{ ventaSeleccionada?.comprobante }}
+        </span>
+      </p>
+    </div>
+
+    <!-- Formas de pago -->
+
+    <div class="px-2 mt-4">
+      <h2 class="p-2 bg-gray-100 border mb-2 border-gray-400"> Montos y formas de pago </h2>
+
+      @for(formaPago of ventaSeleccionada?.ventasFormasPago; track formaPago.descripcion){
+
+      <div class="flex items-center justify-between border-b border-gray-400 p-2">
+
+        <div *ngIf="formaPagoSeleccionada?.id === formaPago.id" class="flex items-center">
+          <select [(ngModel)]="nuevaFormaPago" class="p-1 border rounded bg-white outline-none border-gray-400">
+            <option *ngFor="let formaPago of formasPago" [value]="formaPago.valor"> {{ formaPago.descripcion }} </option>
+          </select>
+          <input (keyup.enter)="actualizarFormaPago()" [(ngModel)]="comprobantePedidosYa" *ngIf="nuevaFormaPago === 'PedidosYa - Efectivo' || nuevaFormaPago === 'PedidosYa - Online'" placeholder="Nro comprobante" type="text" class="p-1 text-sm border w-32 ml-2 border-gray-400 rounded">
+          <button *ngIf="formaPagoSeleccionada?.descripcion !== nuevaFormaPago || nuevaFormaPago === 'PedidosYa - Efectivo' || nuevaFormaPago === 'PedidosYa - Online'" (click)="actualizarFormaPago()" class="text-white hover:opacity-90 bg-green-700 ml-2 p-1 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>              
+          </button>
+          <button (click)="cerrarActualizarFormaPago()" class="text-white hover:opacity-90 bg-red-700 ml-2 p-1 rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>                         
+          </button>
+        </div>
+
+        <div *ngIf="!formaPagoSeleccionada || formaPagoSeleccionada?.id !== formaPago.id" class="flex items-center">
+          <p> <span> {{ formaPago.descripcion }} </span>  <span *ngIf="formaPago?.descripcion === 'PedidosYa - Efectivo' || formaPago?.descripcion === 'PedidosYa - Online'" class="text-xs bg-purple-50 border border-purple-400 px-1 rounded ml-1"> Nro. {{ formaPago.nroComprobante }} </span> </p>
+          <button (click)="abrirActualizarFormaPago(formaPago)" title="Editar" class="hover:text-secondaryColor ml-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+            </svg>
+          </button>
+        </div>
+
+        <p> ${{ formaPago.valor | moneda }} </p>
+
+      </div>
+
+
+      }
+      <div class="flex p-2 bg-purple-100 border border-purple-400 border-t-0 items-center justify-between">
+        <p class="font-semibold"> Monto total </p>
+        <p> ${{ ventaSeleccionada?.precioTotal | moneda }} </p>
+      </div>
+    </div>
+
+
+    <!-- Listado de productos -->
+    <div class="px-2 mt-4">
+      <h2 class="p-2 bg-gray-100 border mb-2 border-gray-400"> Listado de productos </h2>
+      <div class="max-h-64 overflow-y-auto">
+        @for(relacion of ventaSeleccionada?.ventasProductos; track relacion.producto.id){
+        <div class="border border-gray-400 p-2 mb-2 flex items-center justify-between">
+          <div class="flex items-center">
+            <div class="bg-purple-50 border border-secondaryColor p-2 rounded text-secondaryColor">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-12 h-12">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+              </svg>
+            </div>
+            <div class="ml-2">
+              <p class="font-semibold"> {{ relacion.producto.descripcion }} </p>
+              <p class="text-xs"> Cantidad: {{ relacion.cantidad }} </p>
+              <p class="text-gray-500 text-xs mt-1"> ${{ relacion.producto.precioVenta | moneda }} x {{
+                relacion.producto.unidadMedida.descripcion }} </p>
+            </div>
+          </div>
+          <p class="text-secondaryColor font-semibold mt-1"> ${{ relacion.precioTotal | moneda }} </p>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</app-modal>
+
+<!-- Pagina principal -->
+<div class="md:max-w-7xl mx-auto">
+  <app-tarjeta-lista>
+    <div class="container mx-auto">
+      <div>
+        <div class="flex items-center justify-between bg-gray-800 px-4 py-3 rounded-t">
+          <div class="ml-2 text-white">
+            <h2 class="text-xl md:text-2xl leading-tight">
+              Ventas activas
+            </h2>
+            <p> Total de ventas: {{ ventas.length }} </p>
+          </div>
+        </div>
+        <div class="md:flex md:items-center md:justify-between px-4 py-2">
+          <div class="my-2 flex sm:flex-row flex-col">
+            <div class="flex flex-row mb-1 sm:mb-0">
+              <div class="relative">
+                <select #txtActivo (change)="filtrarActivos(txtActivo.value)"
+                  class="h-full text-sm rounded-r border-t border-l rounded-l sm:rounded-r-none sm:border-r-0 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
+                  <option value='true'> Activos </option>
+                  <option value='false'> Inactivos </option>
+                  <option value=''> Todos </option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                  <svg class="fill-current h-4 w-4" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="block relative">
+              <span class="h-full absolute inset-y-0 left-0 flex items-center pl-2">
+                <svg viewBox="0 0 24 24"
+                  class="h-4 w-4 fill-current text-gray-500 cursor-pointer hover:text-secondary-500">
+                  <path
+                    d="M10 4a6 6 0 100 12 6 6 0 000-12zm-8 6a8 8 0 1114.32 4.906l5.387 5.387a1 1 0 01-1.414 1.414l-5.387-5.387A8 8 0 012 10z">
+                  </path>
+                </svg>
+              </span>
+              <input #txtParametro placeholder="Buscar" (keyup)="filtrarParametro(txtParametro.value)"
+                class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
+            </div>
+            <select (change)="paginaActual = 1"
+              class="bg-white text-sm focus:outline-none w-max px-2 py-2 md:py-0 md:ml-2 mt-2 md:mt-0 border text-gray-600 border-gray-400 rounded"
+              [(ngModel)]="cantidadItems">
+              <option value="10"> 10 elementos </option>
+              <option value="20"> 20 elementos </option>
+              <option value="50"> 50 elementos </option>
+              <option value="100"> 100 elementos </option>
+            </select>
+          </div>
+        </div> 
+
+        <div class="md:flex md:items-center py-2 px-4 text-sm">
+          <p class="md:w-1/3 bg-green-50 border border-green-700 text-center p-2 rounded"> <span> Monto total: </span> ${{ 10000 | moneda }} </p>
+          <p class="md:w-1/3 mt-2 md:mt-0 bg-blue-50 border border-blue-700 text-center p-2 md:ml-2 rounded"> <span> Guia de despacho: </span> ${{ 5000 | moneda }} </p>
+          <p class="md:w-1/3 mt-2 md:mt-0 bg-purple-50 border border-purple-700 text-center p-2 md:ml-2 rounded"> <span> PedidosYa: </span> ${{ 5000 | moneda }} </p>
+        </div>
+
+        <div class="px-4 py-2 overflow-x-auto">
+          <div class="inline-block max-h-96 overflow-y-auto min-w-full pb-5">
+            <table class="min-w-full leading-normal">
+              <thead>
+                <tr class="border">
+                  <th
+                    class="px-5 border-b-2 border-gray-200 bg-gray-100 text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('fechaVenta')"
+                      class="cursor-pointer w-max flex items-center justify-center focus:outline-none">
+                      <span>
+                        Fecha
+                      </span>
+                      <span class="ml-2">
+                        <svg *ngIf="ordenar.columna == 'fechaVenta' && ordenar.direccion == 'asc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'fechaVenta' && ordenar.direccion == 'desc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'fechaVenta'" width="15" height="15" viewBox="0 0 24 24"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('precioTotal')"
+                      class="cursor-pointer flex items-center focus:outline-none">
+                      <span> Monto total </span>
+                      <span class="ml-2 text-gray-600">
+                        <svg *ngIf="ordenar.columna == 'precioTotal' && ordenar.direccion == 'asc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'precioTotal' && ordenar.direccion == 'desc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'precioTotal'" width="15" height="15" viewBox="0 0 24 24"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('activo')"
+                      class="cursor-pointer flex items-center focus:outline-none">
+                      <span>
+                        Forma de pago
+                      </span>
+                      <span class="ml-2">
+                        <svg *ngIf="ordenar.columna == 'activo' && ordenar.direccion == 'asc'" width="15" height="15"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'activo' && ordenar.direccion == 'desc'" width="15" height="15"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'activo'" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                          class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('comprobante')"
+                      class="cursor-pointer flex items-center focus:outline-none">
+                      <span>
+                        Tipo
+                      </span>
+                      <span class="ml-2">
+                        <svg *ngIf="ordenar.columna == 'comprobante' && ordenar.direccion == 'asc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'comprobante' && ordenar.direccion == 'desc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'comprobante'" width="15" height="15" viewBox="0 0 24 24"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('creatorUser.apellido')"
+                      class="cursor-pointer flex items-center focus:outline-none">
+                      <span>
+                        Usuario generador
+                      </span>
+                      <span class="ml-2">
+                        <svg *ngIf="ordenar.columna == 'creatorUser.apellido' && ordenar.direccion == 'asc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'creatorUser.apellido' && ordenar.direccion == 'desc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'creatorUser.apellido'" width="15" height="15"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-900 tracking-wider">
+                    Acción
+                  </th>
+                </tr>
+              </thead>
+              <tbody *ngIf="ventas">
+                @for(venta of ventas | filtroVentas:filtro.parametro:filtro.activo | paginate: {itemsPerPage:
+                cantidadItems, currentPage: paginaActual}; track venta.id){
+                <tr class="animate__animated animate__fadeIn">
+                  <td class="px-5 py-4 border-b border-gray-200 text-xs">
+                    <p class="text-gray-900 whitespace-no-wrap">
+                      {{ venta.fechaVenta | fecha }}
+                    </p>
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <p class="text-gray-900 w-max whitespace-no-wrap">
+                      ${{ venta.precioTotal | moneda }}
+                    </p>
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    @for(formaPago of venta.ventasFormasPago; track formaPago.descripcion){
+                    <span class="border border-secondaryColor ml-1 rounded bg-purple-50 p-1"> {{ formaPago.descripcion
+                      }} </span>
+                    }
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <p [ngClass]="{'bg-gray-100 border-gray-400':venta.comprobante === 'Normal', 'bg-purple-100 border-purple-400':venta.comprobante === 'Facturacion'}"
+                      class="text-gray-900 p-1 rounded w-max border whitespace-no-wrap">
+                      {{ venta.comprobante === 'Normal' ? 'Normal' : 'Guia de despacho' }}
+                    </p>
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <p class="text-gray-900 w-max whitespace-no-wrap">
+                      {{ venta.creatorUser.apellido }} {{ venta.creatorUser.nombre }}
+                    </p>
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs text-center">
+                    <p class="flex items-center justify-center text-gray-900 whitespace-no-wrap">
+                      <button (click)="seleccionarVenta(venta)" title="Detalles"
+                        class="p-2 rounded shadow focus:outline-none bg-fuchsia-600 hover:opacity-90 text-white ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                          stroke="currentColor" class="w-5 h-5">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                      </button>
+                      <button title="Imprimir comprobante"
+                        class="p-2 rounded shadow focus:outline-none bg-blue-600 hover:opacity-90 text-white ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                          stroke="currentColor" class="w-5 h-5">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z" />
+                        </svg>
+                      </button>
+                    </p>
+                  </td>
+                </tr>
+                }@empty {
+                <tr class="p-4 text-white"> a </tr>
+                <tr class="w-full">
+                  <td colspan="6" class="text-gray-500 text-sm p-2 border border-gray-300 text-center bg-gray-50 mt-4">
+                    No se encontraron ventas </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="ventas.length > cantidadItems"
+        class="px-5 text-sm py-5 mt-4 bg-white border-t flex shadow flex-col xs:flex-row items-center xs:justify-between">
+        <pagination-controls nextLabel="Siguiente" previousLabel="Anterior"
+          (pageChange)="paginaActual = $event"></pagination-controls>
+      </div>
+    </div>
+  </app-tarjeta-lista>
+</div>

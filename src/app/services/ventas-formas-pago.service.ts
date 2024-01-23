@@ -1,14 +1,14 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { environments } from '../../environments/environments';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-const urlApi = environments.base_url + '/productos';
+const urlApi = environments.base_url + '/ventas-formas-pago';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProductosService {
+export class VentasFormasPagoService {
 
   get getToken(): any {
     return { 'Authorization': localStorage.getItem('token') }
@@ -16,25 +16,13 @@ export class ProductosService {
 
   constructor(private http: HttpClient) { }
 
-  getProducto(id: string): Observable<any> {
+  getVentaFormaPago(id: string): Observable<any> {
     return this.http.get(`${urlApi}/${id}`, {
       headers: this.getToken
     })
   }
 
-  getProductoPorCodigo(codigo: string): Observable<any> {
-    return this.http.get(`${urlApi}/buscar/codigo/${codigo}`, {
-      headers: this.getToken
-    })
-  }
-
-  generarCodigo(): Observable<any> {
-    return this.http.get(`${urlApi}/generar/codigo`, {
-      headers: this.getToken
-    })
-  }
-
-  listarProductos({ direccion = 'asc', columna = 'descripcion' }): Observable<any> {
+  listarVentasFormasPago({ direccion = 'desc', columna = 'createdAt' }): Observable<any> {
     return this.http.get(urlApi, {
       params: {
         direccion: String(direccion),
@@ -44,13 +32,13 @@ export class ProductosService {
     })
   }
 
-  nuevoProducto(data: any): Observable<any> {
+  nuevaVentaFormaPago(data: any): Observable<any> {
     return this.http.post(urlApi, data, {
       headers: this.getToken
     })
   }
 
-  actualizarProducto(id: string, data: any): Observable<any> {
+  actualizarVentaFormaPago(id: string, data: any): Observable<any> {
     return this.http.patch(`${urlApi}/${id}`, data, {
       headers: this.getToken
     })

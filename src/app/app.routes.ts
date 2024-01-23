@@ -38,6 +38,20 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/home/home.component'),
       },
 
+      // Venta
+      {
+        path: 'ventas',
+        title: 'Generando venta',
+        loadComponent: () => import('./pages/ventas/ventas.component'),
+      },
+
+      // Venta - Activas
+      {
+        path: 'ventas-activas',
+        title: 'Ventas activas',
+        loadComponent: () => import('./pages/ventas/ventas-activas/ventas-activas.component'),
+      },
+
       // Perfil
       {
         path: 'perfil',
@@ -105,11 +119,11 @@ export const routes: Routes = [
 
       // Detalles - Ingreso
       {
-        path: 'detalles-ingreso/:id',
+        path: 'ingresos/detalles/:id',
         title: 'Detalles de ingreso',
         loadComponent: () => import('./pages/ingresos/detalles-ingreso/detalles-ingreso.component'),
       },
-      
+
     ]
   },
 

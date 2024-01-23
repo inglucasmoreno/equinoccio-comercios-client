@@ -1,0 +1,353 @@
+<!-- Completando venta -->
+<app-modal [showModal]="showModalCompletar">
+  <div class="flex items-center justify-between bg-gray-800 rounded-t p-2">
+    <h1 class=" text-white px-2 py-1 rounded-t text-lg"> Completando venta </h1>
+    <svg (click)="showModalCompletar = false" width="20" height="20" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="cursor-pointer feather feather-x text-white mr-2">
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    </svg>
+  </div>
+  <div class="text-sm">
+    <div class="text-xs md:text-sm flex bg-gray-100 items-center border-b border-gray-400 justify-between px-3 py-3">
+      <p class="border p-2 border-gray-400 bg-white"> <span class="font-semibold"> Fecha: </span> {{ fechaActual | fecha }} </p>
+      <p class="bg-purple-100 p-2 border border-secondaryColor"> <span class="font-semibold"> Precio total: </span> ${{
+        precioTotalVenta | moneda }} </p>
+    </div>
+
+    <div class="max-h-96 overflow-y-auto">
+      <div class="p-2">
+        <p class="font-semibold"> Tipo de venta </p>
+        <div class="flex items-center">
+          <select [(ngModel)]="comprobante" class="input-generico w-1/2 mt-2">
+            <option value="Normal"> Normal </option>
+            <option value="Facturacion"> Guia de despacho </option>
+          </select>
+          <button *ngIf="comprobante === 'Facturacion'" title="Proximo numero de factura"
+            class="p-2 border hover:text-secondaryColor border-gray-400 rounded mt-2 ml-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m5.231 13.481L15 17.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v16.5c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Zm3.75 11.625a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+            </svg>
+          </button>
+        </div>
+        <button *ngIf="imprimirTicket" (click)="cambiarImprimirTicket()"
+          class="px-2 py-1 shadow bg-gray-50 mt-2 flex items-center border border-gray-400 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="w-4 h-4 text-green-700 font-semibold">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+          <p class="text-xs">
+            Imprimir ticket
+          </p>
+        </button>
+        <button *ngIf="!imprimirTicket" (click)="cambiarImprimirTicket()"
+          class="px-2 py-1 shadow bg-gray-50 mt-2 flex items-center border border-gray-400 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="w-4 h-4 text-red-700 font-semibold">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+          <p class="text-xs">
+            No imprimir ticket
+          </p>
+        </button>
+      </div>
+  
+      <div class="px-2 mt-1 text-sm">
+        <p class="font-semibold"> Calculador de vuelto </p>
+        <div class="flex items-center">
+          <input (keyup)="calcularVuelto()" [(ngModel)]="pagaCon" placeholder="Paga con..." class="input-generico w-1/2"
+            type="text">
+          <div class="w-1/2 bg-gray-100 border border-gray-400 p-2 m-2 text-center"> {{ vuelto ? '$' + (vuelto | moneda) :
+            'Monto a devolver' }} </div>
+        </div>
+      </div>
+  
+      <div class="px-2 mt-1 text-sm">
+        <div class="flex items-center justify-between">
+          <p class="font-semibold w-1/2"> {{ multiplesFormasPago ? 'Multiples formas de pago' : 'Forma de pago' }} </p>
+        </div>
+        <div class="md:flex md:items-center mt-2">
+  
+          <!-- Forma de pago unica -->
+          <select (change)="cambiarFormaPago()" [(ngModel)]="formaPago" class="input-generico w-full md:w-1/2">
+            <option *ngFor="let formaPago of formasPagoArray" [value]="formaPago.valor"> {{ formaPago.descripcion }} </option>
+          </select>
+  
+          <!-- Comprobante de pedidosYa -->
+          <div class="md:ml-2 mt-2 md:mt-0 w-full md:w-1/2" *ngIf="formaPago === 'PedidosYa - Efectivo' || formaPago === 'PedidosYa - Online'">
+            <input [(ngModel)]="pedidosYaComprobante" class="input-generico w-full" placeholder="Nro comprobante pedidosYa" type="text">
+          </div>
+  
+          <button
+            *ngIf="!multiplesFormasPago && formaPago !== 'PedidosYa - Efectivo' && formaPago !== 'PedidosYa - Online'"
+            (click)="cambiarMultiplesFormasPago()"
+            class="md:w-1/2 w-full p-2 border border-gray-400 rounded md:ml-2 mt-2 md:mt-0 hover:text-secondaryColor">
+            Multiples formas de pago
+          </button>
+  
+          <!-- Multiples formas de pago -->
+          <div *ngIf="multiplesFormasPago" class="flex items-center">
+            <input (keyup.enter)="agregarFormaPago()" [(ngModel)]="valorFormaPago" placeholder="Ej. 1000" type="number"
+              min="0" class="input-generico w-full mt-2 md:mt-0 md:ml-2">
+            <button (click)="agregarFormaPago()" title="Agregar forma de pago" class="boton-crear ml-2 mt-2 md:mt-0">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+            </button>
+            <button (click)="cambiarMultiplesFormasPago()" title="Regresar a forma unica" class="boton-eliminar ml-2 mt-2 md:mt-0">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          
+        </div>
+  
+        <div *ngIf="multiplesFormasPago" class="mt-3">
+          <h1 class="bg-gray-100 border border-gray-400 p-2"> Formas de pago agregadas </h1>
+          <div>
+            @for(formaPago of formasPago; track formaPago.descripcion){
+            <div class="flex items-center p-2 justify-between border-b border-gray-400">
+              <p class="w-1/3"> {{ formaPago.descripcion }} </p>
+              <p class="w-1/3"> ${{ formaPago.valor | moneda }} </p>
+              <button (click)="eliminarFormaPago(formaPago.descripcion)" title="Quitar forma de pago"
+                class="boton-eliminar">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                </svg>
+              </button>
+            </div>
+            }@empty {
+            <div class="p-2 bg-gray-50 italic text-xs border border-t-0 border-gray-400 text-center text-gray-600">
+              Agregar al menos una forma de pago
+            </div>
+            }
+          </div>
+        </div>
+  
+      </div>
+    </div>
+
+
+    <div class="p-2 mt-2">
+      <button (click)="completarVenta()" class="boton-crear w-full">
+        Completar venta
+      </button>
+    </div>
+
+  </div>
+</app-modal>
+
+<!-- Pagina principal -->
+<div class="p-2 w-11/12 mx-auto gsap-contenido">
+  <!-- <div class="p-2 rounded bg-gray-800">
+    <h1 class="text-white text-md text-xl text-center"> GENERADO DE VENTA </h1>
+  </div> -->
+
+  <div class="w-full md:justify-center md:flex mx-auto mt-2">
+
+    <!-- Generando venta -->
+    <div class="w-full md:w-1/2">
+
+      <!-- Por codigo -->
+      <div class="border border-gray-400">
+        <div class="p-2 flex items-center justify-between bg-gray-800">
+          <h1 class="text-md md:text-lg text-white">
+            {{
+            estadoVenta === 'Codigo' ? 'Producto por codigo' :
+            estadoVenta === 'Precio' ? 'Venta por precio' :
+            estadoVenta === 'Cantidad' ? 'Buscador de productos' : ''
+            }}
+          </h1>
+          <div>
+            <button (click)="cambiarEstadoVenta('Codigo')"
+              [ngClass]="{'bg-pink-50 border-4 border-secondaryColor':estadoVenta === 'Codigo', 'bg-white':estadoVenta !== 'Codigo'}"
+              title="Venta por codigo" class="p-2 border hover:text-secondaryColor border-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
+              </svg>
+            </button>
+            <button (click)="cambiarEstadoVenta('Cantidad')" title="Buscador de productos"
+              [ngClass]="{'bg-pink-50 border-4 border-secondaryColor':estadoVenta === 'Cantidad', 'bg-white':estadoVenta !== 'Cantidad'}"
+              class="p-2 ml-2 border hover:text-secondaryColor border-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+              </svg>
+            </button>
+            <!-- <button (click)="cambiarEstadoVenta('Precio')" title="Venta por precio"
+              [ngClass]="{'bg-pink-50 border-4 border-secondaryColor':estadoVenta === 'Precio', 'bg-white':estadoVenta !== 'Precio'}"
+              class="p-2 ml-2 border hover:text-secondaryColor border-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z" />
+              </svg>
+            </button> -->
+          </div>
+        </div>
+
+        @if(estadoVenta === 'Codigo'){
+        <div class="p-2 text-sm">
+          <div class="flex items-center">
+            <input (keyup.enter)="productoPorCodigo()" [(ngModel)]="codigo" type="text" class="w-full input-generico"
+              placeholder="Codigo de producto">
+            <button (click)="productoPorCodigo()" title="Agregar producto"
+              class="bg-secondaryColor hover:opacity-90 text-sm w-max text-white rounded p-2 ml-2">
+              Agregar
+            </button>
+          </div>
+        </div>
+        }@else{
+
+        <div *ngIf="!productoSeleccionado" class="p-2 text-sm border-t">
+          <input [(ngModel)]="filtro.productos" placeholder="Buscar producto" type="text"
+            class="input-generico w-full mb-2">
+          <div class="border max-h-96 border-b-0 overflow-y-auto border-gray-400">
+            @for(producto of productos | filtroProductos:filtro.productos:''; track producto.id){
+            <div (click)="seleccionarProducto(producto)"
+              class="border-b border-gray-400 hover:bg-purple-50 text-xs md:text-md cursor-pointer p-2">
+              <p> {{ producto.descripcion }} </p>
+              <p class="text-xs text-gray-500 mt-1"> ${{ producto.precioVenta | moneda }} x {{
+                producto.unidadMedida.descripcion }} </p>
+            </div>
+            }@empty {
+            <div class="p-2 bg-gray-100 border-b text-center italic text-gray-600 border-gray-400">
+              No se encontraron productos
+            </div>
+            }
+          </div>
+        </div>
+
+        <div *ngIf="productoSeleccionado" class="p-2">
+          <div class="border md:flex md:items-center md:justify-between border-gray-400 p-2">
+            <div class="flex items-center">
+              <div class="bg-green-50 border border-green-700 p-2 rounded text-green-700">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="w-14 h-14">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+                </svg>
+              </div>
+              <div class="ml-2">
+                <p class="text-xs md:text-md"> {{ productoSeleccionado?.descripcion }} </p>
+                <p class="text-xs text-gray-500"> ${{ productoSeleccionado?.precioVenta | moneda }} x {{
+                  productoSeleccionado?.unidadMedida.descripcion }} </p>
+              </div>
+            </div>
+            <div class="flex items-center mt-2 text-sm">
+              <input (keyup.enter)="agregarProductoCarrito(productoSeleccionado, cantidad)" [(ngModel)]="cantidad"
+                min="0" placeholder="Cantidad" type="number" class="input-generico mt-2 md:mt-0 w-full md:w-28">
+              <button (click)="agregarProductoCarrito(productoSeleccionado, cantidad)" title="Agregar producto"
+                class="boton-crear ml-2 mt-1 md:mt-0">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+              </button>
+              <button (click)="cancelarProductoSeleccionado()" title="Cancelar seleccion" class="boton-eliminar ml-2 mt-1 md:mt-0">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  stroke="currentColor" class="w-5 h-5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        }
+
+      </div>
+
+      @if(ultimoProductoCargado && estadoVenta === 'Codigo'){
+      <div class="border mt-2 border-gray-400 p-2 flex items-center">
+        <div class="bg-green-50 border border-green-700 p-2 rounded text-green-700">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-20 h-20">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+          </svg>
+        </div>
+        <div class="ml-4">
+          <p class="font-semibold text-sm md:text-md"> {{ ultimoProductoCargado?.descripcion }} </p>
+          <p class="text-xs mt-1"> <span class="font-semibold"> Precio unitario: </span> ${{
+            ultimoProductoCargado?.precioUnitario | moneda }} </p>
+          <p class="text-xs mt-1"> <span class="font-semibold"> Cantidad: </span> {{ ultimoProductoCargado.cantidad }}
+            ({{ ultimoProductoCargado?.unidadMedida }}) </p>
+          <p class="text-green-700 text-sm md:text-lg font-semibold mt-2"> ${{ ultimoProductoCargado.precioTotal | moneda }} </p>
+        </div>
+      </div>
+      }
+
+    </div>
+
+    <!-- Detalles de venta -->
+    <div class="w-full md:w-1/2 mt-2 md:mt-0 md:ml-2 border h-max border-gray-400">
+      <div class="bg-gray-800 p-2 flex items-center justify-between">
+        <h1 class="text-white"> Productos en carrito </h1>
+        <div *ngIf="carritoProductos.length > 0">
+          <button (click)="abrirCompletarVenta()" title="Completar venta" class="boton-crear ml-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+            </svg>
+          </button>
+          <button (click)="cancelarVenta()" title="Reiniciar venta" class="boton-eliminar ml-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="p-2">
+        <div *ngIf="carritoProductos.length > 0"
+          class="px-2 py-4 text-center text-xl md:text-3xl border border-secondaryColor bg-purple-100 mb-4">
+          ${{ precioTotalVenta | moneda }}
+        </div>
+        @for(producto of carritoProductos; track producto.id){
+        <div (click)="eliminarProductoCarrito(producto.producto.id)"
+          class="p-2 border border-gray-400 mb-2 flex items-center hover:border-secondaryColor cursor-pointer">
+          <div class="bg-purple-50 border border-secondaryColor p-2 rounded text-secondaryColor">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-20 h-20">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+            </svg>
+          </div>
+          <div class="ml-4">
+            <p class="font-semibold text-sm md:text-md"> {{ producto?.producto.descripcion }} </p>
+            <p class="text-xs mt-1"> <span class="font-semibold"> Precio unitario: </span> ${{
+              producto?.producto.precioVenta | moneda }} </p>
+            <p class="text-xs mt-1"> <span class="font-semibold"> Cantidad: </span> {{ producto.cantidad }} ({{
+              producto?.producto.unidadMedida.descripcion }}) </p>
+            <p class="text-secondaryColor font-semibold mt-2"> ${{ producto.precioTotal | moneda }} </p>
+          </div>
+        </div>
+        }@empty{
+        <div class="border p-2 border-gray-400 bg-gray-100 text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-14 h-14 mx-auto">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5m6 4.125 2.25 2.25m0 0 2.25 2.25M12 13.875l2.25-2.25M12 13.875l-2.25 2.25M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
+          </svg>
+          <p class="text-gray-600 text-sm mt-1 italic"> La venta no tiene productos cargados </p>
+        </div>
+        }
+      </div>
+    </div>
+
+  </div>
+
+</div>

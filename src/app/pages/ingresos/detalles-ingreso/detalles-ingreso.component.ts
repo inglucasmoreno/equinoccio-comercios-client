@@ -17,6 +17,7 @@ import { FiltroProductosPipe } from '../../../pipes/filtro-productos.pipe';
 import { IngresosProductosService } from '../../../services/ingresos-productos.service';
 import { AuthService } from '../../../services/auth.service';
 import { FiltroIngresosProductosPipe } from '../../../pipes/filtro-ingresos-productos.pipe';
+import gsap from 'gsap';
 
 @Component({
   standalone: true,
@@ -85,13 +86,14 @@ export default class DetallesIngresoComponent implements OnInit {
 
   ngOnInit() {
     this.dataService.ubicacionActual = 'Dashboard - Detalles Ingreso';
+    gsap.from('.gsap-contenido', { y:100, opacity: 0, duration: .2 });
     this.alertService.loading();
     this.activatedRoute.params.subscribe({
       next: ({ id }) => {
         this.ingresosService.getIngreso(id).subscribe({
           next: ({ ingreso }) => {
             this.ingreso = ingreso;
-            this.productosCarrito = ingreso.IngresosProductos;
+            this.productosCarrito = ingreso.ingresosProductos;
             this.ordenarProductosCarrito();
             this.reiniciarFormulario();
             this.alertService.close();
@@ -164,9 +166,8 @@ export default class DetallesIngresoComponent implements OnInit {
       next: ({ relacion }) => {
         this.productosCarrito.push(relacion);
         this.reiniciarFormularioProducto();
-        this.productoSeleccionado = null;
-        this.showModalProductos = false;
         this.ordenarProductosCarrito();
+        this.productoSeleccionado = null;
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })

@@ -12,7 +12,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { Router, RouterModule } from '@angular/router';
 import { PastillaEstadoComponent } from '../../components/pastilla-estado/pastilla-estado.component';
 import { TarjetaListaComponent } from '../../components/tarjeta-lista/tarjeta-lista.component';
-import { FiltroUnidadesMedidaPipe } from '../../pipes/filtro-unidades-medida.pipe';
+import { FiltroIngresosPipe } from '../../pipes/filtro-ingresos.pipe';
 
 @Component({
   standalone: true,
@@ -27,7 +27,7 @@ import { FiltroUnidadesMedidaPipe } from '../../pipes/filtro-unidades-medida.pip
     RouterModule,
     PastillaEstadoComponent,
     TarjetaListaComponent,
-    FiltroUnidadesMedidaPipe
+    FiltroIngresosPipe
   ],
   styleUrls: []
 })
@@ -56,7 +56,7 @@ export default class IngresosComponent implements OnInit {
 
   // Filtrado
   public filtro = {
-    activo: 'true',
+    estado: 'Pendiente',
     parametro: ''
   }
 
@@ -201,13 +201,7 @@ export default class IngresosComponent implements OnInit {
       comentario: '',
     } 
   }
-
-  // Filtrar Activo/Inactivo
-  filtrarActivos(activo: any): void {
-    this.paginaActual = 1;
-    this.filtro.activo = activo;
-  }
-
+  
   // Filtrar por Parametro
   filtrarParametro(parametro: string): void {
     this.paginaActual = 1;
