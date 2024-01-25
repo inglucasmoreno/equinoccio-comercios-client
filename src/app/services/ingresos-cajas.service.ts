@@ -1,14 +1,14 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { environments } from '../../environments/environments';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-const urlApi = environments.base_url + '/ventas';
+const urlApi = environments.base_url + '/ingresos-cajas';
 
 @Injectable({
   providedIn: 'root'
 })
-export class VentasService {
+export class IngresosCajasService {
 
   get getToken(): any {
     return { 'Authorization': localStorage.getItem('token') }
@@ -16,46 +16,30 @@ export class VentasService {
 
   constructor(private http: HttpClient) { }
 
-  getVenta(id: string): Observable<any> {
+  getIngresoCaja(id: string): Observable<any> {
     return this.http.get(`${urlApi}/${id}`, {
       headers: this.getToken
     })
   }
 
-  listarVentas({ 
-    activo = '',
-    direccion = 'desc',
-    comprobante = '', 
-    formaPago = '',
-    pagina = 1,
-    itemsPorPagina = 100000,
-    fechaDesde = '',
-    fechaHasta = '',
-    columna = 'createdAt' 
-  }): Observable<any> {
+  listarIngresosCajas({ direccion = 'desc', columna = 'id', caja = '' }): Observable<any> {
     return this.http.get(urlApi, {
       params: {
-        activo,
-        comprobante,
-        formaPago,
         direccion: String(direccion),
         columna,
-        pagina,
-        fechaDesde,
-        fechaHasta,
-        itemsPorPagina
+        caja
       },
       headers: this.getToken
     })
   }
 
-  nuevaVenta(data: any): Observable<any> {
+  nuevoIngresoCaja(data: any): Observable<any> {
     return this.http.post(urlApi, data, {
       headers: this.getToken
     })
   }
 
-  actualizarVenta(id: string, data: any): Observable<any> {
+  actualizarIngresoCaja(id: string, data: any): Observable<any> {
     return this.http.patch(`${urlApi}/${id}`, data, {
       headers: this.getToken
     })

@@ -1,16 +1,16 @@
 
 export const formasPagoArray: any[] = [
     {
-        valor: 'Efectivo',
-        descripcion: 'Efectivo'
+        valor: 'Credito',
+        descripcion: 'Credito'
     },
     {
         valor: 'Debito',
         descripcion: 'Debito'
     },
     {
-        valor: 'Credito',
-        descripcion: 'Credito'
+        valor: 'Efectivo',
+        descripcion: 'Efectivo'
     },
     {
         valor: 'Mercado Pago',

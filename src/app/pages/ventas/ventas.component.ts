@@ -30,6 +30,7 @@ interface ProductoMuestra {
 interface FormaPago {
   valor: number;
   descripcion: string;
+  nroComprobante?: string;
   creatorUserId: number;
 }
 
@@ -78,8 +79,8 @@ export default class VentasComponent implements OnInit {
   public comprobante: string = 'Normal';
   public totalBalanza: number = 0;
   public totalNoBalanza: number = 0;
-  public adicionalCredito: number = 0;
   public pedidosYaComprobante: string = '';
+  public adicionalCredito: number = 0;
   public valorFormaPago: number = null;
   public formaPago: string = 'Efectivo';
   public porcentajePorCredito: number = generales.porcentajePorCredito;
@@ -366,7 +367,6 @@ export default class VentasComponent implements OnInit {
       precioTotal: this.precioTotalVenta,
       totalBalanza: this.totalBalanza,
       totalNoBalanza: this.totalNoBalanza,
-      pedidosYaComprobante: condicionPedidosYa ? this.pedidosYaComprobante : '',
       precioTotalLimpio: this.precioTotalLimpio,
       adicionalCredito: this.adicionalCredito,
       creatorUserId: this.authService.usuario.userId
@@ -394,6 +394,7 @@ export default class VentasComponent implements OnInit {
       formasPago = [{
         valor: this.precioTotalVenta,
         descripcion: this.formaPago,
+        nroComprobante: condicionPedidosYa ? this.pedidosYaComprobante : '',
         creatorUserId: this.authService.usuario.userId
       }]
     }
@@ -440,7 +441,6 @@ export default class VentasComponent implements OnInit {
     this.totalBalanza = 0;
     this.totalNoBalanza = 0;
     this.adicionalCredito = 0;
-    this.pedidosYaComprobante = '';
     this.valorFormaPago = null;
     this.formaPago = 'Efectivo';
     this.porcentajePorCredito = generales.porcentajePorCredito;
@@ -471,7 +471,6 @@ export default class VentasComponent implements OnInit {
     this.totalBalanza ? localStorage.setItem('venta-totalBalanza', this.totalBalanza.toString()) : null;
     this.totalNoBalanza ? localStorage.setItem('venta-totalNoBalanza', this.totalNoBalanza.toString()) : null;
     this.adicionalCredito ? localStorage.setItem('venta-adicionalCredito', this.adicionalCredito.toString()) : null;
-    this.pedidosYaComprobante ? localStorage.setItem('venta-pedidosYaComprobante', this.pedidosYaComprobante) : null;
     this.valorFormaPago ? localStorage.setItem('venta-valorFormaPago', this.valorFormaPago.toString()) : null;
     this.formaPago ? localStorage.setItem('venta-formaPago', this.formaPago) : null;
     this.porcentajePorCredito ? localStorage.setItem('venta-porcentajePorCredito', this.porcentajePorCredito.toString()) : null;
@@ -494,7 +493,6 @@ export default class VentasComponent implements OnInit {
     this.totalBalanza = parseFloat(localStorage.getItem('venta-totalBalanza')) || 0;
     this.totalNoBalanza = parseFloat(localStorage.getItem('venta-totalNoBalanza')) || 0;
     this.adicionalCredito = parseFloat(localStorage.getItem('venta-adicionalCredito')) || 0;
-    this.pedidosYaComprobante = localStorage.getItem('venta-pedidosYaComprobante') || '';
     this.valorFormaPago = parseFloat(localStorage.getItem('venta-valorFormaPago')) || null;
     this.formaPago = localStorage.getItem('venta-formaPago') || 'Efectivo';
     this.porcentajePorCredito = parseFloat(localStorage.getItem('venta-porcentajePorCredito')) || generales.porcentajePorCredito;

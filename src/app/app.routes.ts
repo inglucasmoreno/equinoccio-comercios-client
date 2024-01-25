@@ -45,11 +45,18 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/ventas/ventas.component'),
       },
 
-      // Venta - Activas
+      // Ventas - Activas
       {
         path: 'ventas-activas',
         title: 'Ventas activas',
         loadComponent: () => import('./pages/ventas/ventas-activas/ventas-activas.component'),
+      },
+
+      // Ventas - Busqueda
+      {
+        path: 'ventas-busqueda',
+        title: 'Busqueda de ventas',
+        loadComponent: () => import('./pages/ventas/ventas-busqueda/ventas-busqueda.component'),
       },
 
       // Perfil

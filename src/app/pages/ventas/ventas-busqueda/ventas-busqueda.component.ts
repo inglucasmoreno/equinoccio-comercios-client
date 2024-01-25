@@ -1,5 +1,11 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { VentasService } from '../../../services/ventas.service';
+import { AlertService } from '../../../services/alert.service';
+import { VentasFormasPagoService } from '../../../services/ventas-formas-pago.service';
+import { DataService } from '../../../services/data.service';
+import { formasPagoArray } from '../../../constants/formasPagoArray';
+import { tiposVenta } from '../../../constants/tiposVenta';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FechaPipe } from '../../../pipes/fecha.pipe';
 import { ModalComponent } from '../../../components/modal/modal.component';
@@ -8,14 +14,8 @@ import { RouterModule } from '@angular/router';
 import { PastillaEstadoComponent } from '../../../components/pastilla-estado/pastilla-estado.component';
 import { TarjetaListaComponent } from '../../../components/tarjeta-lista/tarjeta-lista.component';
 import { MonedaPipe } from '../../../pipes/moneda.pipe';
-import { VentasService } from '../../../services/ventas.service';
-import { AuthService } from '../../../services/auth.service';
-import { AlertService } from '../../../services/alert.service';
-import { DataService } from '../../../services/data.service';
 import { FiltroVentasPipe } from '../../../pipes/filtro-ventas.pipe';
-import { formasPagoArray } from '../../../constants/formasPagoArray';
-import { VentasFormasPagoService } from '../../../services/ventas-formas-pago.service';
-import { tiposVenta } from '../../../constants/tiposVenta';
+import gsap from 'gsap';
 
 @Component({
   standalone: true,
@@ -31,11 +31,14 @@ import { tiposVenta } from '../../../constants/tiposVenta';
     MonedaPipe,
     FiltroVentasPipe
   ],
-  selector: 'app-ventas-activas',
-  templateUrl: './ventas-activas.component.html',
+  selector: 'app-ventas-busqueda',
+  templateUrl: './ventas-busqueda.component.html',
   styleUrls: []
 })
-export default class VentasActivasComponent implements OnInit {
+export default class VentasBusquedaComponent implements OnInit {
+
+  // Flags
+  public inicioPagina = true;
 
   // Constantes
   public formasPago: any[] = formasPagoArray;
@@ -57,11 +60,16 @@ export default class VentasActivasComponent implements OnInit {
   public ventaSeleccionada: any;
   public descripcion: string = '';
 
+  // Totales
   public totales = {
     totalVentas: 0,
     totalVentasFacturadas: 0,
     totalVentasPedidosYa: 0,
   }
+
+  // Busqueda
+  public fechaDesde: string = '';
+  public fechaHasta: string = '';
 
   // Paginacion
   public totalItems: number;
@@ -89,12 +97,14 @@ export default class VentasActivasComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Ventas activas';
-    this.listarVentas();
+    this.dataService.ubicacionActual = 'Dashboard - Busqueda de ventas';
+    gsap.from('.gsap-contenido', { y:100, opacity: 0, duration: .2 });
   }
 
-  // Listar ventas
-  listarVentas(): void {
+  buscarVentas(): void {
+
+    if (this.fechaDesde === '' || this.fechaHasta === '') return this.alertService.info('Las fechas son obligatorias');
+
     this.alertService.loading();
     const parametros: any = {
       direccion: this.ordenar.direccion,
@@ -104,14 +114,16 @@ export default class VentasActivasComponent implements OnInit {
       comprobante: this.filtro.comprobante,
       pagina: this.paginaActual,
       itemsPorPagina: this.cantidadItems,
-
+      fechaDesde: this.fechaDesde,
+      fechaHasta: this.fechaHasta
     }
+
     this.ventasService.listarVentas(parametros).subscribe({
       next: ({ ventas, totalItems, totales }) => {
         this.totalItems = totalItems;
         this.ventas = ventas;
         this.totales = totales;
-        console.log(ventas);
+        this.inicioPagina = false;
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
@@ -162,14 +174,13 @@ export default class VentasActivasComponent implements OnInit {
   ordenarPorColumna(columna: string) {
     this.ordenar.columna = columna;
     this.ordenar.direccion = this.ordenar.direccion == 'asc' ? 'desc' : 'asc';
-    this.listarVentas();
+    this.buscarVentas();
   }
 
   // Paginacion - Cambiar pagina
   cambiarPagina(nroPagina): void {
     this.paginaActual = nroPagina;
-    // this.desde = (this.paginaActual - 1) * this.cantidadItems;
-    this.listarVentas();
+    this.buscarVentas();
   }
 
 }
