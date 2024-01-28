@@ -1,0 +1,234 @@
+<!-- Pagina principal -->
+<div>
+  <div class="text-sm mb-4">
+    <div class="md:flex md:justify-center mt-4 md:px-10">
+      <div class="md:w-1/2 w-11/12 border mx-auto border-gray-400 rounded-t">
+        <div class="bg-gray-800 border border-gray-900 p-2 flex items-center justify-between">
+          <div class="flex items-center">
+            <button (click)="regresar()" title="Regresar" class="hover:text-secondaryColor text-white">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+              </svg>
+            </button>
+            <h1 class="text-white ml-2 text-lg rounded-t"> Cierre de caja - Nro {{ caja?.id }} </h1>
+          </div>
+        </div>
+        <div class="p-2">
+          <div>
+            <div class="flex items-center justify-center">
+              <div class="w-1/2">
+                <h2 class="text-gray-900 text-center font-semibold"> Fecha de cierre </h2>
+                <input (change)="actualizarCaja()" onkeydown="return false" [(ngModel)]="fechaCaja" type="date" class="input-generico w-full mt-2 text-center">
+              </div>
+              <div class="w-1/2 ml-2">
+                <h2 class="text-gray-900 text-center font-semibold"> Saldo inicial </h2>
+                <div class="bg-gray-100 border w-full text-center mt-2 border-gray-400 p-2 rounded">
+                  ${{ caja?.saldoInicial | moneda }}
+                </div>
+              </div>
+              <div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="p-2">
+          <div class="p-2 flex items-center justify-between bg-gray-100 border border-gray-400">
+            <p> Cantidad de ventas </p>
+            <p class="font-semibold"> {{ caja?.cantidadVentas }} </p>
+          </div>
+          <div class="flex items-center p-2 mt-1 justify-between">
+            <div class="flex items-center">
+              <span class="text-green-600 font-semibold"> (+) </span>
+              <p class="ml-1"> Total balanza </p>
+            </div>
+            <p> ${{ caja?.totalBalanza | moneda }} </p>
+          </div>
+          <div class="flex items-center p-2 mt-1 justify-between">
+            <div class="flex items-center">
+              <span class="text-green-600 font-semibold"> (+) </span>
+              <p class="ml-1"> Total no balanza </p>
+            </div>
+            <p> ${{ caja?.totalNoBalanza | moneda }} </p>
+          </div>
+          <div class="flex items-center p-2 mt-1 justify-between">
+            <div class="flex items-center">
+              <span class="text-green-600 font-semibold"> (+) </span>
+              <p class="ml-1"> Total adicional por credito </p>
+            </div>
+            <p> ${{ caja?.totalAdicionalCredito | moneda }} </p>
+          </div>
+          <div (click)="showTotalFacturado = !showTotalFacturado"
+            class="p-2 mt-1 cursor-pointer bg-gray-100 border border-gray-400">
+            <div class="flex items-center justify-between">
+              <p> Total en ventas </p>
+              <p class="font-semibold"> ${{ caja?.totalVentas | moneda }} </p>
+            </div>
+            <div *ngIf="showTotalFacturado"
+              class="flex bg-purple-50 text-sm border mt-2 border-purple-400 p-2 items-center justify-between">
+              <p> Guia de despacho </p>
+              <p class="font-semibold text-purple-800"> ${{ caja?.totalFacturado | moneda }} </p>
+            </div>
+          </div>
+          <div class="flex items-center p-2 mt-1 justify-between">
+            <div class="flex items-center">
+              <span class="text-green-600 font-semibold"> (+) </span>
+              <p class="ml-1"> Saldo inicial de caja </p>
+            </div>
+            <p> ${{ caja.saldoInicial | moneda }} </p>
+          </div>
+          <div class="flex items-center p-2 mt-1 justify-between">
+            <div class="flex items-center">
+              <span class="text-green-600 font-semibold"> (+) </span>
+              <p class="ml-1"> Otros ingresos </p>
+            </div>
+            <p> ${{ caja?.totalOtrosIngresos | moneda }} </p>
+          </div>
+          <div class="flex items-center p-2 mt-1 justify-between">
+            <div class="flex items-center">
+              <span class="text-red-600 font-semibold"> (-) </span>
+              <p class="ml-1"> Otros gastos </p>
+            </div>
+            <p class="text-red-600"> -${{ caja?.totalOtrosGastos | moneda }} </p>
+          </div>
+          <div class="flex items-center p-2 mt-1 justify-between">
+            <div class="flex items-center">
+              <span class="text-red-600 font-semibold"> (-) </span>
+              <p class="ml-1"> PedidosYa - Online </p>
+            </div>
+            <p class="text-red-600"> -${{ caja?.totalPedidosYaOnline | moneda }} </p>
+          </div>
+          <div (click)="showPostnet = !showPostnet"
+            class="flex items-center cursor-pointer px-2 py-1 mt-1 justify-between">
+            <div class="flex items-center">
+              <span class="text-red-600 font-semibold"> (-) </span>
+              <p class="ml-1"> Total postnet </p>
+              <div class="ml-2 p-1 bg-gray-100 rounded-full border border-gray-400">
+                <svg *ngIf="showPostnet" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+                <svg *ngIf="!showPostnet" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke-width="1.5" stroke="currentColor" class="w-3 h-3">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                </svg>
+              </div>
+            </div>
+            <p class="text-red-600"> -${{ caja?.totalPostnet | moneda }} </p>
+          </div>
+          <div *ngIf="showPostnet" class="bg-red-50 p-2 text-sm border mb-2 border-red-300">
+            <div class="flex items-center p-2 mt-1 justify-between">
+              <div class="flex items-center">
+                <span class="text-red-600 font-semibold"> (-) </span>
+                <p class="ml-1"> Debito </p>
+              </div>
+              <p class="text-red-600"> -${{ caja?.totalDebito | moneda }} </p>
+            </div>
+            <div class="flex items-center p-2 mt-1 justify-between">
+              <div class="flex items-center">
+                <span class="text-red-600 font-semibold"> (-) </span>
+                <p class="ml-1"> Credito </p>
+              </div>
+              <p class="text-red-600"> -${{ caja.totalCredito | moneda }} </p>
+            </div>
+            <div class="flex items-center p-2 mt-1 justify-between">
+              <div class="flex items-center">
+                <span class="text-red-600 font-semibold"> (-) </span>
+                <p class="ml-1"> MercadoPago </p>
+              </div>
+              <p class="text-red-600"> -${{ caja?.totalMercadoPago | moneda }} </p>
+            </div>
+          </div>
+          <div class="p-2 flex items-center mt-1 justify-between bg-gray-100 border border-gray-400">
+            <p> Total efectivo en caja (Sistema) </p>
+            <p class="font-semibold"> ${{ caja?.totalEfectivoEnCaja | moneda }} </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ingresos y Gastos -->
+      <div class="md:w-1/2 w-11/12 md:ml-2 mt-3 md:mt-0 mx-auto border h-max border-gray-400">
+        <div class="p-2 flex items-center justify-between bg-gray-800 text-white">
+          <h2 class="text-lg"> Ingresos y gastos </h2>
+        </div>
+        <div class="p-2">
+
+          <!-- Ingresos -->
+          <div *ngIf="ingresos.length > 0">
+            <div (click)="showIngresos = !showIngresos"
+              class="bg-green-100 flex items-center justify-between cursor-pointer p-2 border border-green-300">
+              <h3> Listado de ingresos </h3>
+              <div>
+                <svg *ngIf="showIngresos" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+                <svg *ngIf="!showIngresos" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                </svg>
+              </div>
+            </div>
+            <div *ngIf="showIngresos">
+              <div class="flex items-center border-b border-b-300 justify-between mt-2 p-2"
+                *ngFor="let ingreso of ingresos">
+                <div>
+                  <p class="font-semibold"> <span class="font-semibold text-green-600"> (+) </span> {{
+                    ingreso.tipoIngreso.descripcion }} </p>
+                  <p *ngIf="ingreso.descripcion" class="text-gray-500 uppercase text-xs mt-1"> {{ ingreso.descripcion }}
+                  </p>
+                </div>
+                <p> ${{ ingreso.monto | moneda }} </p>
+              </div>
+            </div>
+            <div class="flex font-semibold items-center justify-between px-2 mb-4 mt-1">
+              <p class="mt-2"> <span class="font-semibold text-green-600"> (+) </span> Total ingresos </p>
+              <p> ${{ caja.totalOtrosIngresos | moneda }} </p>
+            </div>
+          </div>
+
+          <!-- Gastos -->
+          <div *ngIf="gastos.length > 0">
+            <div (click)="showGastos = !showGastos"
+              class="flex items-center bg-red-100 cursor-pointer  justify-between p-2 border border-red-300">
+              <h3> Listado de gastos </h3>
+              <div>
+                <svg *ngIf="showGastos" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+                <svg *ngIf="!showGastos" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                </svg>
+              </div>
+            </div>
+            <div *ngIf="showGastos">
+              <div class="flex items-center border-b border-b-300 justify-between mt-2 p-2"
+                *ngFor="let gasto of gastos">
+                <div>
+                  <p class="font-semibold"> <span class="font-semibold text-red-600"> (-) </span> {{
+                    gasto.tipoGasto.descripcion }} </p>
+                  <p *ngIf="gasto.descripcion" class="text-gray-500 uppercase text-xs mt-1"> {{ gasto.descripcion }}
+                  </p>
+                </div>
+                <p> -${{ gasto.monto | moneda }} </p>
+              </div>
+            </div>
+            <div class="flex font-semibold items-center justify-between mb-4 mt-1 px-2">
+              <p class="mt-2"> <span class="font-semibold text-red-600"> (-) </span> Total gastos </p>
+              <p> -${{ caja.totalOtrosGastos | moneda }} </p>
+            </div>
+          </div>
+
+          <!-- Sin ingresos y gastos -->
+          <div *ngIf="ingresos.length === 0 && gastos.length === 0">
+            <p class="text-gray-500 italic text-center py-2"> No se encontraron elementos cargados </p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

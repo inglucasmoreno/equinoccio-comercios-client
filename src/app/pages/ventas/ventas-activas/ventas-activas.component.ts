@@ -9,7 +9,6 @@ import { PastillaEstadoComponent } from '../../../components/pastilla-estado/pas
 import { TarjetaListaComponent } from '../../../components/tarjeta-lista/tarjeta-lista.component';
 import { MonedaPipe } from '../../../pipes/moneda.pipe';
 import { VentasService } from '../../../services/ventas.service';
-import { AuthService } from '../../../services/auth.service';
 import { AlertService } from '../../../services/alert.service';
 import { DataService } from '../../../services/data.service';
 import { FiltroVentasPipe } from '../../../pipes/filtro-ventas.pipe';

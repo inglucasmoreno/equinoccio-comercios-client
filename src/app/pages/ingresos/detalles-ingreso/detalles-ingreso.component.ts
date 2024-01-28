@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '../../../services/data.service';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AlertService } from '../../../services/alert.service';
 import { IngresosService } from '../../../services/ingresos.service';
 import { CommonModule } from '@angular/common';
@@ -82,6 +82,7 @@ export default class DetallesIngresoComponent implements OnInit {
     private ingresosProductosService: IngresosProductosService,
     private alertService: AlertService,
     private activatedRoute: ActivatedRoute,
+    private router: Router,
   ) { }
 
   ngOnInit() {
@@ -251,9 +252,11 @@ export default class DetallesIngresoComponent implements OnInit {
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();
-          this.ingresosService.completarIngreso(this.ingreso.id).subscribe({
+          this.ingresosService.completarIngreso(this.ingreso.id, {
+            usuarioCompletadoId: this.authService.usuario.userId
+          }).subscribe({
             next: () => {
-              this.ingreso.estado = 'Completado';
+              this.router.navigateByUrl('/dashboard/ingresos');
               this.alertService.close();
             }, error: ({ error }) => this.alertService.errorApi(error.message)
           });

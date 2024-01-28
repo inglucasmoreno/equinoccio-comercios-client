@@ -41,8 +41,13 @@ export default class ProductosComponent implements OnInit {
   // Estado formulario
   public estadoFormulario = 'crear';
 
+  // Flags
+  public alertaStock = false;
+  public showAlertaStock = false;
+
   // Productos
   public idProducto: string = '';
+  public productosTMP: any[] = [];
   public productos: any = [];
   public productoSeleccionado: any;
   public descripcion: string = '';
@@ -153,6 +158,8 @@ export default class ProductosComponent implements OnInit {
     this.productosService.listarProductos(parametros).subscribe({
       next: ({ productos }) => {
         this.productos = productos;
+        this.productosTMP = productos;
+        this.calculoAlertas();
         this.showModalProducto = false;
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
@@ -269,9 +276,9 @@ export default class ProductosComponent implements OnInit {
   }
 
   generarCodigo(): void {
-    if(this.estadoFormulario === 'editar'){
-      this.productoForm.codigo =  this.productoSeleccionado.id.toString().padStart(13, '0');
-    }else{
+    if (this.estadoFormulario === 'editar') {
+      this.productoForm.codigo = this.productoSeleccionado.id.toString().padStart(13, '0');
+    } else {
       this.alertService.loading();
       this.productosService.generarCodigo().subscribe({
         next: ({ codigo }) => {
@@ -284,9 +291,18 @@ export default class ProductosComponent implements OnInit {
   }
 
   cambioAlerta(): void {
-    if(this.productoForm.alertaStock === 'false'){
+    if (this.productoForm.alertaStock === 'false') {
       this.productoForm.cantidadMinima = null;
     }
+  }
+
+  // Filtrar por alerta de stock
+  filtrarAlertaStock(): void {
+    this.showAlertaStock = !this.showAlertaStock;
+    if (this.showAlertaStock)
+      this.productos = this.productos.filter((producto: any) => producto.alertaStock && producto.cantidad < producto.cantidadMinima);
+    else
+      this.productos = this.productosTMP;
   }
 
   // Reiniciar formulario - Productos
@@ -304,6 +320,16 @@ export default class ProductosComponent implements OnInit {
       alicuota: "21",
       unidadMedidaId: "",
     }
+  }
+
+  // Calculo de alertas
+  calculoAlertas(): void {
+    this.alertaStock = false;
+    this.productos.forEach((producto: any) => {
+      if (producto.alertaStock && producto.cantidad < producto.cantidadMinima) {
+        this.alertaStock = true;
+      }
+    });
   }
 
   // Ordenar productos por descripcion

@@ -48,16 +48,19 @@ export default class IngresosComponent implements OnInit {
     fechaIngreso: format(new Date(), 'yyyy-MM-dd'),
     nroFactura: '',
     comentario: '',
-  }  
+  }
 
   // Paginacion
+  public totalItems: number;
   public paginaActual: number = 1;
   public cantidadItems: number = 10;
 
   // Filtrado
   public filtro = {
     estado: 'Pendiente',
-    parametro: ''
+    parametro: '',
+    fechaDesde: '',
+    fechaHasta: '',
   }
 
   // Ordenar
@@ -98,10 +101,10 @@ export default class IngresosComponent implements OnInit {
     this.ingresosService.getIngreso(ingreso.id).subscribe({
       next: ({ ingreso }) => {
         this.ingresoForm = {
-          fechaIngreso: format(ingreso.fechaIngreso,'yyyy-MM-dd'),
+          fechaIngreso: format(ingreso.fechaIngreso, 'yyyy-MM-dd'),
           nroFactura: ingreso.nroFactura,
           comentario: ingreso.comentario,
-        } 
+        }
         this.alertService.close();
         this.showModalIngreso = true;
       }, error: ({ error }) => this.alertService.errorApi(error.message)
@@ -112,11 +115,16 @@ export default class IngresosComponent implements OnInit {
   listarIngresos(): void {
     const parametros: any = {
       direccion: this.ordenar.direccion,
-      columna: this.ordenar.columna
+      columna: this.ordenar.columna,
+      estado: this.filtro.estado,
+      parametro: this.filtro.parametro,
+      fechaDesde: this.filtro.fechaDesde,
+      fechaHasta: this.filtro.fechaHasta,
     }
     this.ingresosService.listarIngresos(parametros).subscribe({
-      next: ({ ingresos }) => {
+      next: ({ ingresos, totalItems }) => {
         this.ingresos = ingresos;
+        this.totalItems = totalItems;
         this.showModalIngreso = false;
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
@@ -138,11 +146,12 @@ export default class IngresosComponent implements OnInit {
       nroFactura,
       comentario,
       creatorUserId: this.authService.usuario.userId,
+      usuarioCompletadoId: this.authService.usuario.userId
     }
 
     this.ingresosService.nuevoIngreso(data).subscribe({
       next: ({ ingreso }) => {
-        this.router.navigateByUrl(`/dashboard/detalles-ingreso/${ingreso.id}`);
+        this.router.navigateByUrl(`/dashboard/ingresos/detalles/${ingreso.id}`);
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
@@ -199,9 +208,9 @@ export default class IngresosComponent implements OnInit {
       fechaIngreso: format(new Date(), 'yyyy-MM-dd'),
       nroFactura: '',
       comentario: '',
-    } 
+    }
   }
-  
+
   // Filtrar por Parametro
   filtrarParametro(parametro: string): void {
     this.paginaActual = 1;
@@ -212,6 +221,13 @@ export default class IngresosComponent implements OnInit {
   ordenarPorColumna(columna: string) {
     this.ordenar.columna = columna;
     this.ordenar.direccion = this.ordenar.direccion == 'asc' ? 'desc' : 'asc';
+    this.alertService.loading();
+    this.listarIngresos();
+  }
+
+  // Paginacion - Cambiar pagina
+  cambiarPagina(nroPagina): void {
+    this.paginaActual = nroPagina;
     this.alertService.loading();
     this.listarIngresos();
   }

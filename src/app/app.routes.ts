@@ -131,6 +131,43 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/ingresos/detalles-ingreso/detalles-ingreso.component'),
       },
 
+      // Cajas
+
+      // Cierre de caja
+      {
+        path: 'cajas',
+        title: 'Cierre de caja',
+        loadComponent: () => import('./pages/cierre-caja/cierre-caja.component'),
+      },
+
+      // Detalles de caja
+      {
+        path: 'cajas-detalles/:id',
+        title: 'Detalles de caja',
+        loadComponent: () => import('./pages/cierre-caja/detalles-caja/detalles-caja.component'),
+      },
+
+      // Listado de cajas
+      {
+        path: 'listado-cajas',
+        title: 'Listado de cajas',
+        loadComponent: () => import('./pages/cierre-caja/cajas/cajas.component'),
+      },
+
+      // Tipos de ingresos
+      {
+        path: 'tipos-ingresos',
+        title: 'Tipos de ingresos',
+        loadComponent: () => import('./pages/tipos-ingresos/tipos-ingresos.component'),
+      },
+
+      // Tipos de gastos
+      {
+        path: 'tipos-gastos',
+        title: 'Tipos de gastos',
+        loadComponent: () => import('./pages/tipos-gastos/tipos-gastos.component'),
+      },
+
     ]
   },
 

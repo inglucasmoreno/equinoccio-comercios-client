@@ -109,7 +109,7 @@ export default class VentasBusquedaComponent implements OnInit {
     const parametros: any = {
       direccion: this.ordenar.direccion,
       columna: this.ordenar.columna,
-      activo: 'true',
+      activo: '',
       formaPago: this.filtro.formaPago,
       comprobante: this.filtro.comprobante,
       pagina: this.paginaActual,

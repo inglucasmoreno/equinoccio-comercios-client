@@ -22,18 +22,29 @@ export class IngresosService {
     })
   }
 
-  listarIngresos({ direccion = 'desc', columna = 'id' }): Observable<any> {
+  listarIngresos({ 
+    direccion = 'desc', 
+    columna = 'id', 
+    estado = '', 
+    parametro = '', 
+    fechaDesde = '',
+    fechaHasta = ''
+  }): Observable<any> {
     return this.http.get(urlApi, {
       params: {
         direccion: String(direccion),
-        columna
+        columna,
+        estado,
+        parametro,
+        fechaDesde,
+        fechaHasta
       },
       headers: this.getToken
     })
   }
 
-  completarIngreso(id: string): Observable<any> {
-    return this.http.get(`${urlApi}/completar/${id}`, {
+  completarIngreso(id: string, data: any): Observable<any> {
+    return this.http.patch(`${urlApi}/completar/${id}`, data, {
       headers: this.getToken
     })
   }

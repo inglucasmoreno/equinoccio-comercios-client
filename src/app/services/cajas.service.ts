@@ -22,11 +22,20 @@ export class CajasService {
     })
   }
 
-  listarCajas({ direccion = 'desc', columna = 'id' }): Observable<any> {
+  getTotalesActivos(id: string): Observable<any> {
+    return this.http.get(`${urlApi}/totales/activos/${id}`, {
+      headers: this.getToken
+    })
+  }
+
+  listarCajas({ direccion = 'desc', columna = 'id', activo = '', fechaDesde = '', fechaHasta = '' }): Observable<any> {
     return this.http.get(urlApi, {
       params: {
         direccion: String(direccion),
-        columna
+        columna,
+        activo,
+        fechaDesde,
+        fechaHasta
       },
       headers: this.getToken
     })
@@ -34,6 +43,12 @@ export class CajasService {
 
   nuevaCaja(data: any): Observable<any> {
     return this.http.post(urlApi, data, {
+      headers: this.getToken
+    })
+  }
+
+  completarCaja(id: string, data: any): Observable<any> {
+    return this.http.patch(`${urlApi}/complete/${id}`, data, {
       headers: this.getToken
     })
   }

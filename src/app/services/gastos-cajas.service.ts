@@ -45,4 +45,10 @@ export class GastosCajasService {
     })
   }
 
+  eliminarGastoCaja(id: number): Observable<any> {
+    return this.http.delete(`${urlApi}/${id}`,{
+      headers: this.getToken
+    })
+  }
+
 }

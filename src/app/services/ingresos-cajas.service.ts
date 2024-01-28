@@ -16,7 +16,7 @@ export class IngresosCajasService {
 
   constructor(private http: HttpClient) { }
 
-  getIngresoCaja(id: string): Observable<any> {
+  getIngresoCaja(id: number): Observable<any> {
     return this.http.get(`${urlApi}/${id}`, {
       headers: this.getToken
     })
@@ -39,8 +39,14 @@ export class IngresosCajasService {
     })
   }
 
-  actualizarIngresoCaja(id: string, data: any): Observable<any> {
+  actualizarIngresoCaja(id: number, data: any): Observable<any> {
     return this.http.patch(`${urlApi}/${id}`, data, {
+      headers: this.getToken
+    })
+  }
+
+  eliminarIngresoCaja(id: number): Observable<any> {
+    return this.http.delete(`${urlApi}/${id}`,{
       headers: this.getToken
     })
   }

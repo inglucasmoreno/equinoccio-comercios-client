@@ -22,11 +22,12 @@ export class TiposIngresosService {
     })
   }
 
-  listarTipos({ direccion = 'desc', columna = 'descripcion' }): Observable<any> {
+  listarTipos({ direccion = 'desc', columna = 'descripcion', activo = '' }): Observable<any> {
     return this.http.get(urlApi, {
       params: {
         direccion: String(direccion),
-        columna
+        columna,
+        activo
       },
       headers: this.getToken
     })
@@ -38,7 +39,7 @@ export class TiposIngresosService {
     })
   }
 
-  actualizarTipo(id: string, data: any): Observable<any> {
+  actualizarTipo(id: number, data: any): Observable<any> {
     return this.http.patch(`${urlApi}/${id}`, data, {
       headers: this.getToken
     })

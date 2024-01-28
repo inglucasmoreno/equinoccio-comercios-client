@@ -154,7 +154,7 @@
         <div class="md:flex md:items-center md:justify-between px-4 py-2">
           <div class="my-2 flex sm:flex-row flex-col">
             <div class="flex flex-row mb-1 sm:mb-0">
-              <div class="relative">
+              <div class="relative w-full md:w-auto">
                 <select #txtActivo (change)="filtrarActivos(txtActivo.value)"
                   class="h-full text-sm rounded-r border-t border-l rounded-l sm:rounded-r-none sm:border-r-0 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
                   <option value='true'> Activos </option>
@@ -181,13 +181,20 @@
                 class="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
             </div>
             <select (change)="paginaActual = 1"
-              class="bg-white text-sm focus:outline-none w-max px-2 py-2 md:py-0 md:ml-2 mt-2 md:mt-0 border text-gray-600 border-gray-400 rounded"
+              class="bg-white text-sm focus:outline-none w-full md:w-max px-2 py-2 md:py-0 md:ml-2 mt-2 md:mt-0 border text-gray-600 border-gray-400 rounded"
               [(ngModel)]="cantidadItems">
               <option value="10"> 10 elementos </option>
               <option value="20"> 20 elementos </option>
               <option value="50"> 50 elementos </option>
               <option value="100"> 100 elementos </option>
             </select>
+            <button (click)="filtrarAlertaStock()" title="Filtrar por alerta de stock" [ngClass]="{'bg-purple-100 border-purple-400':showAlertaStock, 'bg-white':!showAlertaStock}" class="bg-white text-sm focus:outline-none w-max px-2 py-2 md:py-0 md:ml-2 mt-2 md:mt-0 border text-gray-600 border-gray-400 rounded">
+              @if(alertaStock){
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><style>@keyframes n-info-2{0%,to{transform:rotate(0deg);transform-origin:top center}10%,90%{transform:rotate(2deg)}20%,40%,60%{transform:rotate(-6deg)}30%,50%,70%{transform:rotate(6deg)}80%{transform:rotate(-2deg)}}</style><path stroke="#0A0A30" stroke-width="1.5" d="M12 3.398a5 5 0 00-5 5v2c0 .758-.442 1.505-1.005 2.012A3 3 0 008 17.642h8a3 3 0 002.005-5.232C17.442 11.903 17 11.156 17 10.398v-2a5 5 0 00-5-5z"/><g style="animation:n-info-2 1.5s cubic-bezier(.455,.03,.515,.955) both infinite"><path stroke="#0A0A30" stroke-linecap="round" stroke-width="1.5" d="M14.39 20.312l-.043.01a9.715 9.715 0 01-4.67-.01"/><path stroke="#4F46E5" stroke-linecap="round" stroke-width="1.5" d="M12 7.923v3.206"/><circle cx="12" cy="13.245" r=".832" fill="#4F46E5"/></g></svg>
+              }@else{
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><style>@keyframes n-snooze{0%{transform:scale(.2);opacity:.8}80%{transform:scale(1.2);opacity:1}to{transform:scale(1.2);opacity:0}}</style><path stroke="#0A0A30" stroke-width="1.5" d="M12 3.398a5 5 0 00-5 5v2c0 .758-.442 1.505-1.005 2.012A3 3 0 008 17.642h8a3 3 0 002.005-5.232C17.442 11.903 17 11.156 17 10.398v-2a5 5 0 00-5-5z"/><path stroke="#0A0A30" stroke-linecap="round" stroke-width="1.5" d="M14.39 20.312l-.043.01a9.714 9.714 0 01-4.67-.01"/><path fill="#4F46E5" d="M14.48 13.918H9.676l2.648-3.642H9.677v-.911h4.802l-2.639 3.641h2.64v.912z" style="animation:n-snooze 1.5s cubic-bezier(.165,.84,.44,1) infinite both;transform-origin:center center"/></svg>
+              }
+            </button>
           </div>
         </div>
         <div class="px-4 py-2 overflow-x-auto">
@@ -342,7 +349,7 @@
                   <th
                     class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
                     <div (click)="ordenarPorColumna('alertaStock')"
-                      class="cursor-pointer flex items-center focus:outline-none">
+                      class="cursor-pointer w-max flex items-center focus:outline-none">
                       <span> Alerta stock </span>
                       <span class="ml-2 text-gray-600">
                         <svg *ngIf="ordenar.columna == 'alertaStock' && ordenar.direccion == 'asc'" width="15" height="15"
@@ -398,7 +405,7 @@
               <tbody *ngIf="productos">
                 @for(producto of productos | filtroProductos:filtro.parametro:filtro.activo | paginate: {itemsPerPage:
                 cantidadItems, currentPage: paginaActual}; track producto.id){
-                <tr class="animate__animated animate__fadeIn">
+                <tr [ngClass]="{'bg-red-50': ((producto.cantidadMinima && producto.cantidad <= producto.cantidadMinima) && producto.alertaStock)}" class="animate__animated animate__fadeIn">
                   <td class="px-5 py-2 border-b border-gray-200 text-xs">
                     <p [ngClass]="{'text-gray-400 italic':!producto.codigo, 'text-gray-900':!producto.codigo}" class="w-max whitespace-no-wrap">
                       {{ producto.codigo ? producto.codigo : 'Sin código' }}
@@ -425,7 +432,7 @@
                     </p>
                   </td>
                   <td class="px-5 py-2 border-b border-gray-200 text-xs">
-                    <p class="text-gray-900 w-max whitespace-no-wrap">
+                    <p [ngClass]="{'text-red-500 font-semibold':producto.cantidad < 0, 'text-black':producto.cantidad >= 0}" class="w-max whitespace-no-wrap">
                       {{ producto.cantidad }}
                     </p>
                   </td>
