@@ -7,7 +7,7 @@
 }
 
 .text-error {
-  @apply text-red-500 text-xs italic font-semibold;
+  @apply text-red-500 text-xs font-semibold;
 }
 
 .input-generico {

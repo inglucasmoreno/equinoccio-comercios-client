@@ -12,8 +12,8 @@
     </div>
     <div class="px-4 pt-2 max-h-96 overflow-y-auto text-sm">
       <p class="font-semibold"> <span class="text-red-500"> * </span> Descripción </p>
-      <input [(ngModel)]="descripcion" class="input-generico w-full mt-2" placeholder="Ej. Cobro de deuda" type="text">
-      <div *ngIf="tipoSeleccionado && estadoFormulario === 'editar'" class="xl:flex items-center mt-4">
+      <input [(ngModel)]="descripcion" class="input-generico w-full mt-2 mb-3" placeholder="Ej. Cobro de deuda" type="text">
+      <div *ngIf="tipoSeleccionado && estadoFormulario === 'editar'" class="xl:flex items-center mb-3">
         <div class="xl:w-1/2">
           <p class="font-semibold text-sm"> Fecha de alta </p>
           <div class="border text-sm mt-2 border-gray-400 rounded p-2 bg-gray-100">
@@ -30,9 +30,9 @@
       </div>
     </div>
     <div class="px-2 pb-2">
-      <button *ngIf="estadoFormulario == 'crear'" (click)="nuevoTipo()" class="boton-crear w-full mt-4"> Crear tipo
+      <button *ngIf="estadoFormulario == 'crear'" (click)="nuevoTipo()" class="boton-crear w-full"> Crear tipo
       </button>
-      <button *ngIf="estadoFormulario == 'editar'" (click)="actualizarTipo()" class="boton-editar w-full mt-4">
+      <button *ngIf="estadoFormulario == 'editar'" (click)="actualizarTipo()" class="boton-editar w-full">
         Actualizar tipo </button>
     </div>
   </div>

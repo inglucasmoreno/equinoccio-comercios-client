@@ -275,7 +275,7 @@ export default class CierreCajaComponent implements OnInit {
         if (isConfirmed) {
           this.alertService.loading();
           this.cajasService.nuevaCaja({
-            creatorUserId: 3
+          creatorUserId: this.authService.usuario.userId
           }).subscribe({
             next: ({ caja }) => {
               this.idCaja = caja.id;
