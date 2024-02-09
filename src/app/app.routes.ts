@@ -168,6 +168,20 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/tipos-gastos/tipos-gastos.component'),
       },
 
+      // Clientes
+      {
+        path: 'clientes',
+        title: 'Clientes',
+        loadComponent: () => import('./pages/clientes/clientes.component'),
+      },
+
+      // Proveedores
+      {
+        path: 'proveedores',
+        title: 'Proveedores',
+        loadComponent: () => import('./pages/proveedores/proveedores.component'),
+      },
+
     ]
   },
 

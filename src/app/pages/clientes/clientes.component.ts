@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MarcasService } from '../../services/marcas.service';
 import { AuthService } from '../../services/auth.service';
-import { AlertService } from '../../services/alert.service';
 import { DataService } from '../../services/data.service';
+import { AlertService } from '../../services/alert.service';
+import { ClientesService } from '../../services/clientes.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FechaPipe } from '../../pipes/fecha.pipe';
@@ -11,11 +11,12 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { RouterModule } from '@angular/router';
 import { PastillaEstadoComponent } from '../../components/pastilla-estado/pastilla-estado.component';
 import { TarjetaListaComponent } from '../../components/tarjeta-lista/tarjeta-lista.component';
-import { FiltroMarcasPipe } from '../../pipes/filtro-marcas.pipe';
+import { FiltroClientesPipe } from '../../pipes/filtro-clientes.pipe';
 
 @Component({
   standalone: true,
-  selector: 'app-marcas',
+  selector: 'app-clientes',
+  templateUrl: './clientes.component.html',
   imports: [
     CommonModule,
     FormsModule,
@@ -25,24 +26,30 @@ import { FiltroMarcasPipe } from '../../pipes/filtro-marcas.pipe';
     RouterModule,
     PastillaEstadoComponent,
     TarjetaListaComponent,
-    FiltroMarcasPipe
+    FiltroClientesPipe
   ],
-  templateUrl: './marcas.component.html',
   styleUrls: []
 })
-export default class MarcasComponent implements OnInit {
+export default class ClientesComponent implements OnInit {
 
   // Modal
-  public showModalMarca = false;
+  public showModalCliente = false;
 
   // Estado formulario
   public estadoFormulario = 'crear';
 
-  // Marca
-  public idMarca: string = '';
-  public marcas: any = [];
-  public marcaSeleccionada: any;
-  public descripcion: string = '';
+  // Cliente
+  public idCliente: string = '';
+  public clientes: any = [];
+  public clienteSeleccionado: any;
+
+  public clienteForm = {
+    descripcion: '',
+    tipo_identificacion: 'DNI',
+    identificacion: '',
+    telefono: '',
+    domicilio: '',
+  }
 
   // Paginacion
   public paginaActual: number = 1;
@@ -61,130 +68,136 @@ export default class MarcasComponent implements OnInit {
   }
 
   constructor(
-    private marcasService: MarcasService,
+    private clientesService: ClientesService,
     private authService: AuthService,
     private alertService: AlertService,
     private dataService: DataService
   ) { }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Marcas';
+    this.dataService.ubicacionActual = 'Dashboard - Clientes';
     this.alertService.loading();
-    this.listarMarcas();
+    this.listarClientes();
   }
 
   // Abrir modal
-  abrirModal(estado: string, marca: any = null): void {
+  abrirModal(estado: string, cliente: any = null): void {
     this.reiniciarFormulario();
-    this.descripcion = '';
-    this.idMarca = '';
-
-    if (estado === 'editar') this.getMarca(marca);
-    else this.showModalMarca = true;
-
+    this.idCliente = '';
+    if (estado === 'editar') this.getCliente(cliente);
+    else this.showModalCliente = true;
     this.estadoFormulario = estado;
   }
 
-  // Traer datos de marca
-  getMarca(marca: any): void {
+  // Traer datos de cliente
+  getCliente(cliente: any): void {
     this.alertService.loading();
-    this.idMarca = marca.id;
-    this.marcaSeleccionada = marca;
-    this.marcasService.getMarca(marca.id).subscribe({
-      next: ({ marca }) => {
-        this.descripcion = marca.descripcion;
+    this.idCliente = cliente.id;
+    this.clienteSeleccionado = cliente;
+    this.clientesService.getCliente(cliente.id).subscribe({
+      next: ({ cliente }) => {
+        this.clienteForm = {
+          descripcion: cliente.descripcion,
+          tipo_identificacion: cliente.tipo_identificacion,
+          identificacion: cliente.identificacion,
+          telefono: cliente.telefono,
+          domicilio: cliente.domicilio,
+        };
         this.alertService.close();
-        this.showModalMarca = true;
+        this.showModalCliente = true;
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     });
   }
 
-  // Listar marcas
-  listarMarcas(): void {
+  // Listar clientes
+  listarClientes(): void {
     const parametros: any = {
       direccion: this.ordenar.direccion,
       columna: this.ordenar.columna
     }
-    this.marcasService.listarMarcas(parametros).subscribe({
-      next: ({ marcas }) => {
-        this.marcas = marcas;
-        this.showModalMarca = false;
+    this.clientesService.listarClientes(parametros).subscribe({
+      next: ({ clientes }) => {
+        this.clientes = clientes;
+        this.showModalCliente = false;
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
   }
 
-  // Nueva marca
-  nuevaMarca(): void {
+  // Nuevo cliente
+  nuevoCliente(): void {
 
-    // Verificacion: Descripción vacia
-    if (this.descripcion.trim() === "") {
-      this.alertService.info('Debes colocar una descripción');
-      return;
-    }
+    if(this.verificacionDatos() !== '') return this.alertService.info(this.verificacionDatos());
 
     this.alertService.loading();
 
     const data = {
-      descripcion: this.descripcion,
-      creatorUserId: this.authService.usuario.userId,
+      ...this.clienteForm,
+      creatorUserId: this.authService.usuario.userId
     }
 
-    this.marcasService.nuevaMarca(data).subscribe({
+    this.clientesService.nuevoCliente(data).subscribe({
       next: () => {
         this.alertService.loading();
-        this.listarMarcas();
+        this.listarClientes();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
 
   }
 
-  // Actualizar marca
-  actualizarMarca(): void {
+  // Actualizar cliente
+  actualizarCliente(): void {
 
-    // Verificacion: Descripción vacia
-    if (this.descripcion.trim() === "") {
-      this.alertService.info('Debes colocar una descripción');
-      return;
-    }
+    if(this.verificacionDatos() !== '') return this.alertService.info(this.verificacionDatos());
 
     this.alertService.loading();
 
-    const data = {
-      descripcion: this.descripcion,
-    }
-
-    this.marcasService.actualizarMarca(this.idMarca, data).subscribe({
+    this.clientesService.actualizarCliente(this.clienteSeleccionado.id, this.clienteForm).subscribe({
       next: () => {
         this.alertService.loading();
-        this.listarMarcas();
+        this.listarClientes();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     });
 
   }
 
   // Actualizar estado Activo/Inactivo
-  actualizarEstado(marca: any): void {
+  actualizarEstado(cliente: any): void {
 
-    const { id, activo } = marca;
+    const { id, activo } = cliente;
 
     this.alertService.question({ msg: '¿Quieres actualizar el estado?', buttonText: 'Actualizar' })
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();
-          this.marcasService.actualizarMarca(id, { activo: !activo }).subscribe({
+          this.clientesService.actualizarCliente(id, { activo: !activo }).subscribe({
             next: () => {
               this.alertService.loading();
-              this.listarMarcas();
+              this.listarClientes();
             }, error: ({ error }) => this.alertService.errorApi(error.message)
           })
         }
       });
   }
 
+  // Verificacion de datos
+  verificacionDatos(): string {
+    const { descripcion, identificacion } = this.clienteForm;
+    let msg = '';
+    if(descripcion.trim() === '') msg = 'Debe colocar un Nombre o Razon Social';
+    else if(identificacion.trim() === '') msg = 'Debe colocar una identificación';
+    return msg;
+  }
+
   // Reiniciando formulario
   reiniciarFormulario(): void {
-    this.descripcion = '';
+    this.clienteForm = {
+      descripcion: '',
+      tipo_identificacion: 'DNI',
+      identificacion: '',
+      telefono: '',
+      domicilio: '',
+    }
   }
 
   // Filtrar Activo/Inactivo
@@ -204,7 +217,7 @@ export default class MarcasComponent implements OnInit {
     this.ordenar.columna = columna;
     this.ordenar.direccion = this.ordenar.direccion == 'asc' ? 'desc' : 'asc';
     this.alertService.loading();
-    this.listarMarcas();
+    this.listarClientes();
   }
 
 }
