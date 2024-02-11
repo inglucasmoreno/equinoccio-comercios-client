@@ -22,16 +22,23 @@ export class VentasService {
     })
   }
 
-  listarVentas({ 
+  generarComprobante(id: string): Observable<any> {
+    return this.http.get(`${urlApi}/generar/comprobante/${id}`, {
+      headers: this.getToken
+    })
+  }
+
+  listarVentas({
     activo = '',
     direccion = 'desc',
-    comprobante = '', 
+    comprobante = '',
     formaPago = '',
     pagina = 1,
     itemsPorPagina = 100000,
     fechaDesde = '',
     fechaHasta = '',
-    columna = 'createdAt' 
+    cajaId = '',
+    columna = 'createdAt'
   }): Observable<any> {
     return this.http.get(urlApi, {
       params: {
@@ -43,6 +50,7 @@ export class VentasService {
         pagina,
         fechaDesde,
         fechaHasta,
+        cajaId,
         itemsPorPagina
       },
       headers: this.getToken

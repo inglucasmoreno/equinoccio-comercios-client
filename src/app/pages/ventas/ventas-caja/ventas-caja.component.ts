@@ -4,23 +4,21 @@ import { FormsModule } from '@angular/forms';
 import { FechaPipe } from '../../../pipes/fecha.pipe';
 import { ModalComponent } from '../../../components/modal/modal.component';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { PastillaEstadoComponent } from '../../../components/pastilla-estado/pastilla-estado.component';
 import { TarjetaListaComponent } from '../../../components/tarjeta-lista/tarjeta-lista.component';
 import { MonedaPipe } from '../../../pipes/moneda.pipe';
+import { formasPagoArray } from '../../../constants/formasPagoArray';
+import { tiposVenta } from '../../../constants/tiposVenta';
 import { VentasService } from '../../../services/ventas.service';
 import { AlertService } from '../../../services/alert.service';
 import { DataService } from '../../../services/data.service';
-import { FiltroVentasPipe } from '../../../pipes/filtro-ventas.pipe';
-import { formasPagoArray } from '../../../constants/formasPagoArray';
 import { VentasFormasPagoService } from '../../../services/ventas-formas-pago.service';
-import { tiposVenta } from '../../../constants/tiposVenta';
-import { environments } from '../../../../environments/environments';
-
-const baseUrl = environments.base_url;
 
 @Component({
   standalone: true,
+  selector: 'app-ventas-caja',
+  templateUrl: './ventas-caja.component.html',
   imports: [
     CommonModule,
     FormsModule,
@@ -31,13 +29,13 @@ const baseUrl = environments.base_url;
     PastillaEstadoComponent,
     TarjetaListaComponent,
     MonedaPipe,
-    FiltroVentasPipe
   ],
-  selector: 'app-ventas-activas',
-  templateUrl: './ventas-activas.component.html',
   styleUrls: []
 })
-export default class VentasActivasComponent implements OnInit {
+export default class VentasCajasComponent implements OnInit {
+
+  // Caja
+  public idCaja: any[] = [];
 
   // Constantes
   public formasPago: any[] = formasPagoArray;
@@ -87,12 +85,18 @@ export default class VentasActivasComponent implements OnInit {
     private ventasService: VentasService,
     private alertService: AlertService,
     private ventasFormasPagoService: VentasFormasPagoService,
-    private dataService: DataService
+    private dataService: DataService,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Ventas activas';
-    this.listarVentas();
+    this.dataService.ubicacionActual = 'Dashboard - Ventas en caja';
+    this.activatedRoute.params.subscribe({
+      next: ({ idCaja }) => {
+        this.idCaja = idCaja;
+        this.listarVentas();
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    })
   }
 
   // Listar ventas
@@ -101,19 +105,17 @@ export default class VentasActivasComponent implements OnInit {
     const parametros: any = {
       direccion: this.ordenar.direccion,
       columna: this.ordenar.columna,
-      activo: 'true',
       formaPago: this.filtro.formaPago,
       comprobante: this.filtro.comprobante,
       pagina: this.paginaActual,
+      cajaId: this.idCaja,
       itemsPorPagina: this.cantidadItems,
-
     }
     this.ventasService.listarVentas(parametros).subscribe({
       next: ({ ventas, totalItems, totales }) => {
         this.totalItems = totalItems;
         this.ventas = ventas;
         this.totales = totales;
-        console.log(ventas);
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
@@ -124,45 +126,6 @@ export default class VentasActivasComponent implements OnInit {
     this.actualizandoFormaPago = false;
     this.formaPagoSeleccionada = null;
     this.showModalVenta = true;
-  }
-
-  abrirActualizarFormaPago(formaPago: any): void {
-    this.nuevaFormaPago = formaPago.descripcion;
-    this.comprobantePedidosYa = formaPago.nroComprobante;
-    this.actualizandoFormaPago = true;
-    this.formaPagoSeleccionada = formaPago;
-  }
-
-  cerrarActualizarFormaPago(): void {
-    this.actualizandoFormaPago = false;
-    this.formaPagoSeleccionada = null;
-  }
-
-  actualizarFormaPago(): void {
-
-    const condPedidosYa = this.nuevaFormaPago === 'PedidosYa - Efectivo' || this.nuevaFormaPago === 'PedidosYa - Online';
-
-    if (this.comprobantePedidosYa === '' && condPedidosYa) return this.alertService.info('Debe ingresar el numero de comprobante');
-
-    this.alertService.loading();
-    this.ventasFormasPagoService.actualizarVentaFormaPago(this.formaPagoSeleccionada.id, {
-      descripcion: this.nuevaFormaPago,
-      nroComprobante: condPedidosYa ? this.comprobantePedidosYa : ''
-    }).subscribe({
-      next: () => {
-        // Se le agrega el nuevo valor a la forma de pago
-        this.formaPagoSeleccionada.descripcion = this.nuevaFormaPago;
-        this.formaPagoSeleccionada.nroComprobante = condPedidosYa ? this.comprobantePedidosYa : '';
-        this.formaPagoSeleccionada = null;
-        this.actualizandoFormaPago = false;
-        this.alertService.success('Forma de pago actualizada');
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    });
-  }
-
-  // Generar comprobate
-  generarComprobante(idVenta: string): void {
-    window.open(`${baseUrl}/ventas/generar/comprobante/${idVenta}`, '_blank');
   }
 
   // Ordenar por columna

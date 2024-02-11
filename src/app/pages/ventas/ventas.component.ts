@@ -351,6 +351,15 @@ export default class VentasComponent implements OnInit {
 
   completarVenta(): void {
 
+
+    // Si la forma de pago es pedidosYa y el nroComprobante esta vacio se debe colocar el nroComprobante
+    if ((this.formaPago === 'PedidosYa - Efectivo' || this.formaPago === 'PedidosYa - Online') && !this.multiplesFormasPago) {
+      if (this.pedidosYaComprobante === '') {
+        this.alertService.info('Debe colocar el nro de comprobante');
+        return;
+      }
+    }
+
     // Cuando multiplesFormasPago es true, se verifica que el total pagado sea igual al precio final
     if (this.multiplesFormasPago && (this.precioTotalVenta - this.totalPagado > 0.1)) {
       this.alertService.info('El total pagado debe ser igual al precio final');
@@ -436,6 +445,7 @@ export default class VentasComponent implements OnInit {
     this.codigo = '';
     this.precioTotalVenta = 0;
     this.precioTotalLimpio = 0;
+    this.pedidosYaComprobante = '';
     this.ultimoProductoCargado = null;
     this.comprobante = 'Normal';
     this.totalBalanza = 0;
@@ -465,7 +475,7 @@ export default class VentasComponent implements OnInit {
   almacenarEnLocalStorage(): void {
 
     // Almacenar valores en localstorage si existen sino null
-    
+
     this.carritoProductos ? localStorage.setItem('venta-carritoProductos', JSON.stringify(this.carritoProductos)) : null;
     this.comprobante ? localStorage.setItem('venta-comprobante', this.comprobante) : null;
     this.totalBalanza ? localStorage.setItem('venta-totalBalanza', this.totalBalanza.toString()) : null;

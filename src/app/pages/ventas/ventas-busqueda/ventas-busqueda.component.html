@@ -103,11 +103,7 @@
         <div class="border border-gray-400 p-2 mb-2 flex items-center justify-between">
           <div class="flex items-center">
             <div class="bg-purple-50 border border-secondaryColor p-2 rounded text-secondaryColor">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-12 h-12">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="m20.25 7.5-.625 10.632a2.25 2.25 0 0 1-2.247 2.118H6.622a2.25 2.25 0 0 1-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125Z" />
-              </svg>
+              <img src="assets/svg/producto.svg" alt="producto.svg" class="w-16">
             </div>
             <div class="ml-2">
               <p class="font-semibold"> {{ relacion.producto.descripcion }} </p>
@@ -126,7 +122,7 @@
 
 <!-- Pagina principal -->
 <div class="md:max-w-7xl mx-auto gsap-contenido">
-  
+
   <div *ngIf="inicioPagina" class="w-11/12 md:w-1/3 mx-auto shadow-xl border border-gray-400 p-2 mt-10">
     <h2 class="text-lg font-semibold w-full text-center mb-2"> BUSCADOR DE VENTAS </h2>
     <div>
@@ -134,12 +130,12 @@
       <input [(ngModel)]="fechaDesde" type="date" class="input-generico w-full mt-2">
     </div>
     <div class="mt-4">
-      <p class="font-semibold"> <span class="text-red-500"> * </span> Fecha hasta </p>   
+      <p class="font-semibold"> <span class="text-red-500"> * </span> Fecha hasta </p>
       <input [(ngModel)]="fechaHasta" type="date" class="input-generico w-full mt-2">
     </div>
     <button (click)="buscarVentas()" class="p-2 rounded w-full text-white bg-secondaryColor mt-5 hover:opacity-90"> Buscar ventas </button>
   </div>
-  
+
   <app-tarjeta-lista *ngIf="!inicioPagina">
     <div class="container mx-auto">
       <div>
@@ -203,7 +199,7 @@
           <button (click)="buscarVentas()" title="Buscar" class="p-2 border border-gray-400 bg-gray-50 rounded hover:text-secondaryColor ml-2">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-            </svg>              
+            </svg>
           </button>
         </div>
 

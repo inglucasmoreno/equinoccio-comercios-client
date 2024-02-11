@@ -28,8 +28,8 @@
         </div>
         <div class="md:w-1/2 md:ml-2 mt-3 md:mt-0">
           <p class="font-semibold"> <span class="text-red-500"> * </span> Identificación </p>
-          <input [(ngModel)]="proveedorForm.identificacion" class="input-generico w-full mt-2" placeholder="Ej. 34060398"
-            type="text">
+          <input [(ngModel)]="proveedorForm.identificacion" class="input-generico w-full mt-2"
+            placeholder="Ej. 34060398" type="text">
         </div>
       </div>
       <div class="md:w-full md:flex md:items-center mt-1 pb-2">
@@ -40,8 +40,8 @@
         </div>
         <div class="md:w-1/2 md:ml-2 mt-3 md:mt-0">
           <p class="font-semibold"> Domicilio </p>
-          <input [(ngModel)]="proveedorForm.domicilio" class="input-generico w-full mt-2" placeholder="Ej. Portugal 1030"
-            type="text">
+          <input [(ngModel)]="proveedorForm.domicilio" class="input-generico w-full mt-2"
+            placeholder="Ej. Portugal 1030" type="text">
         </div>
       </div>
       <div *ngIf="proveedorSeleccionado && estadoFormulario === 'editar'" class="xl:flex items-center mt-2">
@@ -135,6 +135,30 @@
             <table class="min-w-full leading-normal">
               <thead>
                 <tr class="border">
+                  <th
+                    class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('id')"
+                      class="cursor-pointer flex items-center focus:outline-none">
+                      <span> Icono </span>
+                      <span class="ml-2 text-gray-600">
+                        <svg *ngIf="ordenar.columna == 'id' && ordenar.direccion == 'asc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'id' && ordenar.direccion == 'desc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'id'" width="15" height="15" viewBox="0 0 24 24"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
                   <th
                     class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
                     <div (click)="ordenarPorColumna('descripcion')"
@@ -266,9 +290,13 @@
                 </tr>
               </thead>
               <tbody *ngIf="proveedores">
-                @for(proveedor of proveedores | filtroProveedores:filtro.parametro:filtro.activo | paginate: {itemsPerPage:
+                @for(proveedor of proveedores | filtroProveedores:filtro.parametro:filtro.activo | paginate:
+                {itemsPerPage:
                 cantidadItems, currentPage: paginaActual}; track proveedor.id){
                 <tr class="animate__animated animate__fadeIn">
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <img src="assets/svg/proveedor.svg" class="w-14" alt="proveedor.svg">
+                  </td>
                   <td class="px-5 py-2 border-b border-gray-200 text-xs">
                     <p class="text-gray-900 w-max whitespace-no-wrap">
                       {{ proveedor.descripcion }}
@@ -295,7 +323,8 @@
                   </td>
                   <td class="px-5 py-2 border-b border-gray-200 text-xs text-center">
                     <span class="flex items-center justify-center text-gray-900 whitespace-no-wrap">
-                      <button (click)="abrirModal('editar', proveedor)" title="Editar proveedor" class="boton-editar ml-2">
+                      <button (click)="abrirModal('editar', proveedor)" title="Editar proveedor"
+                        class="boton-editar ml-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                           stroke="currentColor" class="w-5 h-5">
                           <path stroke-linecap="round" stroke-linejoin="round"

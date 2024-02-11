@@ -137,6 +137,30 @@
                 <tr class="border">
                   <th
                     class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('id')"
+                      class="cursor-pointer flex items-center focus:outline-none">
+                      <span> Icono </span>
+                      <span class="ml-2 text-gray-600">
+                        <svg *ngIf="ordenar.columna == 'id' && ordenar.direccion == 'asc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'id' && ordenar.direccion == 'desc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'id'" width="15" height="15" viewBox="0 0 24 24"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
                     <div (click)="ordenarPorColumna('descripcion')"
                       class="cursor-pointer flex items-center focus:outline-none">
                       <span> Nombre o Razon Social </span>
@@ -269,6 +293,9 @@
                 @for(cliente of clientes | filtroClientes:filtro.parametro:filtro.activo | paginate: {itemsPerPage:
                 cantidadItems, currentPage: paginaActual}; track cliente.id){
                 <tr class="animate__animated animate__fadeIn">
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <img src="assets/svg/cliente.svg" class="w-14" alt="cliente.svg">
+                  </td>
                   <td class="px-5 py-2 border-b border-gray-200 text-xs">
                     <p class="text-gray-900 w-max whitespace-no-wrap">
                       {{ cliente.descripcion }}

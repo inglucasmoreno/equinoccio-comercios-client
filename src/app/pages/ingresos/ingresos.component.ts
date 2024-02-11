@@ -13,6 +13,8 @@ import { Router, RouterModule } from '@angular/router';
 import { PastillaEstadoComponent } from '../../components/pastilla-estado/pastilla-estado.component';
 import { TarjetaListaComponent } from '../../components/tarjeta-lista/tarjeta-lista.component';
 import { FiltroIngresosPipe } from '../../pipes/filtro-ingresos.pipe';
+import { ProveedoresService } from '../../services/proveedores.service';
+import { FiltroProveedoresPipe } from '../../pipes/filtro-proveedores.pipe';
 
 @Component({
   standalone: true,
@@ -27,7 +29,8 @@ import { FiltroIngresosPipe } from '../../pipes/filtro-ingresos.pipe';
     RouterModule,
     PastillaEstadoComponent,
     TarjetaListaComponent,
-    FiltroIngresosPipe
+    FiltroIngresosPipe,
+    FiltroProveedoresPipe
   ],
   styleUrls: []
 })
@@ -35,12 +38,17 @@ export default class IngresosComponent implements OnInit {
 
   // Modal
   public showModalIngreso = false;
+  public showModalProveedor = false;
+
+  // Buscador - Proveedores
+  public showBuscadorProveedores = false;
+  public proveedores: any[] = [];
+  public proveedorSeleccionado: any = null;
 
   // Estado formulario
   public estadoFormulario = 'crear';
 
   // Ingreso
-  public idIngreso: string = '';
   public ingresos: any = [];
   public ingresoSeleccionado: any;
 
@@ -48,6 +56,14 @@ export default class IngresosComponent implements OnInit {
     fechaIngreso: format(new Date(), 'yyyy-MM-dd'),
     nroFactura: '',
     comentario: '',
+  }
+
+  public proveedorForm = {
+    descripcion: '',
+    tipo_identificacion: 'DNI',
+    identificacion: '',
+    telefono: '',
+    domicilio: '',
   }
 
   // Paginacion
@@ -63,6 +79,10 @@ export default class IngresosComponent implements OnInit {
     fechaHasta: '',
   }
 
+  public filtroProveedor = {
+    parametro: ''
+  }
+
   // Ordenar
   public ordenar = {
     direccion: 'desc',  // Asc (1) | Desc (-1)
@@ -74,7 +94,8 @@ export default class IngresosComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private alertService: AlertService,
-    private dataService: DataService
+    private dataService: DataService,
+    private proveedoresService: ProveedoresService
   ) { }
 
   ngOnInit(): void {
@@ -85,30 +106,31 @@ export default class IngresosComponent implements OnInit {
 
   // Abrir modal
   abrirModal(estado: string, ingreso: any = null): void {
-    this.reiniciarFormulario();
-    this.idIngreso = '';
-    if (estado === 'editar') this.getIngreso(ingreso);
-    else this.showModalIngreso = true;
-
-    this.estadoFormulario = estado;
-  }
-
-  // Traer datos de ingreso
-  getIngreso(ingreso: any): void {
     this.alertService.loading();
-    this.idIngreso = ingreso.id;
-    this.ingresoSeleccionado = ingreso;
-    this.ingresosService.getIngreso(ingreso.id).subscribe({
-      next: ({ ingreso }) => {
-        this.ingresoForm = {
-          fechaIngreso: format(ingreso.fechaIngreso, 'yyyy-MM-dd'),
-          nroFactura: ingreso.nroFactura,
-          comentario: ingreso.comentario,
+    this.proveedorSeleccionado = null;
+    this.filtroProveedor.parametro = '';
+    this.proveedoresService.listarProveedores({
+      direccion: 'asc',
+      columna: 'descripcion',
+      activo: 'true'
+    }).subscribe({
+      next: ({ proveedores }) => {
+        this.proveedores = proveedores;
+        this.reiniciarFormulario();
+        if (estado === 'editar') {
+          this.ingresoSeleccionado = ingreso;
+          this.ingresoForm = {
+            fechaIngreso: format(ingreso.fechaIngreso, 'yyyy-MM-dd'),
+            nroFactura: ingreso.nroFactura,
+            comentario: ingreso.comentario,
+          }
+          this.proveedorSeleccionado = ingreso.proveedor;
         }
-        this.alertService.close();
         this.showModalIngreso = true;
+        this.estadoFormulario = estado;
+        this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
-    });
+    })
   }
 
   // Listar ingreso
@@ -139,12 +161,16 @@ export default class IngresosComponent implements OnInit {
     // Se verificac que la fecha de ingreso no esta vacia
     if (!fechaIngreso) return this.alertService.info('La fecha de ingreso es obligatoria');
 
+    // Se verifica que el proveedor no esta vacio
+    if (!this.proveedorSeleccionado) return this.alertService.info('Debe seleccionar un proveedor');
+
     this.alertService.loading();
 
     const data = {
       fechaIngreso: new Date(fechaIngreso),
       nroFactura,
       comentario,
+      proveedorId: this.proveedorSeleccionado.id,
       creatorUserId: this.authService.usuario.userId,
       usuarioCompletadoId: this.authService.usuario.userId
     }
@@ -172,15 +198,62 @@ export default class IngresosComponent implements OnInit {
       fechaIngreso,
       nroFactura,
       comentario,
+      proveedorId: this.proveedorSeleccionado.id,
     }
 
-    this.ingresosService.actualizarIngreso(this.idIngreso, data).subscribe({
+    this.ingresosService.actualizarIngreso(this.ingresoSeleccionado.id, data).subscribe({
       next: () => {
         this.alertService.loading();
         this.listarIngresos();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     });
 
+  }
+
+  // Abrir nuevo proveedor
+  abrirNuevoProveedor(): void {
+    this.showModalIngreso = false;
+    this.showModalProveedor = true;
+    this.reiniciarFormularioProveedor();
+  }
+
+  // Cerrar nuevo proveedor
+  cerrarNuevoProveedor(): void {
+    this.showModalProveedor = false;
+    this.showModalIngreso = true;
+  }
+
+  // Nuevo proveedor
+  nuevoProveedor(): void {
+
+    if (this.verificacionDatosProveedor() !== '') return this.alertService.info(this.verificacionDatosProveedor());
+
+    this.alertService.loading();
+
+    const data = {
+      ...this.proveedorForm,
+      creatorUserId: this.authService.usuario.userId
+    }
+
+    this.proveedoresService.nuevoProveedor(data).subscribe({
+      next: ({ proveedor }) => {
+        this.proveedorSeleccionado = proveedor;
+        this.proveedores.push(proveedor);
+        this.showModalProveedor = false;
+        this.showModalIngreso = true;
+        this.alertService.close();
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    })
+
+  }
+
+  // Verificacion de datos
+  verificacionDatosProveedor(): string {
+    const { descripcion, identificacion } = this.proveedorForm;
+    let msg = '';
+    if (descripcion.trim() === '') msg = 'Debe colocar un Nombre o Razon Social';
+    else if (identificacion.trim() === '') msg = 'Debe colocar una identificación';
+    return msg;
   }
 
   // Actualizar estado Activo/Inactivo
@@ -202,12 +275,33 @@ export default class IngresosComponent implements OnInit {
       });
   }
 
+  seleccionarProveedor(proveedor: any): void {
+    this.proveedorSeleccionado = proveedor;
+    this.showBuscadorProveedores = false;
+  }
+
+  cancelarProveedor(): void {
+    this.proveedorSeleccionado = null;
+    this.filtroProveedor.parametro = '';
+  }
+
   // Reiniciando formulario
   reiniciarFormulario(): void {
     this.ingresoForm = {
       fechaIngreso: format(new Date(), 'yyyy-MM-dd'),
       nroFactura: '',
       comentario: '',
+    }
+  }
+
+  // Reiniciando formulario proveedor
+  reiniciarFormularioProveedor(): void {
+    this.proveedorForm = {
+      descripcion: '',
+      tipo_identificacion: 'DNI',
+      identificacion: '',
+      telefono: '',
+      domicilio: '',
     }
   }
 

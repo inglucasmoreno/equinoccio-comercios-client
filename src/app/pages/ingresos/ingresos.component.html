@@ -1,3 +1,57 @@
+<!-- Modal: Crear proveedor -->
+<app-modal [showModal]="showModalProveedor">
+  <div (keyup.enter)="nuevoProveedor()">
+    <div class="flex items-center justify-between bg-gray-800 rounded-t p-2">
+      <h1 class=" text-white px-2 py-1 rounded-t text-lg"> Creando proveedor </h1>
+      <svg (click)="cerrarNuevoProveedor()" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="cursor-pointer feather feather-x text-white mr-2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </div>
+    <div class="px-4 pt-2 max-h-96 overflow-y-auto text-sm">
+      <div>
+        <p class="font-semibold"> <span class="text-red-500"> * </span> Nombre o Razon social </p>
+        <input [(ngModel)]="proveedorForm.descripcion" class="input-generico w-full mt-2"
+          placeholder="Ej. Moreno Lucas Omar" type="text">
+      </div>
+      <div class="w-full md:flex md:items-center mt-3 pb-2">
+        <div class="md:w-1/2">
+          <p class="font-semibold"> <span class="text-red-500"> * </span> Tipo de identificación </p>
+          <select [(ngModel)]="proveedorForm.tipo_identificacion" class="input-generico w-full mt-2">
+            <option value="DNI"> DNI </option>
+            <option value="CUIL"> CUIL </option>
+            <option value="CUIT"> CUIT </option>
+          </select>
+        </div>
+        <div class="md:w-1/2 md:ml-2 mt-3 md:mt-0">
+          <p class="font-semibold"> <span class="text-red-500"> * </span> Identificación </p>
+          <input [(ngModel)]="proveedorForm.identificacion" class="input-generico w-full mt-2"
+            placeholder="Ej. 34060398" type="text">
+        </div>
+      </div>
+      <div class="md:w-full md:flex md:items-center mt-1 pb-2">
+        <div class="md:w-1/2">
+          <p class="font-semibold"> Teléfono </p>
+          <input [(ngModel)]="proveedorForm.telefono" class="input-generico w-full mt-2" placeholder="Ej. 2664869642"
+            type="text">
+        </div>
+        <div class="md:w-1/2 md:ml-2 mt-3 md:mt-0">
+          <p class="font-semibold"> Domicilio </p>
+          <input [(ngModel)]="proveedorForm.domicilio" class="input-generico w-full mt-2"
+            placeholder="Ej. Portugal 1030" type="text">
+        </div>
+      </div>
+    </div>
+    <div class="px-2 pb-2">
+      <button (click)="nuevoProveedor()" class="boton-crear w-full mt-4"> Crear
+        proveedor
+      </button>
+    </div>
+  </div>
+</app-modal>
+
 <!-- Modal: Crear / Editar ingreso -->
 <app-modal [showModal]="showModalIngreso">
   <div (keyup.enter)="estadoFormulario === 'crear' ? nuevoIngreso() : actualizarIngreso()">
@@ -16,6 +70,66 @@
         <p class="font-semibold"> <span class="text-red-500"> * </span> Fecha de ingreso </p>
         <input [(ngModel)]="ingresoForm.fechaIngreso" class="input-generico w-full mt-2" placeholder="Ej. Pepsi"
           type="date">
+      </div>
+      <div class="mt-3">
+        <p class="font-semibold"> <span class="text-red-500"> * </span> Proveedor </p>
+
+        @if(!proveedorSeleccionado){
+        <div class="flex items-center">
+          <input [(ngModel)]="filtroProveedor.parametro" (focus)="showBuscadorProveedores = true" type="text"
+            class="input-generico w-full mt-2" placeholder="Buscar proveedor">
+          <button (click)="abrirNuevoProveedor()" title="Nuevo proveedor"
+            class="p-2 rounded bg-gray-100 border border-gray-400 hover:text-secondaryColor ml-2 mt-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+          </button>
+        </div>
+        }@else{
+        <div class="p-2 border border-gray-400 mt-2 flex items-center">
+          <img src="assets/svg/proveedor.svg" alt="proveedor.svg" class="w-14">
+          <div class="ml-2">
+            <p class="font-semibold"> {{ proveedorSeleccionado.descripcion }} </p>
+            <p class="text-gray-500 text-xs"> {{ proveedorSeleccionado.tipo_identificacion }} {{
+              proveedorSeleccionado.identificacion }} </p>
+            <button (click)="cancelarProveedor()"
+              class="bg-red-100 text-xs text-red-500 border border-red-300 p-1 mt-1 font-semibold rounded">
+              Cancelar proveedor
+            </button>
+          </div>
+        </div>
+        }
+
+        <div *ngIf="showBuscadorProveedores"
+          class="bg-white w-96 border h-max overflow-y-auto border-gray-400 fixed z-10 mt-2">
+          <div class="bg-gray-100 p-2 border-b border-gray-400 flex items-center justify-between">
+            <h1 class="font-semibold"> Listado de proveedores </h1>
+            <button (click)="showBuscadorProveedores = false">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div class="max-h-96 overflow-y-auto">
+            @for(proveedor of proveedores | filtroProveedores:filtroProveedor.parametro:'activo'; track proveedor.id){
+            <div (click)="seleccionarProveedor(proveedor)"
+              class="flex items-center p-2 border-b border-gray-300 hover:bg-gray-50 cursor-pointer">
+              <img src="assets/svg/proveedor.svg" alt="proveedor.svg" class="w-12">
+              <div class="ml-2">
+                <p class="font-semibold"> {{ proveedor.descripcion }} </p>
+                <p class="text-gray-500 text-xs"> {{ proveedor.tipo_identificacion }} {{ proveedor.identificacion }}
+                </p>
+              </div>
+            </div>
+            }@empty {
+            <div class="p-2 text-gray-500 text-center italic">
+              No se encontraron proveedores
+            </div>
+            }
+          </div>
+        </div>
       </div>
       <div class="mt-3">
         <p class="font-semibold"> Nro de factura </p>
@@ -197,6 +311,30 @@
                   </th>
                   <th
                     class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('proveedor.descripcion')"
+                      class="cursor-pointer flex items-center w-max focus:outline-none">
+                      <span> Proveedor </span>
+                      <span class="ml-2 text-gray-600">
+                        <svg *ngIf="ordenar.columna == 'proveedor.descripcion' && ordenar.direccion == 'asc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'proveedor.descripcion' && ordenar.direccion == 'desc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'proveedor.descripcion'" width="15" height="15" viewBox="0 0 24 24"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
                     <div (click)="ordenarPorColumna('comentario')"
                       class="cursor-pointer flex items-center focus:outline-none">
                       <span> Comentarios </span>
@@ -269,6 +407,11 @@
                     <p [ngClass]="{'italic text-gray-500':ingreso.nroFactura === ''}"
                       class="text-gray-900 w-max whitespace-no-wrap">
                       {{ ingreso.nroFactura ? ingreso.nroFactura : 'Sin factura' }}
+                    </p>
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <p class="text-gray-900 whitespace-no-wrap">
+                      {{ ingreso.proveedor.descripcion }}
                     </p>
                   </td>
                   <td class="px-5 py-2 border-b border-gray-200 text-xs">

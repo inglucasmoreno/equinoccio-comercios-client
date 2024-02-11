@@ -18,6 +18,8 @@ import { IngresosProductosService } from '../../../services/ingresos-productos.s
 import { AuthService } from '../../../services/auth.service';
 import { FiltroIngresosProductosPipe } from '../../../pipes/filtro-ingresos-productos.pipe';
 import gsap from 'gsap';
+import { FiltroProveedoresPipe } from '../../../pipes/filtro-proveedores.pipe';
+import { ProveedoresService } from '../../../services/proveedores.service';
 
 @Component({
   standalone: true,
@@ -33,7 +35,8 @@ import gsap from 'gsap';
     TarjetaListaComponent,
     MonedaPipe,
     FiltroProductosPipe,
-    FiltroIngresosProductosPipe
+    FiltroIngresosProductosPipe,
+    FiltroProveedoresPipe
   ],
   templateUrl: './detalles-ingreso.component.html',
   styleUrls: []
@@ -43,9 +46,15 @@ export default class DetallesIngresoComponent implements OnInit {
   // Modals
   public showModalIngreso: boolean = false;
   public showModalProductos: boolean = false;
+  public showModalProveedor = false;
+
+  // Buscador - Proveedores
+  public showBuscadorProveedores = false;
+  public proveedores: any[] = [];
+  public proveedorSeleccionado: any = null;
 
   // Ingreso
-  public ingreso: any = {};
+  public ingreso: any = null;
 
   // Productos
   public productos: any[] = [];
@@ -55,6 +64,7 @@ export default class DetallesIngresoComponent implements OnInit {
 
   // Forms
   public estadoForm: string = 'crear';
+
   public productoForm: any = {
     actualizarPrecio: 'false',
     precioCompra: null,
@@ -63,9 +73,21 @@ export default class DetallesIngresoComponent implements OnInit {
     cantidad: null,
   }
 
+  public proveedorForm = {
+    descripcion: '',
+    tipo_identificacion: 'DNI',
+    identificacion: '',
+    telefono: '',
+    domicilio: '',
+  }
+
   public filtros: any = {
     productos: '',
     productosCarrito: ''
+  }
+
+  public filtroProveedor = {
+    parametro: ''
   }
 
   public ingresoForm: any = {
@@ -83,11 +105,12 @@ export default class DetallesIngresoComponent implements OnInit {
     private alertService: AlertService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
+    private proveedoresService: ProveedoresService,
   ) { }
 
   ngOnInit() {
     this.dataService.ubicacionActual = 'Dashboard - Detalles Ingreso';
-    gsap.from('.gsap-contenido', { y:100, opacity: 0, duration: .2 });
+    gsap.from('.gsap-contenido', { y: 100, opacity: 0, duration: .2 });
     this.alertService.loading();
     this.activatedRoute.params.subscribe({
       next: ({ id }) => {
@@ -104,11 +127,18 @@ export default class DetallesIngresoComponent implements OnInit {
     })
   }
 
-  20176652536
-
   abrirModalIngreso(): void {
-    this.showModalIngreso = true;
-    this.reiniciarFormulario();
+    this.proveedoresService.listarProveedores({
+      direccion: 'asc',
+      columna: 'descripcion',
+      activo: 'true'
+    }).subscribe({
+      next: ({ proveedores }) => {
+        this.proveedores = proveedores;
+        this.showModalIngreso = true;
+        this.reiniciarFormulario();
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    })
   }
 
   abrirModalProductos(estado: string = 'crear', producto: any = null): void {
@@ -235,12 +265,19 @@ export default class DetallesIngresoComponent implements OnInit {
 
   actualizarIngreso(): void {
     this.alertService.loading();
-    this.ingresosService.actualizarIngreso(this.ingreso.id, this.ingresoForm).subscribe({
+    const data = {
+      fechaIngreso: this.ingresoForm.fechaIngreso,
+      nroFactura: this.ingresoForm.nroFactura,
+      comentario: this.ingresoForm.comentario,
+      proveedorId: this.proveedorSeleccionado.id,
+    }
+    this.ingresosService.actualizarIngreso(this.ingreso.id, data).subscribe({
       next: () => {
         // Reemplazar datos de ingreso
         this.ingreso.fechaIngreso = format(add(new Date(this.ingresoForm.fechaIngreso), { days: 2 }), 'yyyy-MM-dd');
         this.ingreso.nroFactura = this.ingresoForm.nroFactura;
         this.ingreso.comentario = this.ingresoForm.comentario.toUpperCase();
+        this.ingreso.proveedor = this.proveedorSeleccionado;
         this.showModalIngreso = false;
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
@@ -282,12 +319,69 @@ export default class DetallesIngresoComponent implements OnInit {
     this.reiniciarFormularioProducto();
   }
 
+  // Abrir nuevo proveedor
+  abrirNuevoProveedor(): void {
+    this.showModalIngreso = false;
+    this.showModalProveedor = true;
+    this.reiniciarFormularioProveedor();
+  }
+
+  // Cerrar nuevo proveedor
+  cerrarNuevoProveedor(): void {
+    this.showModalProveedor = false;
+    this.showModalIngreso = true;
+  }
+
+  // Nuevo proveedor
+  nuevoProveedor(): void {
+
+    if (this.verificacionDatosProveedor() !== '') return this.alertService.info(this.verificacionDatosProveedor());
+
+    this.alertService.loading();
+
+    const data = {
+      ...this.proveedorForm,
+      creatorUserId: this.authService.usuario.userId
+    }
+
+    this.proveedoresService.nuevoProveedor(data).subscribe({
+      next: ({ proveedor }) => {
+        this.proveedorSeleccionado = proveedor;
+        this.proveedores.push(proveedor);
+        this.showModalProveedor = false;
+        this.showModalIngreso = true;
+        this.alertService.close();
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    })
+
+  }
+
+  // Verificacion de datos
+  verificacionDatosProveedor(): string {
+    const { descripcion, identificacion } = this.proveedorForm;
+    let msg = '';
+    if (descripcion.trim() === '') msg = 'Debe colocar un Nombre o Razon Social';
+    else if (identificacion.trim() === '') msg = 'Debe colocar una identificación';
+    return msg;
+  }
+
+
   submitForm(): void {
     if (this.estadoForm === 'crear') {
       this.agregarProducto();
     } else {
       this.actualizarProducto();
     }
+  }
+
+  seleccionarProveedor(proveedor: any): void {
+    this.proveedorSeleccionado = proveedor;
+    this.showBuscadorProveedores = false;
+  }
+
+  cancelarProveedor(): void {
+    this.proveedorSeleccionado = null;
+    this.filtroProveedor.parametro = '';
   }
 
   calcularPrecioVenta(): void {
@@ -313,6 +407,7 @@ export default class DetallesIngresoComponent implements OnInit {
       nroFactura,
       comentario
     };
+    this.proveedorSeleccionado = this.ingreso.proveedor;
   }
 
   reiniciarFormularioProducto(): void {
@@ -322,6 +417,17 @@ export default class DetallesIngresoComponent implements OnInit {
       precioVenta: null,
       porcentajeGanancia: null,
       cantidad: null,
+    }
+  }
+
+  // Reiniciando formulario proveedor
+  reiniciarFormularioProveedor(): void {
+    this.proveedorForm = {
+      descripcion: '',
+      tipo_identificacion: 'DNI',
+      identificacion: '',
+      telefono: '',
+      domicilio: '',
     }
   }
 

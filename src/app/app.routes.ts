@@ -52,6 +52,13 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/ventas/ventas-activas/ventas-activas.component'),
       },
 
+      // Ventas - Cajas
+      {
+        path: 'ventas-caja/:idCaja',
+        title: 'Ventas caja',
+        loadComponent: () => import('./pages/ventas/ventas-caja/ventas-caja.component'),
+      },
+
       // Ventas - Busqueda
       {
         path: 'ventas-busqueda',
