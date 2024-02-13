@@ -16,6 +16,9 @@ import { TarjetaListaComponent } from '../../../components/tarjeta-lista/tarjeta
 import { MonedaPipe } from '../../../pipes/moneda.pipe';
 import { FiltroVentasPipe } from '../../../pipes/filtro-ventas.pipe';
 import gsap from 'gsap';
+import { environments } from '../../../../environments/environments';
+
+const baseUrl = environments.base_url;
 
 @Component({
   standalone: true,
@@ -168,6 +171,11 @@ export default class VentasBusquedaComponent implements OnInit {
         this.alertService.success('Forma de pago actualizada');
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     });
+  }
+
+  // Generar comprobate
+  generarComprobante(idVenta: string): void {
+    window.open(`${baseUrl}/ventas/generar/comprobante/${idVenta}`, '_blank');
   }
 
   // Ordenar por columna

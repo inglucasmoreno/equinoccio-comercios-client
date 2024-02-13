@@ -14,6 +14,9 @@ import { VentasService } from '../../../services/ventas.service';
 import { AlertService } from '../../../services/alert.service';
 import { DataService } from '../../../services/data.service';
 import { VentasFormasPagoService } from '../../../services/ventas-formas-pago.service';
+import { environments } from '../../../../environments/environments';
+
+const baseUrl = environments.base_url;
 
 @Component({
   standalone: true,
@@ -126,6 +129,11 @@ export default class VentasCajasComponent implements OnInit {
     this.actualizandoFormaPago = false;
     this.formaPagoSeleccionada = null;
     this.showModalVenta = true;
+  }
+
+  // Generar comprobate
+  generarComprobante(idVenta: string): void {
+    window.open(`${baseUrl}/ventas/generar/comprobante/${idVenta}`, '_blank');
   }
 
   // Ordenar por columna
