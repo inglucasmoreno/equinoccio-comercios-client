@@ -377,7 +377,7 @@ export default class VentasComponent implements OnInit {
       totalBalanza: this.totalBalanza,
       totalNoBalanza: this.totalNoBalanza,
       precioTotalLimpio: this.precioTotalLimpio,
-      adicionalCredito: this.adicionalCredito,
+      adicionalCredito: !this.multiplesFormasPago && this.formaPago === 'Credito' ?  this.adicionalCredito : 0,
       creatorUserId: this.authService.usuario.userId
     }
 
