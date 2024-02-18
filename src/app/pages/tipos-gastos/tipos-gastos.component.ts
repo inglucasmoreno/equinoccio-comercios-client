@@ -132,7 +132,6 @@ export default class TiposGastosComponent implements OnInit {
 
     this.tiposGastosService.nuevoTipo(data).subscribe({
       next: () => {
-        this.alertService.loading();
         this.listarTipos();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })

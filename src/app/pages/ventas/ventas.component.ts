@@ -113,7 +113,7 @@ export default class VentasComponent implements OnInit {
 
   ngOnInit() {
     this.dataService.ubicacionActual = 'Dashboard - Generando venta';
-    gsap.from('.gsap-contenido', { y:100, opacity: 0, duration: .2 });
+    gsap.from('.gsap-contenido', { y: 100, opacity: 0, duration: .2 });
     this.recuperarDeLocalStorage();
   }
 
@@ -126,9 +126,9 @@ export default class VentasComponent implements OnInit {
 
     this.alertService.loading();
     this.productosService.getProductoPorCodigo(this.codigo).subscribe({
-      next: ({ producto }) => {
+      next: ({ producto, cantidad, precio }) => {
         this.codigo = '';
-        this.agregarProductoCarrito(producto, 1);
+        this.agregarProductoCarrito(producto, cantidad, precio);
         this.alertService.close();
       }, error: ({ error }) => {
         this.codigo = '';
@@ -144,9 +144,12 @@ export default class VentasComponent implements OnInit {
     this.almacenarEnLocalStorage();
   }
 
-  agregarProductoCarrito(producto: any, cantidad: number): void {
+  agregarProductoCarrito(producto: any, cantidad: number, precio: number = 0): void {
 
-    const precioTotal = producto.precioVenta * cantidad;
+    let precioTotal = 0;
+
+    if(precio === 0) precioTotal = producto.precioVenta * cantidad;
+    else precioTotal = precio;
 
     // Ultimo producto cargado
     this.ultimoProductoCargado = {
@@ -157,7 +160,7 @@ export default class VentasComponent implements OnInit {
       unidadMedida: producto.unidadMedida.descripcion
     };
 
-    // Si el producto ya esta en el carrto le sumo 1 a la cantidad sin usar index
+    // Si el producto ya esta en el carrito se incrementa la cantidad
     const productoEnCarrito = this.carritoProductos.find((productoCarrito: any) => productoCarrito.producto.id == producto.id);
 
     if (productoEnCarrito) {
@@ -377,7 +380,7 @@ export default class VentasComponent implements OnInit {
       totalBalanza: this.totalBalanza,
       totalNoBalanza: this.totalNoBalanza,
       precioTotalLimpio: this.precioTotalLimpio,
-      adicionalCredito: !this.multiplesFormasPago && this.formaPago === 'Credito' ?  this.adicionalCredito : 0,
+      adicionalCredito: !this.multiplesFormasPago && this.formaPago === 'Credito' ? this.adicionalCredito : 0,
       creatorUserId: this.authService.usuario.userId
     }
 

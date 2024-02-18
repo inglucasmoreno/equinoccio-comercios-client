@@ -14,6 +14,7 @@ import { TarjetaListaComponent } from '../../components/tarjeta-lista/tarjeta-li
 import { FiltroProductosPipe } from '../../pipes/filtro-productos.pipe';
 import { UnidadesMedidaService } from '../../services/unidades-medida.service';
 import { MonedaPipe } from '../../pipes/moneda.pipe';
+import { ConfigBalanzaService } from '../../services/config-balanza.service';
 
 @Component({
   standalone: true,
@@ -69,7 +70,7 @@ export default class ProductosComponent implements OnInit {
     porcentajeGanancia: null,
     balanza: "false",
     alicuota: "21",
-    unidadMedidaId: "",
+    unidadMedidaId: "1",
   }
 
   // Filtrado
@@ -89,7 +90,7 @@ export default class ProductosComponent implements OnInit {
     private unidadesMedidaService: UnidadesMedidaService,
     private authService: AuthService,
     private alertService: AlertService,
-    private dataService: DataService
+    private dataService: DataService,
   ) { }
 
   ngOnInit(): void {
@@ -318,7 +319,7 @@ export default class ProductosComponent implements OnInit {
       porcentajeGanancia: null,
       balanza: "false",
       alicuota: "21",
-      unidadMedidaId: "",
+      unidadMedidaId: "1",
     }
   }
 
@@ -330,6 +331,41 @@ export default class ProductosComponent implements OnInit {
         this.alertaStock = true;
       }
     });
+  }
+
+  // Adaptando unidad de medida
+  adaptandoUnidadMedida(): void {
+    if (this.productoForm.balanza === 'true') {
+      this.productoForm.unidadMedidaId = '2';
+      this.productoForm.codigo = '';
+    }else{
+      this.productoForm.unidadMedidaId = '1';
+    }
+  }
+
+  // Adaptando codigo
+  adaptandoCodigo(): void {
+
+    if(this.productoForm.balanza === 'true'){
+
+      if(this.productoForm.codigo.length !== this.dataService.mascaraProducto.length){
+        this.alertService.info(`El código debe tener ${this.dataService.mascaraProducto.length} digitos`);
+        return;
+      }
+
+      let codigo = this.productoForm.codigo;
+      let mascara = this.dataService.mascaraProducto;
+      let nuevoCodigo = '';
+
+      for (let i = 0; i < mascara.length; i++) {
+        if (mascara[i] === 'y') nuevoCodigo += codigo[i];
+        else nuevoCodigo += '';
+      }
+
+      this.productoForm.codigo = nuevoCodigo;
+
+    }
+
   }
 
   // Ordenar productos por descripcion

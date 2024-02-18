@@ -11,6 +11,10 @@ export class HeaderComponent implements OnInit {
 
   constructor(public dataService: DataService) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.dataService.obtenerFormatoBalanza();
+    console.log(this.dataService.formatoBalanza);
+    console.log(this.dataService.mascaraProducto);
+  }
 
 }

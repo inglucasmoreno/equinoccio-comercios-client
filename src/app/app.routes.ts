@@ -189,6 +189,13 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/proveedores/proveedores.component'),
       },
 
+      // Configuración de balanza
+      {
+        path: 'config-balanza',
+        title: 'Configuración de balanza',
+        loadComponent: () => import('./pages/configBalanza/configBalanza.component'),
+      },
+
     ]
   },
 
