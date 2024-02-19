@@ -14,7 +14,6 @@ import { TarjetaListaComponent } from '../../components/tarjeta-lista/tarjeta-li
 import { FiltroProductosPipe } from '../../pipes/filtro-productos.pipe';
 import { UnidadesMedidaService } from '../../services/unidades-medida.service';
 import { MonedaPipe } from '../../pipes/moneda.pipe';
-import { ConfigBalanzaService } from '../../services/config-balanza.service';
 
 @Component({
   standalone: true,

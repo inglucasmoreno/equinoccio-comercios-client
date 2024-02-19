@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { ConfigBalanzaService } from './config-balanza.service';
 import { AlertService } from './alert.service';
+import { ConfigGeneralesService } from './config-generales.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,17 +17,17 @@ export class DataService {
 
   constructor(
     private alertService: AlertService,
-    private configBalanzaService: ConfigBalanzaService,
+    private configGeneralesService: ConfigGeneralesService,
   ) { }
 
-  obtenerFormatoBalanza(): void {
-    this.configBalanzaService.listarConfigBalanza({}).subscribe({
-      next: ({ configBalanza }) => {
+  obtenerConfigGenerales(): void {
+    this.configGeneralesService.listarConfigGenerales({}).subscribe({
+      next: ({ configGeneral }) => {
 
         let mascaraProducto = '';
         let mascaraPeso = '';
 
-        this.formatoBalanza = configBalanza[0].formato;
+        this.formatoBalanza = configGeneral[0].formatoBalanza;
         for (let i = 0; i < this.formatoBalanza.length; i++) {
 
           // Mascara de producto

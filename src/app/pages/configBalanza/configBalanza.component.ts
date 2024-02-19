@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from '../../services/data.service';
-import { ConfigBalanzaService } from '../../services/config-balanza.service';
-import gsap from 'gsap';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FechaPipe } from '../../pipes/fecha.pipe';
@@ -9,6 +7,8 @@ import { MonedaPipe } from '../../pipes/moneda.pipe';
 import { ModalComponent } from '../../components/modal/modal.component';
 import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
+import { ConfigGeneralesService } from '../../services/config-generales.service';
+import gsap from 'gsap';
 
 @Component({
   standalone: true,
@@ -34,7 +34,7 @@ export default class ConfigBalanzaComponent implements OnInit {
     private dataService: DataService,
     private authService: AuthService,
     private alertService: AlertService,
-    private configBalanzaService: ConfigBalanzaService,
+    private configGeneralesService: ConfigGeneralesService,
   ) { }
 
   ngOnInit() {
@@ -59,10 +59,10 @@ export default class ConfigBalanzaComponent implements OnInit {
 
   obtenerCodigo(): void {
     this.alertService.loading();
-    this.configBalanzaService.listarConfigBalanza({}).subscribe({
-      next: ({ configBalanza }) => {
-        this.formatoActual = configBalanza[0];
-        this.generacionFormato(configBalanza[0].formato);
+    this.configGeneralesService.listarConfigGenerales({}).subscribe({
+      next: ({ configGeneral }) => {
+        this.formatoActual = configGeneral[0];
+        this.generacionFormato(configGeneral[0].formatoBalanza);
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
@@ -86,12 +86,12 @@ export default class ConfigBalanzaComponent implements OnInit {
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();
-          this.configBalanzaService.actualizarConfigBalanza(this.formatoActual.id, { formato: this.nuevoFormato }).subscribe({
+          this.configGeneralesService.actualizarConfigGeneral(this.formatoActual.id, { formatoBalanza: this.nuevoFormato }).subscribe({
             next: ({ configBalanza }) => {
               this.nuevoFormato = '';
               this.formatoActual = configBalanza;
               this.generacionFormato(configBalanza.formato);
-              this.dataService.obtenerFormatoBalanza();
+              this.dataService.obtenerConfigGenerales();
               this.alertService.close();
             }, error: ({ error }) => this.alertService.errorApi(error.message)
           })

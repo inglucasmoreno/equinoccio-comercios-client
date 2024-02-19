@@ -3,12 +3,12 @@ import { environments } from '../../environments/environments';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-const urlApi = environments.base_url + '/config-balanza';
+const urlApi = environments.base_url + '/config-generales';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ConfigBalanzaService {
+export class ConfigGeneralesService {
 
   get getToken(): any {
     return { 'Authorization': localStorage.getItem('token') }
@@ -16,13 +16,13 @@ export class ConfigBalanzaService {
 
   constructor(private http: HttpClient) { }
 
-  getConfigBalanza(id: string): Observable<any> {
+  getConfigGeneral(id: string): Observable<any> {
     return this.http.get(`${urlApi}/${id}`, {
       headers: this.getToken
     })
   }
 
-  listarConfigBalanza({ direccion = 'desc', columna = 'id' }): Observable<any> {
+  listarConfigGenerales({ direccion = 'desc', columna = 'id' }): Observable<any> {
     return this.http.get(urlApi, {
       params: {
         direccion: String(direccion),
@@ -32,13 +32,13 @@ export class ConfigBalanzaService {
     })
   }
 
-  nuevaConfigBalanza(data: any): Observable<any> {
+  nuevaConfigGeneral(data: any): Observable<any> {
     return this.http.post(urlApi, data, {
       headers: this.getToken
     })
   }
 
-  actualizarConfigBalanza(id: string, data: any): Observable<any> {
+  actualizarConfigGeneral(id: string, data: any): Observable<any> {
     return this.http.patch(`${urlApi}/${id}`, data, {
       headers: this.getToken
     })
