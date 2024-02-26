@@ -1,0 +1,106 @@
+<div>
+  <div class="border border-gray-400 mt-2 w-1/2 mx-auto">
+
+    <!-- Header -->
+    <div class="bg-gray-900 text-white flex items-center border border-gray-900 p-2 text-xl">
+      <button title="Regresar" routerLink="/dashboard/reservas" class="hover:text-secondaryColor p-2 shadow rounded">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+        </svg>
+      </button>
+      <h1 class="ml-1"> Nueva Reserva </h1>
+    </div>
+
+    <!-- Body -->
+    <div class="p-4 text-sm">
+
+      <!-- Encabezado -->
+      <div class="flex items-center justify-between">
+        <div class="w-max text-center ml-2">
+          <p class="font-semibold"> Fecha de reserva </p>
+          <input type="date" class="border focus:outline-none border-gray-400 p-2 mt-2">
+        </div>
+        <div class="text-center mr-2">
+          <p class="font-semibold"> Precio total </p>
+          <div class="w-40 p-2 bg-gray-200 mt-2 font-semibold text-center border border-gray-400">
+            $ 0,00
+          </div>
+        </div>
+      </div>
+
+      <!-- Datos de cliente -->
+      <div class="p-2 mt-2">
+        <div class="bg-gray-100 font-semibold p-2 border border-gray-400">
+          Datos de cliente
+        </div>
+
+        <div class="flex items-center">
+          <input [(ngModel)]="filtroClientes.parametro" #searchInputClient type="text" placeholder="Nombre, DNI, CUIL"
+            class="border focus:outline-none border-gray-400 p-2 mt-4 w-52">
+            <svg *ngIf="flagBuscandoClientes" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mt-3 ml-2 text-secondaryColor animate-spin">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+            </svg>
+        </div>
+
+        <div *ngIf="filtroClientes.parametro.trim() !== '' && clientes.length > 0" class="z-10 w-96 fixed border border-gray-400 bg-white mt-2">
+          <div class="bg-gray-50 flex items-center justify-between p-2 border-b border-gray-400 font-semibold">
+            <p> Listado de usuarios </p>
+            <button (click)="cerrarBusqueda()" title="Cerrar buscador" class="hover:text-secondaryColor">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <div class="max-h-96 overflow-y-auto">
+            <div (click)="seleccionarCliente(cliente)" *ngFor="let cliente of clientes" class="border-b border-gray-400 p-2 cursor-pointer hover:bg-purple-50 flex items-center">
+              <img class="w-14" src="assets/svg/cliente.svg">
+              <div class="ml-2">
+                <p class="font-semibold"> {{ cliente.descripcion }} </p>
+                <p class="text-xs text-gray-500"> {{ cliente.tipo_identificacion }} {{ cliente.identificacion }} </p>
+                <p *ngIf="cliente.telefono" class="text-xs text-gray-500"> Tel. {{ cliente.telefono }} </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="clienteSeleccionado">
+          <div class="flex mt-4 w-max items-center" >
+            <img class="w-14" src="assets/svg/cliente.svg">
+            <div>
+              <p class="font-semibold"> {{ clienteSeleccionado.descripcion }} </p>
+              <p class="text-xs text-gray-500"> {{ clienteSeleccionado.tipo_identificacion }} {{ clienteSeleccionado.identificacion }} </p>
+              <p *ngIf="clienteSeleccionado.telefono" class="text-xs text-gray-500"> Tel. {{ clienteSeleccionado.telefono }} </p>
+            </div>
+          </div>
+          <button (click)="deseleccionarCliente()" class="text-red-500 text-xs ml-2 border rounded border-red-300 bg-red-50 p-1 mt-4"> Seleccionar otro cliente </button>
+        </div>
+
+      </div>
+
+      <!-- Datos de producto -->
+      <div class="p-2">
+        <div class="bg-gray-100 font-semibold p-2 border border-gray-400">
+          Datos de producto
+        </div>
+        <p class="text-gray-500 mt-2">
+          Todavia no se cargo ningun producto
+        </p>
+        <button class="p-2 rounded bg-secondaryColor hover:opacity-90 text-white mt-2">
+          Agregar producto
+        </button>
+      </div>
+
+      <!-- Datos de producto -->
+      <div class="p-2">
+        <div class="bg-gray-100 font-semibold p-2 border border-gray-400">
+          Observaciones
+        </div>
+        <textarea placeholder="Puede colocar una observacion aquí (No saldra en el comprobante)" class="w-full border border-gray-400 focus:outline-none p-2 mt-4"></textarea>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

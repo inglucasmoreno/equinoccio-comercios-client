@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
+import { environments } from '../../environments/environments';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environments } from '../../environments/environments';
 
-const urlApi = environments.base_url + '/clientes';
+const urlApi = environments.base_url + '/reservas-productos';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClientesService {
+export class ReservasProductosService {
 
   get getToken(): any {
     return { 'Authorization': localStorage.getItem('token') }
@@ -16,30 +16,29 @@ export class ClientesService {
 
   constructor(private http: HttpClient) { }
 
-  getCliente(id: string): Observable<any> {
+  getReservaProducto(id: string): Observable<any> {
     return this.http.get(`${urlApi}/${id}`, {
       headers: this.getToken
     })
   }
 
-  listarClientes({ direccion = 'desc', columna = 'descripcion', parametro = '' }): Observable<any> {
+  listarReservasProductos({ direccion = 'desc', columna = 'id' }): Observable<any> {
     return this.http.get(urlApi, {
       params: {
         direccion: String(direccion),
-        columna,
-        parametro
+        columna
       },
       headers: this.getToken
     })
   }
 
-  nuevoCliente(data: any): Observable<any> {
+  nuevaReservaProducto(data: any): Observable<any> {
     return this.http.post(urlApi, data, {
       headers: this.getToken
     })
   }
 
-  actualizarCliente(id: string, data: any): Observable<any> {
+  actualizarReservaProducto(id: string, data: any): Observable<any> {
     return this.http.patch(`${urlApi}/${id}`, data, {
       headers: this.getToken
     })

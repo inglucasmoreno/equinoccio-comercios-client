@@ -1,0 +1,324 @@
+<!-- Listado de reservas -->
+<div class="md:max-w-7xl mx-auto">
+  <app-tarjeta-lista>
+    <div class="container mx-auto">
+      <div>
+        <div class="flex items-center justify-between bg-gray-800 px-4 py-3 rounded-t">
+          <div class="ml-2 text-white">
+            <h2 class="text-xl md:text-2xl leading-tight">
+              Reservas
+            </h2>
+            <p> Total de reservas: {{ totalItems }} </p>
+          </div>
+          <div>
+            <button title="Nueva reserva" routerLink="/dashboard/nueva-reserva" class="boton-nuevo-header">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div class="md:flex md:items-center md:justify-between px-4 py-2">
+          <div class="my-2 flex sm:flex-row flex-col">
+            <div class="block relative">
+              <span class="h-full absolute inset-y-0 left-0 flex items-center pl-2">
+                <svg *ngIf="!flagBuscandoReservas" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-500 mb-1">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                </svg>
+                <svg *ngIf="flagBuscandoReservas" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke-width="1.5" stroke="currentColor" class="w-5 h-5 animate-spin text-secondaryColor">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                </svg>
+              </span>
+              <input #searchInput placeholder="Buscar"
+                class="appearance-none rounded-r rounded-l border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
+            </div>
+            <select [(ngModel)]="cantidadItems" (change)="cambiarPagina(1)"
+              class="bg-white text-sm focus:outline-none w-full md:w-max px-2 py-2 md:py-0 md:ml-2 mt-2 md:mt-0 border text-gray-600 border-gray-400 rounded">
+              <option value="10"> 10 elementos </option>
+              <option value="20"> 20 elementos </option>
+              <option value="50"> 50 elementos </option>
+              <option value="100"> 100 elementos </option>
+            </select>
+            <select [(ngModel)]="filtro.estado" (change)="cambiarPagina(1)"
+              class="bg-white text-sm focus:outline-none w-full md:w-max px-2 py-2 md:py-0 md:ml-2 mt-2 md:mt-0 border text-gray-600 border-gray-400 rounded">
+              <option value="Pendiente"> Pendientes </option>
+              <option value="Completada"> Completadas </option>
+              <option value="No retirada"> No retiradas </option>
+              <option value=""> Todas </option>
+            </select>
+            <input [(ngModel)]="filtro.fechaDesde" (change)="cambiarPagina(1)" type="date"
+              class="border w-full md:w-max mt-2 md:mt-0 text-sm focus:outline-none border-gray-400 p-2 rounded md:ml-2">
+            <input [(ngModel)]="filtro.fechaHasta" (change)="cambiarPagina(1)" type="date"
+              class="border w-full md:w-max text-sm mt-2 md:mt-0 focus:outline-none border-gray-400 p-2 rounded md:ml-2">
+          </div>
+        </div>
+
+        <div class="px-4 py-2 overflow-x-auto">
+          <div class="inline-block max-h-96 overflow-y-auto min-w-full pb-5">
+            <table class="min-w-full leading-normal">
+              <thead>
+                <tr class="border">
+                  <th
+                    class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('id')" class="cursor-pointer flex items-center focus:outline-none">
+                      <span> Número </span>
+                      <span class="ml-2 text-gray-600">
+                        <svg *ngIf="ordenar.columna == 'id' && ordenar.direccion == 'asc'" width="15" height="15"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'id' && ordenar.direccion == 'desc'" width="15" height="15"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'id'" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                          class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('usuarioGenerador')"
+                      class="cursor-pointer flex items-center focus:outline-none">
+                      <span> Generador </span>
+                      <span class="ml-2 text-gray-600">
+                        <svg *ngIf="ordenar.columna == 'usuarioGenerador' && ordenar.direccion == 'asc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'usuarioGenerador' && ordenar.direccion == 'desc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'usuarioGenerador'" width="15" height="15" viewBox="0 0 24 24"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('cliente')"
+                      class="cursor-pointer flex items-center focus:outline-none">
+                      <span> Cliente </span>
+                      <span class="ml-2 text-gray-600">
+                        <svg *ngIf="ordenar.columna == 'cliente' && ordenar.direccion == 'asc'" width="15" height="15"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'cliente' && ordenar.direccion == 'desc'" width="15" height="15"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'cliente'" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                          class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 border-b-2 border-gray-200 bg-gray-100 text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('fechaReserva')"
+                      class="cursor-pointer w-max flex items-center justify-center focus:outline-none">
+                      <span>
+                        Fecha de reserva
+                      </span>
+                      <span class="ml-2">
+                        <svg *ngIf="ordenar.columna == 'fechaReserva' && ordenar.direccion == 'asc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'fechaReserva' && ordenar.direccion == 'desc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'fechaReserva'" width="15" height="15" viewBox="0 0 24 24"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 border-b-2 border-gray-200 bg-gray-100 text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('fechaEntrega')"
+                      class="cursor-pointer w-max flex items-center justify-center focus:outline-none">
+                      <span>
+                        Fecha de entrega
+                      </span>
+                      <span class="ml-2">
+                        <svg *ngIf="ordenar.columna == 'fechaEntrega' && ordenar.direccion == 'asc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'fechaEntrega' && ordenar.direccion == 'desc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'fechaEntrega'" width="15" height="15" viewBox="0 0 24 24"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 border-b-2 border-gray-200 bg-gray-100 text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('horaEntrega')"
+                      class="cursor-pointer w-max flex items-center justify-center focus:outline-none">
+                      <span>
+                        Hora de entrega
+                      </span>
+                      <span class="ml-2">
+                        <svg *ngIf="ordenar.columna == 'horaEntrega' && ordenar.direccion == 'asc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'horaEntrega' && ordenar.direccion == 'desc'" width="15"
+                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'horaEntrega'" width="15" height="15" viewBox="0 0 24 24"
+                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-900 tracking-wider">
+                    <div (click)="ordenarPorColumna('activo')"
+                      class="cursor-pointer flex items-center focus:outline-none">
+                      <span>
+                        Estado
+                      </span>
+                      <span class="ml-2">
+                        <svg *ngIf="ordenar.columna == 'activo' && ordenar.direccion == 'asc'" width="15" height="15"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-chevron-down">
+                          <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna == 'activo' && ordenar.direccion == 'desc'" width="15" height="15"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-chevron-up">
+                          <polyline points="18 15 12 9 6 15"></polyline>
+                        </svg>
+                        <svg *ngIf="ordenar.columna != 'activo'" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                          class="feather feather-minus">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th
+                    class="px-5 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-900 tracking-wider">
+                    Acción
+                  </th>
+                </tr>
+              </thead>
+              <tbody *ngIf="reservas">
+                @for(reserva of reservas | paginate: {itemsPerPage:
+                cantidadItems, currentPage: paginaActual}; track reserva.id){
+                <tr class="animate__animated animate__fadeIn">
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <p class="text-gray-900 w-max whitespace-no-wrap">
+                      {{ reserva.id }}
+                    </p>
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <p class="text-gray-900 w-max whitespace-no-wrap">
+                      {{ reserva.usuarioCreador }}
+                    </p>
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <p class="text-gray-900 w-max whitespace-no-wrap">
+                      {{ reserva.cliente.descripcion }}
+                    </p>
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <p class="text-gray-900 whitespace-no-wrap">
+                      {{ reserva.fechaReserva | fecha }}
+                    </p>
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <p class="text-gray-900 whitespace-no-wrap">
+                      {{ reserva.fechaEntrega | fecha }}
+                    </p>
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <p class="text-gray-900 whitespace-no-wrap">
+                      {{ reserva.horaEntrega }} hs
+                    </p>
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                    <p [ngClass]="{
+                      'bg-yellow-100 border-yellow-300': reserva.estado == 'Pendiente',
+                      'bg-green-100 border-green-300': reserva.estado == 'Completada',
+                      'bg-red-100 border-red-300': reserva.estado == 'No retirada',
+                    }" class="text-gray-900 rounded border px-2 py-1 whitespace-no-wrap">
+                      {{ reserva.estado }}
+                    </p>
+                  </td>
+                  <td class="px-5 py-2 border-b border-gray-200 text-xs text-center">
+                    <span class="flex items-center justify-center text-gray-900 whitespace-no-wrap">
+                      <button [routerLink]="['/dashboard/detalles-reserva', reserva.id]" title="Detalles de reserva"
+                        class="p-2 rounded shadow focus:outline-none bg-fuchsia-600 hover:opacity-90 text-white ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                          stroke="currentColor" class="w-5 h-5">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                      </button>
+                    </span>
+                  </td>
+                </tr>
+                }@empty {
+                <tr class="p-4 text-white"> a </tr>
+                <tr class="w-full">
+                  <td colspan="8" class="text-gray-500 text-sm p-2 border border-gray-300 text-center bg-gray-50 mt-4">
+                    No se encontraron reservas </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div
+        class="px-5 py-5 mt-4 text-sm bg-white border-t flex shadow flex-col xs:flex-row items-center xs:justify-between">
+        <pagination-controls nextLabel="Siguiente" previousLabel="Anterior"
+          (pageChange)="cambiarPagina($event)"></pagination-controls>
+      </div>
+    </div>
+  </app-tarjeta-lista>
+</div>

@@ -196,6 +196,23 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/configBalanza/configBalanza.component'),
       },
 
+      // Reservas
+      {
+        path: 'nueva-reserva',
+        title: 'Nueva reserva',
+        loadComponent: () => import('./pages/reservas/reservas-nueva/reservas-nueva.component'),
+      },
+      {
+        path: 'detalles-reserva/:id',
+        title: 'Detalles de reserva',
+        loadComponent: () => import('./pages/reservas/reservas-detalles/reservas-detalles.component'),
+      },
+      {
+        path: 'reservas',
+        title: 'Listado de reservas',
+        loadComponent: () => import('./pages/reservas/reservas.component'),
+      },
+
     ]
   },
 

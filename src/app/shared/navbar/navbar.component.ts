@@ -18,6 +18,7 @@ export class NavbarComponent implements OnInit {
   public showSeccion = {
     ventas: false,
     productos: false,
+    reservas: false,
     cajas: false,
     configuraciones: false,
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../services/alert.service';
 import { DataService } from '../../services/data.service';
@@ -15,6 +15,7 @@ import { TarjetaListaComponent } from '../../components/tarjeta-lista/tarjeta-li
 import { FiltroIngresosPipe } from '../../pipes/filtro-ingresos.pipe';
 import { ProveedoresService } from '../../services/proveedores.service';
 import { FiltroProveedoresPipe } from '../../pipes/filtro-proveedores.pipe';
+import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -34,7 +35,11 @@ import { FiltroProveedoresPipe } from '../../pipes/filtro-proveedores.pipe';
   ],
   styleUrls: []
 })
-export default class IngresosComponent implements OnInit {
+export default class IngresosComponent implements OnInit, AfterViewInit {
+
+  // Flags
+  public estadoFormulario = 'crear';
+  public flagBuscandoIngresos: boolean = false;
 
   // Modal
   public showModalIngreso = false;
@@ -44,9 +49,6 @@ export default class IngresosComponent implements OnInit {
   public showBuscadorProveedores = false;
   public proveedores: any[] = [];
   public proveedorSeleccionado: any = null;
-
-  // Estado formulario
-  public estadoFormulario = 'crear';
 
   // Ingreso
   public ingresos: any = [];
@@ -89,6 +91,9 @@ export default class IngresosComponent implements OnInit {
     columna: 'id'
   }
 
+  @ViewChild('searchInput')
+  public searchInput?: ElementRef;
+
   constructor(
     private ingresosService: IngresosService,
     private authService: AuthService,
@@ -102,6 +107,23 @@ export default class IngresosComponent implements OnInit {
     this.dataService.ubicacionActual = 'Dashboard - Ingresos';
     this.alertService.loading();
     this.listarIngresos();
+  }
+
+  ngAfterViewInit(): void {
+
+    // Busqueda de reservas en el backend
+    fromEvent<any>(this.searchInput?.nativeElement, 'keyup')
+      .pipe(
+        map(event => event.target.value),
+        debounceTime(300),
+        distinctUntilChanged()
+      ).subscribe(text => {
+        this.filtro.parametro = text;
+        this.flagBuscandoIngresos = true;
+        this.paginaActual = 1;
+        this.listarIngresos();
+      })
+
   }
 
   // Abrir modal
@@ -147,6 +169,7 @@ export default class IngresosComponent implements OnInit {
       next: ({ ingresos, totalItems }) => {
         this.ingresos = ingresos;
         this.totalItems = totalItems;
+        this.flagBuscandoIngresos = false;
         this.showModalIngreso = false;
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
