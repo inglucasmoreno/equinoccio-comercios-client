@@ -36,32 +36,13 @@
         </div>
 
         <div class="flex items-center">
-          <input [(ngModel)]="filtroClientes.parametro" #searchInputClient type="text" placeholder="Nombre, DNI, CUIL"
+          <input [(ngModel)]="filtroClientes.parametro" #searchInputClient type="text" placeholder="DNI, CUIL o CUIT"
             class="border focus:outline-none border-gray-400 p-2 mt-4 w-52">
-            <svg *ngIf="flagBuscandoClientes" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mt-3 ml-2 text-secondaryColor animate-spin">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+          <button title="Buscar cliente" class="bg-gray-50 border border-gray-400 rounded p-2 hover:text-secondaryColor mt-4 ml-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
-        </div>
-
-        <div *ngIf="filtroClientes.parametro.trim() !== '' && clientes.length > 0" class="z-10 w-96 fixed border border-gray-400 bg-white mt-2">
-          <div class="bg-gray-50 flex items-center justify-between p-2 border-b border-gray-400 font-semibold">
-            <p> Listado de usuarios </p>
-            <button (click)="cerrarBusqueda()" title="Cerrar buscador" class="hover:text-secondaryColor">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-          <div class="max-h-96 overflow-y-auto">
-            <div (click)="seleccionarCliente(cliente)" *ngFor="let cliente of clientes" class="border-b border-gray-400 p-2 cursor-pointer hover:bg-purple-50 flex items-center">
-              <img class="w-14" src="assets/svg/cliente.svg">
-              <div class="ml-2">
-                <p class="font-semibold"> {{ cliente.descripcion }} </p>
-                <p class="text-xs text-gray-500"> {{ cliente.tipo_identificacion }} {{ cliente.identificacion }} </p>
-                <p *ngIf="cliente.telefono" class="text-xs text-gray-500"> Tel. {{ cliente.telefono }} </p>
-              </div>
-            </div>
-          </div>
+          </button>
         </div>
 
         <div *ngIf="clienteSeleccionado">
@@ -73,7 +54,7 @@
               <p *ngIf="clienteSeleccionado.telefono" class="text-xs text-gray-500"> Tel. {{ clienteSeleccionado.telefono }} </p>
             </div>
           </div>
-          <button (click)="deseleccionarCliente()" class="text-red-500 text-xs ml-2 border rounded border-red-300 bg-red-50 p-1 mt-4"> Seleccionar otro cliente </button>
+          <button (click)="deseleccionarCliente()" class="text-red-500 text-xs ml-2 border rounded border-red-300 bg-red-50 p-1 mt-4"> Cancelar seleccion </button>
         </div>
 
       </div>

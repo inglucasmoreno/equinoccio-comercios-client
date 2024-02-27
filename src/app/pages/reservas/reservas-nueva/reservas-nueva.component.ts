@@ -8,7 +8,6 @@ import { RouterModule } from '@angular/router';
 import { AlertService } from '../../../services/alert.service';
 import { DataService } from '../../../services/data.service';
 import { ClientesService } from '../../../services/clientes.service';
-import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
 
 @Component({
   standalone: true,
@@ -24,13 +23,11 @@ import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
   templateUrl: './reservas-nueva.component.html',
   styleUrls: []
 })
-export default class ReservasNuevaComponent implements OnInit, AfterViewInit {
+export default class ReservasNuevaComponent implements OnInit {
 
   // Reserva
 
   // Clientes
-  public flagBuscandoClientes: boolean = false;
-  public clientes: any[] = [];
   public clienteSeleccionado: any = null;
 
   // Filtro
@@ -53,55 +50,13 @@ export default class ReservasNuevaComponent implements OnInit, AfterViewInit {
     this.dataService.ubicacionActual = 'Dashboard - Nueva reserva';
   }
 
-  ngAfterViewInit(): void {
-
-    // Busqueda de clientes en el backend
-    fromEvent<any>(this.searchInputClient?.nativeElement, 'keyup')
-      .pipe(
-        map(event => event.target.value),
-        debounceTime(300),
-        distinctUntilChanged()
-      ).subscribe(text => {
-        this.clientes = [];
-        this.filtroClientes.parametro = text.trim();
-        if (this.filtroClientes.parametro !== '') {
-          this.flagBuscandoClientes = true;
-          this.buscarClientes();
-        }
-      })
-
-  }
-
-  // Evento de busqueda
-  eventoBusqueda(): void {
-
-    // Busqueda de clientes en el backend
-    fromEvent<any>(this.searchInputClient?.nativeElement, 'keyup')
-      .pipe(
-        map(event => event.target.value),
-        debounceTime(300),
-        distinctUntilChanged()
-      ).subscribe(text => {
-        this.clientes = [];
-        this.filtroClientes.parametro = text.trim();
-        if (this.filtroClientes.parametro !== '') {
-          this.flagBuscandoClientes = true;
-          this.buscarClientes();
-        }
-      })
-
-    }
-
   buscarClientes(): void {
-    this.flagBuscandoClientes = true;
     this.clientesService.listarClientes({
       direccion: this.filtroClientes.direccion,
       columna: this.filtroClientes.columna,
       parametro: this.filtroClientes.parametro,
     }).subscribe({
       next: ({ clientes }) => {
-        this.flagBuscandoClientes = false;
-        this.clientes = clientes;
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
   }
@@ -109,16 +64,11 @@ export default class ReservasNuevaComponent implements OnInit, AfterViewInit {
   seleccionarCliente(cliente: any): void {
     this.clienteSeleccionado = cliente;
     this.filtroClientes.parametro = '';
-    this.clientes = [];
   }
 
   deseleccionarCliente(): void {
     this.clienteSeleccionado = null;
     this.filtroClientes.parametro = '';
-  }
-
-  cerrarBusqueda(): void {
-    this.clientes = [];
   }
 
 }
