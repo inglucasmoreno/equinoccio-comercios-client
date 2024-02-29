@@ -1,4 +1,66 @@
-<div>
+<!-- Modal: Agregar producto -->
+<app-modal [showModal]="showModalProductos">
+  <div>
+    <div class="text-white text-lg flex p-2 rounded-t items-center bg-gray-900 justify-between">
+      <h1> Listado de productos </h1>
+      <button (click)="showModalProductos = false">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Busqueda de productos -->
+    <div *ngIf="!productoSeleccionado" class="p-2">
+
+      <div>
+        <input type="text" [(ngModel)]="filtroProductos.parametro" placeholder="Buscar producto"
+          class="input-generico w-64 text-sm">
+      </div>
+
+      @for(producto of productos | filtroProductos:filtroProductos.parametro:'true'; track producto.id){
+      <div (click)="seleccionarProducto(producto)"
+        class="p-2 border text-sm mt-2 border-gray-400 hover:border-secondaryColor hover:bg-purple-50 cursor-pointer">
+        <p class="font-semibold"> {{ producto.descripcion }} </p>
+        <p class="text-gray-500 text-xs"> ${{ producto.precioVenta | moneda }} x {{ producto.unidadMedida.descripcion }}
+        </p>
+      </div>
+      }@empty {
+      <div class="pt-3">
+        <p class="text-gray-500 text-sm italic p-2 bg-gray-50 border border-gray-400 rounded w-full"> No se encontraron
+          productos </p>
+      </div>
+      }
+    </div>
+
+    <!-- Producto seleccionado -->
+    <div class="p-2" *ngIf="productoSeleccionado">
+      <div class="ml-1">
+        <p class="font-semibold"> {{ productoSeleccionado?.descripcion }} </p>
+        <p class="text-gray-500 text-xs"> ${{ productoSeleccionado?.precioVenta | moneda }} x {{
+          productoSeleccionado?.unidadMedida?.descripcion }} </p>
+      </div>
+      <div class="flex items-center mt-2">
+        <input type="number" placeholder="Cantidad" class="input-generico w-46 text-sm">
+        <button title="Agregar producto" class="bg-green-700 hover:opacity-90 text-white p-2 ml-2 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+        </button>
+        <button title="Regresar" class="bg-red-700 hover:opacity-90 ml-2 text-white p-2 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</app-modal>
+
+<!-- Pagina principal -->
+<div class="gsap-contenido">
   <div class="border border-gray-400 mt-2 w-1/2 mx-auto">
 
     <!-- Header -->
@@ -19,7 +81,8 @@
       <div class="flex items-center justify-between">
         <div class="w-max text-center ml-2">
           <p class="font-semibold"> Fecha de reserva </p>
-          <input type="date" class="border focus:outline-none border-gray-400 p-2 mt-2">
+          <input [(ngModel)]="dataReserva.fechaReserva" type="date"
+            class="border focus:outline-none border-gray-400 p-2 mt-2">
         </div>
         <div class="text-center mr-2">
           <p class="font-semibold"> Precio total </p>
@@ -35,39 +98,55 @@
           Datos de cliente
         </div>
 
-        <div class="flex items-center">
-          <input [(ngModel)]="filtroClientes.parametro" #searchInputClient type="text" placeholder="DNI, CUIL o CUIT"
-            class="border focus:outline-none border-gray-400 p-2 mt-4 w-52">
-          <button title="Buscar cliente" class="bg-gray-50 border border-gray-400 rounded p-2 hover:text-secondaryColor mt-4 ml-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+        <div *ngIf="!clienteSeleccionado" class="flex items-center">
+          <input (keyup.enter)="buscarCliente()" [(ngModel)]="identificacionCliente" type="text"
+            placeholder="DNI, CUIL o CUIT" class="border focus:outline-none border-gray-400 p-2 mt-4 w-52">
+          <button (click)="buscarCliente()" title="Buscar cliente"
+            class="bg-gray-50 border border-gray-400 rounded p-2 hover:text-secondaryColor mt-4 ml-2">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
             </svg>
           </button>
         </div>
 
         <div *ngIf="clienteSeleccionado">
-          <div class="flex mt-4 w-max items-center" >
+          <div class="flex mt-4 w-max items-center">
             <img class="w-14" src="assets/svg/cliente.svg">
             <div>
               <p class="font-semibold"> {{ clienteSeleccionado.descripcion }} </p>
-              <p class="text-xs text-gray-500"> {{ clienteSeleccionado.tipo_identificacion }} {{ clienteSeleccionado.identificacion }} </p>
-              <p *ngIf="clienteSeleccionado.telefono" class="text-xs text-gray-500"> Tel. {{ clienteSeleccionado.telefono }} </p>
+              <p class="text-xs text-gray-500"> {{ clienteSeleccionado.tipo_identificacion }} {{
+                clienteSeleccionado.identificacion }} </p>
+              <p *ngIf="clienteSeleccionado.telefono" class="text-xs text-gray-500"> Tel. {{
+                clienteSeleccionado.telefono }} </p>
             </div>
           </div>
-          <button (click)="deseleccionarCliente()" class="text-red-500 text-xs ml-2 border rounded border-red-300 bg-red-50 p-1 mt-4"> Cancelar seleccion </button>
+          <button (click)="deseleccionarCliente()"
+            class="text-red-500 text-xs ml-2 border rounded border-red-300 bg-red-50 p-1 mt-4"> Cancelar seleccion
+          </button>
         </div>
 
       </div>
 
       <!-- Datos de producto -->
       <div class="p-2">
-        <div class="bg-gray-100 font-semibold p-2 border border-gray-400">
-          Datos de producto
+        <div class="bg-gray-100 font-semibold p-2 border border-gray-400 flex items-center justify-between">
+          <h2>
+            Datos de producto
+          </h2>
+          <button title="Agregar producto" (click)="abrirModalProductos()"
+            class="bg-white focus:outline-none rounded border border-gray-400 p-2 hover:text-secondaryColor">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+              stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+          </button>
         </div>
         <p class="text-gray-500 mt-2">
           Todavia no se cargo ningun producto
         </p>
-        <button class="p-2 rounded bg-secondaryColor hover:opacity-90 text-white mt-2">
+        <button (click)="abrirModalProductos()" class="p-2 rounded bg-secondaryColor hover:opacity-90 text-white mt-2">
           Agregar producto
         </button>
       </div>
@@ -77,8 +156,9 @@
         <div class="bg-gray-100 font-semibold p-2 border border-gray-400">
           Observaciones
         </div>
-        <textarea placeholder="Puede colocar una observacion aquí (No saldra en el comprobante)" class="w-full border border-gray-400 focus:outline-none p-2 mt-4"></textarea>
-
+        <textarea [(ngModel)]="dataReserva.observaciones"
+          placeholder="Puede colocar una observacion aquí (No saldra en el comprobante)"
+          class="w-full border border-gray-400 focus:outline-none p-2 mt-4"></textarea>
       </div>
 
     </div>

@@ -22,6 +22,12 @@ export class ClientesService {
     })
   }
 
+  getIdentificacion(identificacion: string): Observable<any> {
+    return this.http.get(`${urlApi}/identificacion/${identificacion}`, {
+      headers: this.getToken
+    })
+  }
+
   listarClientes({ direccion = 'desc', columna = 'descripcion', parametro = '' }): Observable<any> {
     return this.http.get(urlApi, {
       params: {
