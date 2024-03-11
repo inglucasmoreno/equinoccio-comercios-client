@@ -10,6 +10,26 @@ const urlApi = environments.base_url + '/productos';
 })
 export class ProductosService {
 
+  public showModalAbm = false;
+  public showModalAgregarProducto = false;
+
+  public estadoAbm: 'crear' | 'editar' = 'crear';
+  public productos: any[] = [];
+  public productoSeleccionado: any = null;
+  public abmForm = {
+    codigo: '',
+    descripcion: '',
+    cantidad: 0,
+    alertaStock: "false",
+    cantidadMinima: null,
+    precioCompra: null,
+    precioVenta: null,
+    porcentajeGanancia: null,
+    balanza: "false",
+    alicuota: "21",
+    unidadMedidaId: "1",
+  };
+
   get getToken(): any {
     return { 'Authorization': localStorage.getItem('token') }
   }
@@ -54,6 +74,45 @@ export class ProductosService {
     return this.http.patch(`${urlApi}/${id}`, data, {
       headers: this.getToken
     })
+  }
+
+  abrirAbm(estado: 'crear' | 'editar', producto: any = null): void {
+    this.estadoAbm = estado;
+    this.productoSeleccionado = producto;
+    this.showModalAbm = true;
+    if (estado === 'editar') {
+      this.abmForm = {
+        codigo: producto.codigo,
+        descripcion: producto.descripcion,
+        cantidad: producto.cantidad,
+        alertaStock: producto.alertaStock.toString(),
+        cantidadMinima: producto.cantidadMinima,
+        precioCompra: producto.precioCompra,
+        precioVenta: producto.precioVenta,
+        porcentajeGanancia: producto.porcentajeGanancia,
+        balanza: producto.balanza.toString(),
+        alicuota: producto.alicuota.toString(),
+        unidadMedidaId: producto.unidadMedidaId,
+      }
+    } else {
+      this.abmForm = {
+        codigo: '',
+        descripcion: '',
+        cantidad: 0,
+        alertaStock: "false",
+        cantidadMinima: null,
+        precioCompra: null,
+        precioVenta: null,
+        porcentajeGanancia: null,
+        balanza: "false",
+        alicuota: "21",
+        unidadMedidaId: "1",
+      }
+    }
+  }
+
+  abrirAgregarProducto(): void {
+
   }
 
 }

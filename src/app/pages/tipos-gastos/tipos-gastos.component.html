@@ -1,42 +1,7 @@
-<!-- Modal: Crear / Editar tipo -->
-<app-modal [showModal]="showModalTipo">
-  <div (keyup.enter)="estadoFormulario === 'crear' ? nuevoTipo() : actualizarTipo()">
-    <div class="flex items-center justify-between bg-gray-800 rounded-t p-2">
-      <h1 class=" text-white px-2 py-1 rounded-t text-lg"> {{ estadoFormulario == 'crear' ? 'Creando tipo' : 'Editando tipo' }} </h1>
-      <svg (click)="showModalTipo = false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-        class="cursor-pointer feather feather-x text-white mr-2">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-      </svg>
-    </div>
-    <div class="px-4 pt-2 max-h-96 overflow-y-auto text-sm">
-      <p class="font-semibold"> <span class="text-red-500"> * </span> Descripción </p>
-      <input [(ngModel)]="descripcion" class="input-generico w-full mt-2 mb-3" placeholder="Ej. Pago de sueldo" type="text">
-      <div *ngIf="tipoSeleccionado && estadoFormulario === 'editar'" class="xl:flex items-center mb-3">
-        <div class="xl:w-1/2">
-          <p class="font-semibold text-sm"> Fecha de alta </p>
-          <div class="border text-sm mt-2 border-gray-400 rounded p-2 bg-gray-100">
-            {{ tipoSeleccionado.createdAt | fecha }}
-          </div>
-        </div>
-        <div class="xl:ml-4 xl:w-1/2 mt-4 xl:mt-0">
-          <p class="font-semibold text-sm"> Usuario creador </p>
-          <div class="border text-sm capitalize mt-2 border-gray-400 rounded p-2 bg-gray-100">
-            {{ tipoSeleccionado.creatorUser.apellido.toLowerCase() }} {{
-            tipoSeleccionado.creatorUser.nombre.toLowerCase() }}
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="px-2 pb-2">
-      <button *ngIf="estadoFormulario == 'crear'" (click)="nuevoTipo()" class="boton-crear w-full"> Crear tipo
-      </button>
-      <button *ngIf="estadoFormulario == 'editar'" (click)="actualizarTipo()" class="boton-editar w-full mt-1">
-        Actualizar tipo </button>
-    </div>
-  </div>
-</app-modal>
+<app-abm-tipo-gasto
+  (insertEvent)="nuevoTipo($event)"
+  (updateEvent)="actualizarTipo($event)"
+></app-abm-tipo-gasto>
 
 <!-- Listado de tipos -->
 <div class="md:max-w-7xl mx-auto">
@@ -48,10 +13,10 @@
             <h2 class="text-xl md:text-2xl leading-tight">
               Tipos de gastos
             </h2>
-            <p> Total de tipos: {{ tipos.length }} </p>
+            <p> Total de tipos: {{ this.tiposGastosService.tipos.length }} </p>
           </div>
           <div>
-            <button title="Nuevo tipo" (click)="abrirModal('crear')" class="boton-nuevo-header">
+            <button title="Nuevo tipo" (click)="abrirAbm('crear')" class="boton-nuevo-header">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -185,8 +150,8 @@
                   </th>
                 </tr>
               </thead>
-              <tbody *ngIf="tipos">
-                @for(tipo of tipos | filtroTiposGastos:filtro.parametro:filtro.activo | paginate: {itemsPerPage:
+              <tbody *ngIf="tiposGastosService.tipos">
+                @for(tipo of tiposGastosService.tipos | filtroTiposGastos:filtro.parametro:filtro.activo | paginate: {itemsPerPage:
                 cantidadItems, currentPage: paginaActual}; track tipo.id){
                 <tr class="animate__animated animate__fadeIn">
                   <td class="px-5 py-2 border-b border-gray-200 text-xs">
@@ -204,7 +169,7 @@
                   </td>
                   <td class="px-5 py-2 border-b border-gray-200 text-xs text-center">
                     <span class="flex items-center justify-center text-gray-900 whitespace-no-wrap">
-                      <button (click)="abrirModal('editar', tipo)" title="Editar tipo" class="boton-editar ml-2">
+                      <button (click)="abrirAbm('editar', tipo)" title="Editar tipo" class="boton-editar ml-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                           stroke="currentColor" class="w-5 h-5">
                           <path stroke-linecap="round" stroke-linejoin="round"
@@ -226,7 +191,7 @@
           </div>
         </div>
       </div>
-      <div *ngIf="tipos.length > cantidadItems"
+      <div *ngIf="tiposGastosService.tipos.length > cantidadItems"
         class="px-5 text-sm py-5 mt-4 bg-white border-t flex shadow flex-col xs:flex-row items-center xs:justify-between">
         <pagination-controls nextLabel="Siguiente" previousLabel="Anterior"
           (pageChange)="paginaActual = $event"></pagination-controls>

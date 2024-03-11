@@ -8,10 +8,10 @@ import { RouterModule } from '@angular/router';
 import { PastillaEstadoComponent } from '../../components/pastilla-estado/pastilla-estado.component';
 import { TarjetaListaComponent } from '../../components/tarjeta-lista/tarjeta-lista.component';
 import { FiltroTiposGastosPipe } from '../../pipes/filtro-tipos-gastos.pipe';
-import { TiposGastosService } from '../../services/tipos-gastos.service';
-import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../services/alert.service';
 import { DataService } from '../../services/data.service';
+import { TiposGastosService } from '../../services/tipos-gastos.service';
+import AbmTipoGastoComponent from './abm-tipo-gasto/abm-tipo-gasto.component';
 
 @Component({
   standalone: true,
@@ -26,23 +26,12 @@ import { DataService } from '../../services/data.service';
     RouterModule,
     PastillaEstadoComponent,
     TarjetaListaComponent,
-    FiltroTiposGastosPipe
+    FiltroTiposGastosPipe,
+    AbmTipoGastoComponent
   ],
   styleUrls: []
 })
 export default class TiposGastosComponent implements OnInit {
-
-  // Modal
-  public showModalTipo = false;
-
-  // Estado formulario
-  public estadoFormulario = 'crear';
-
-  // Tipo
-  public idTipo: string = '';
-  public tipos: any = [];
-  public tipoSeleccionado: any;
-  public descripcion: string = '';
 
   // Paginacion
   public paginaActual: number = 1;
@@ -61,8 +50,7 @@ export default class TiposGastosComponent implements OnInit {
   }
 
   constructor(
-    private tiposGastosService: TiposGastosService,
-    private authService: AuthService,
+    public tiposGastosService: TiposGastosService,
     private alertService: AlertService,
     private dataService: DataService
   ) { }
@@ -73,30 +61,20 @@ export default class TiposGastosComponent implements OnInit {
     this.listarTipos();
   }
 
-  // Abrir modal
-  abrirModal(estado: string, tipo: any = null): void {
-    this.reiniciarFormulario();
-    this.descripcion = '';
-    this.idTipo = '';
-
-    if (estado === 'editar') this.getTipo(tipo);
-    else this.showModalTipo = true;
-
-    this.estadoFormulario = estado;
+  abrirAbm(estado: 'crear' | 'editar', tipo: any = null): void {
+    this.tiposGastosService.abrirAbm(estado, tipo);
   }
 
-  // Traer datos de tipo
-  getTipo(tipo: any): void {
-    this.alertService.loading();
-    this.idTipo = tipo.id;
-    this.tipoSeleccionado = tipo;
-    this.tiposGastosService.getTipo(tipo.id).subscribe({
-      next: ({ tipo }) => {
-        this.descripcion = tipo.descripcion;
-        this.alertService.close();
-        this.showModalTipo = true;
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    });
+  nuevoTipo(tipo): void {
+    this.tiposGastosService.tipos = [tipo, ...this.tiposGastosService.tipos];
+    this.alertService.close();
+  }
+
+  actualizarTipo(tipo): void {
+    const index = this.tiposGastosService.tipos.findIndex((t: any) => t.id === tipo.id);
+    this.tiposGastosService.tipos[index] = tipo;
+    this.tiposGastosService.tipos = [... this.tiposGastosService.tipos];
+    this.alertService.close();
   }
 
   // Listar tipos
@@ -107,59 +85,10 @@ export default class TiposGastosComponent implements OnInit {
     }
     this.tiposGastosService.listarTipos(parametros).subscribe({
       next: ({ tipos }) => {
-        this.tipos = tipos;
-        this.showModalTipo = false;
+        this.tiposGastosService.tipos = tipos;
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
-  }
-
-  // Nuevo tipo
-  nuevoTipo(): void {
-
-    // Verificacion: Descripción vacia
-    if (this.descripcion.trim() === "") {
-      this.alertService.info('Debes colocar una descripción');
-      return;
-    }
-
-    this.alertService.loading();
-
-    const data = {
-      descripcion: this.descripcion,
-      creatorUserId: this.authService.usuario.userId,
-    }
-
-    this.tiposGastosService.nuevoTipo(data).subscribe({
-      next: () => {
-        this.listarTipos();
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    })
-
-  }
-
-  // Actualizar tipo
-  actualizarTipo(): void {
-
-    // Verificacion: Descripción vacia
-    if (this.descripcion.trim() === "") {
-      this.alertService.info('Debes colocar una descripción');
-      return;
-    }
-
-    this.alertService.loading();
-
-    const data = {
-      descripcion: this.descripcion,
-    }
-
-    this.tiposGastosService.actualizarTipo(this.idTipo, data).subscribe({
-      next: () => {
-        this.alertService.loading();
-        this.listarTipos();
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    });
-
   }
 
   // Actualizar estado Activo/Inactivo
@@ -173,17 +102,11 @@ export default class TiposGastosComponent implements OnInit {
           this.alertService.loading();
           this.tiposGastosService.actualizarTipo(id, { activo: !activo }).subscribe({
             next: () => {
-              this.alertService.loading();
               this.listarTipos();
             }, error: ({ error }) => this.alertService.errorApi(error.message)
           })
         }
       });
-  }
-
-  // Reiniciando formulario
-  reiniciarFormulario(): void {
-    this.descripcion = '';
   }
 
   // Filtrar Activo/Inactivo
@@ -205,5 +128,4 @@ export default class TiposGastosComponent implements OnInit {
     this.alertService.loading();
     this.listarTipos();
   }
-
 }

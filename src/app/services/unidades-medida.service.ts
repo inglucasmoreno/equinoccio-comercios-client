@@ -10,6 +10,12 @@ const urlApi = environments.base_url + '/unidades-medida';
 })
 export class UnidadesMedidaService {
 
+  public estadoAbm: 'crear' | 'editar' = 'crear';
+  public showModalAbm = false;
+  public unidadesMedida: any[] = [];
+  public unidadMedidaSeleccionada: any = null;
+  public abmForm = { descripcion: '' };
+
   get getToken(): any {
     return { 'Authorization': localStorage.getItem('token') }
   }
@@ -47,6 +53,17 @@ export class UnidadesMedidaService {
     return this.http.patch(`${urlApi}/${id}`, data, {
       headers: this.getToken
     })
+  }
+
+  abrirAbm(estado: 'crear' | 'editar', unidad: any = null): void {
+    this.estadoAbm = estado;
+    this.unidadMedidaSeleccionada = unidad;
+    this.showModalAbm = true;
+    if(estado === 'editar'){
+      this.abmForm = { descripcion: unidad.descripcion }
+    }else{
+      this.abmForm = { descripcion: '' }
+    }
   }
 
 }

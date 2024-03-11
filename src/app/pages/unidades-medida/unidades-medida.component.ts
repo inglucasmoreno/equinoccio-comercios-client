@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { UnidadesMedidaService } from '../../services/unidades-medida.service';
-import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../services/alert.service';
 import { DataService } from '../../services/data.service';
 import { ModalComponent } from '../../components/modal/modal.component';
@@ -12,6 +11,7 @@ import { PastillaEstadoComponent } from '../../components/pastilla-estado/pastil
 import { RouterModule } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FiltroUnidadesMedidaPipe } from '../../pipes/filtro-unidades-medida.pipe';
+import AbmUnidadMedidaComponent from './abm-unidad-medida/abm-unidad-medida.component';
 
 @Component({
   standalone: true,
@@ -25,24 +25,13 @@ import { FiltroUnidadesMedidaPipe } from '../../pipes/filtro-unidades-medida.pip
     RouterModule,
     PastillaEstadoComponent,
     TarjetaListaComponent,
+    AbmUnidadMedidaComponent,
     FiltroUnidadesMedidaPipe
   ],
   templateUrl: './unidades-medida.component.html',
   styleUrls: []
 })
 export default class UnidadesMedidaComponent implements OnInit {
-
-  // Modal
-  public showModalUnidad = false;
-
-  // Estado formulario
-  public estadoFormulario = 'crear';
-
-  // Unidad de medida
-  public idUnidad: string = '';
-  public unidades: any = [];
-  public unidadSeleccionada: any;
-  public descripcion: string = '';
 
   // Paginacion
   public paginaActual: number = 1;
@@ -61,8 +50,7 @@ export default class UnidadesMedidaComponent implements OnInit {
   }
 
   constructor(
-    private unidadMedidaService: UnidadesMedidaService,
-    private authService: AuthService,
+    public unidadesMedidaService: UnidadesMedidaService,
     private alertService: AlertService,
     private dataService: DataService
   ) { }
@@ -73,30 +61,8 @@ export default class UnidadesMedidaComponent implements OnInit {
     this.listarUnidades();
   }
 
-  // Abrir modal
-  abrirModal(estado: string, unidad: any = null): void {
-    this.reiniciarFormulario();
-    this.descripcion = '';
-    this.idUnidad = '';
-
-    if (estado === 'editar') this.getUnidad(unidad);
-    else this.showModalUnidad = true;
-
-    this.estadoFormulario = estado;
-  }
-
-  // Traer datos de unidad
-  getUnidad(unidad: any): void {
-    this.alertService.loading();
-    this.idUnidad = unidad.id;
-    this.unidadSeleccionada = unidad;
-    this.unidadMedidaService.getUnidad(unidad.id).subscribe({
-      next: ({ unidad }) => {
-        this.descripcion = unidad.descripcion;
-        this.alertService.close();
-        this.showModalUnidad = true;
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    });
+  abrirAbm(estado: 'crear' | 'editar', unidad: any = null): void {
+    this.unidadesMedidaService.abrirAbm(estado, unidad);
   }
 
   // Listar unidades
@@ -105,63 +71,24 @@ export default class UnidadesMedidaComponent implements OnInit {
       direccion: this.ordenar.direccion,
       columna: this.ordenar.columna
     }
-    this.unidadMedidaService.listarUnidades(parametros).subscribe({
+    this.unidadesMedidaService.listarUnidades(parametros).subscribe({
       next: ({ unidades }) => {
-        this.unidades = unidades;
-        this.showModalUnidad = false;
+        this.unidadesMedidaService.unidadesMedida = unidades;
         this.alertService.close();
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    })
-  }
-
-  // Nueva unidad
-  nuevaUnidad(): void {
-
-    // Verificacion: Descripción vacia
-    if (this.descripcion.trim() === "") {
-      this.alertService.info('Debes colocar una descripción');
-      return;
-    }
-
-    this.alertService.loading();
-
-    const data = {
-      descripcion: this.descripcion,
-      creatorUserId: this.authService.usuario.userId
-    }
-
-    this.unidadMedidaService.nuevaUnidad(data).subscribe({
-      next: ({ unidad }) => {
-        this.unidades = [unidad, ...this.unidades];
-        this.showModalUnidad = false;
-        this.alertService.close();
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    })
-
-  }
-
-  // Actualizar unidad
-  actualizarUnidad(): void {
-
-    // Verificacion: Descripción vacia
-    if (this.descripcion.trim() === "") {
-      this.alertService.info('Debes colocar una descripción');
-      return;
-    }
-
-    this.alertService.loading();
-
-    const data = {
-      descripcion: this.descripcion,
-    }
-
-    this.unidadMedidaService.actualizarUnidad(this.idUnidad, data).subscribe({
-      next: () => {
-        this.alertService.loading();
-        this.listarUnidades();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     });
+  }
 
+  nuevaUnidad(unidad): void {
+    this.unidadesMedidaService.unidadesMedida = [unidad, ...this.unidadesMedidaService.unidadesMedida];
+    this.alertService.close();
+  }
+
+  actualizarUnidad(unidad): void {
+    const index = this.unidadesMedidaService.unidadesMedida.findIndex((u: any) => u.id === unidad.id);
+    this.unidadesMedidaService.unidadesMedida[index] = unidad;
+    this.unidadesMedidaService.unidadesMedida = [... this.unidadesMedidaService.unidadesMedida];
+    this.alertService.close();
   }
 
   // Actualizar estado Activo/Inactivo
@@ -173,19 +100,13 @@ export default class UnidadesMedidaComponent implements OnInit {
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();
-          this.unidadMedidaService.actualizarUnidad(id, { activo: !activo }).subscribe({
+          this.unidadesMedidaService.actualizarUnidad(id, { activo: !activo }).subscribe({
             next: () => {
-              this.alertService.loading();
               this.listarUnidades();
             }, error: ({ error }) => this.alertService.errorApi(error.message)
           })
         }
       });
-  }
-
-  // Reiniciando formulario
-  reiniciarFormulario(): void {
-    this.descripcion = '';
   }
 
   // Filtrar Activo/Inactivo

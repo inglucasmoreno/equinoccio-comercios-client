@@ -1,0 +1,38 @@
+<app-modal [showModal]="unidadesMedidaService.showModalAbm">
+  <div>
+    <div class="flex items-center justify-between bg-gray-800 rounded-t p-2">
+      <h1 class=" text-white px-2 py-1 rounded-t text-lg"> {{ unidadesMedidaService.estadoAbm == 'crear' ? 'Creando unidad' : 'Editando unidad' }} </h1>
+      <svg (click)="unidadesMedidaService.showModalAbm= false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="cursor-pointer feather feather-x text-white mr-2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </div>
+    <div class="px-4 pt-2 max-h-96 overflow-y-auto text-sm">
+      <p class="font-semibold"> <span class="text-red-500"> * </span> Descripción </p>
+      <input (keyup.enter)="submit()" [(ngModel)]="unidadesMedidaService.abmForm.descripcion" class="input-generico w-full mt-2 mb-2" placeholder="Ej. Kilogramo" type="text">
+      <div *ngIf="unidadesMedidaService.unidadMedidaSeleccionada && unidadesMedidaService.estadoAbm === 'editar'" class="xl:flex items-center">
+        <div class="xl:w-1/2">
+          <p class="font-semibold text-sm"> Fecha de alta </p>
+          <div class="border text-sm mt-2 border-gray-400 rounded p-2 bg-gray-100">
+            {{ unidadesMedidaService.unidadMedidaSeleccionada.createdAt | fecha }}
+          </div>
+        </div>
+        <div class="xl:ml-4 xl:w-1/2 xl:mt-0">
+          <p class="font-semibold text-sm"> Usuario creador </p>
+          <div class="border text-sm capitalize mt-2 border-gray-400 rounded p-2 bg-gray-100">
+            {{ unidadesMedidaService.unidadMedidaSeleccionada.creatorUser.apellido.toLowerCase() }} {{
+            unidadesMedidaService.unidadMedidaSeleccionada.creatorUser.nombre.toLowerCase() }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="px-4 pb-2">
+      <button *ngIf="unidadesMedidaService.estadoAbm == 'crear'" (click)="nuevaUnidad()" class="boton-crear w-full mt-1"> Crear unidad
+      </button>
+      <button *ngIf="unidadesMedidaService.estadoAbm == 'editar'" (click)="actualizarUnidad()" class="boton-editar w-full mt-4">
+        Actualizar unidad </button>
+    </div>
+  </div>
+</app-modal>

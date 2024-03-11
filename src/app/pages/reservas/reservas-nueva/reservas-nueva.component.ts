@@ -13,6 +13,8 @@ import { ProductosService } from '../../../services/productos.service';
 import { MonedaPipe } from '../../../pipes/moneda.pipe';
 import gsap from 'gsap';
 import { FiltroProductosPipe } from '../../../pipes/filtro-productos.pipe';
+import { AbmClienteComponent } from '../../clientes/abm-cliente/abm-cliente.component';
+import { AgregarProductoComponent } from '../../productos/agregar-producto/agregar-producto.component';
 
 @Component({
   standalone: true,
@@ -24,7 +26,9 @@ import { FiltroProductosPipe } from '../../../pipes/filtro-productos.pipe';
     NgxPaginationModule,
     RouterModule,
     MonedaPipe,
-    FiltroProductosPipe
+    FiltroProductosPipe,
+    AbmClienteComponent,
+    AgregarProductoComponent
   ],
   selector: 'app-reservas-nueva',
   templateUrl: './reservas-nueva.component.html',
@@ -33,16 +37,36 @@ import { FiltroProductosPipe } from '../../../pipes/filtro-productos.pipe';
 export default class ReservasNuevaComponent implements OnInit {
 
   // Flags
-  public showModalProductos: boolean = false;
+  public showModalGenerarReserva: boolean = false;
 
-  // Productos
-  public productos: any[] = [];
-  public productoSeleccionado: any = null;
+  // Carrito
+  public carrito: any[] = [];
 
   // Reserva
-  public dataReserva: any = {
+  public dataReserva = {
     fechaReserva: format(new Date(), 'yyyy-MM-dd'),
+    fechaEntrega: '',
+    fechaAlerta: '',
+    horaEntrega: '',
+    horaAntes: '',
+    tipoObservacion: 'General',
+    usuarioCreador: '',
+    fechaFinalizacion: '',
+    observaciones: '',
+    precioTotal: 0,
+    adelanto: null,
   };
+
+  // Observaciones torta
+  public dataObservacionesTorta: any = {
+    relleno1: '',
+    relleno2: '',
+    relleno3: '',
+    forma: '',
+    peso: null,
+    cobertura: '',
+    otrosDetalles: ''
+  }
 
   // Clientes
   public clienteSeleccionado: any = null;
@@ -62,36 +86,60 @@ export default class ReservasNuevaComponent implements OnInit {
 
   ngOnInit() {
     this.dataService.ubicacionActual = 'Dashboard - Nueva reserva';
-    gsap.from('.gsap-contenido', { y:100, opacity: 0, duration: .2 });
+    gsap.from('.gsap-contenido', { y: 100, opacity: 0, duration: .2 });
+  }
+
+  abrirAbmCliente(): void {
+    this.clientesService.abrirAbm('crear');
   }
 
   buscarCliente(): void {
-    if(this.identificacionCliente.trim() === '') return this.alertService.info('Ingrese una identificación');
+    if (this.identificacionCliente.trim() === '') return this.alertService.info('Ingrese una identificación');
     this.alertService.loading();
     this.clientesService.getIdentificacion(this.identificacionCliente).subscribe({
       next: ({ cliente }) => {
-        this.clienteSeleccionado = cliente;
-        this.identificacionCliente = '';
+        if (cliente) this.seleccionarCliente(cliente)
+        else this.abrirAbmCliente();
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     });
   }
 
-  abrirModalProductos(): void {
-    this.filtroProductos.parametro = '';
-    this.alertService.loading();
-    this.productosService.listarProductos({}).subscribe({
-      next: ({ productos }) => {
-        this.showModalProductos = true;
-        this.productos = productos;
-        this.alertService.close();
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    })
+  abrirModalAgregarProducto(): void {
+    this.productosService.showModalAgregarProducto = true;
   }
 
-  seleccionarProducto(cliente: any): void {
-    this.productoSeleccionado = cliente;
-    this.filtroProductos.parametro = '';
+  agregarProducto(producto): void {
+
+    // Se verifica si el producto esta cargado
+    const productoCargado = this.carrito.find(elemento => elemento.producto.id === producto.producto.id);
+    if (productoCargado) return this.alertService.info('El producto ya se encuentra cargado');
+
+    const productoCarrito = {
+      producto: producto.producto,
+      cantidad: producto.cantidad,
+      precioTotal: producto.precioTotal,
+      precioUnitario: producto.producto.precioVenta,
+    }
+    this.carrito = [...this.carrito, productoCarrito];
+    this.calcularPrecioTotal();
+
+  }
+
+  eliminarProducto(producto): void {
+    this.carrito = this.carrito.filter(elemento => elemento.producto.id !== producto.producto.id);
+    this.calcularPrecioTotal();
+  }
+
+  calcularPrecioTotal(): void {
+    this.dataReserva.precioTotal = 0;
+    this.carrito.forEach(producto => this.dataReserva.precioTotal += producto.precioTotal);
+  }
+
+  seleccionarCliente(cliente: any): void {
+    this.clienteSeleccionado = cliente;
+    this.identificacionCliente = '';
+    this.alertService.close();
   }
 
   deseleccionarCliente(): void {

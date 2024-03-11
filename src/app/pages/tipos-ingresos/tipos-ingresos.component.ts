@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../services/alert.service';
 import { DataService } from '../../services/data.service';
 import { FiltroTiposIngresosPipe } from '../../pipes/filtro-tipos-ingresos.pipe';
+import AbmTipoIngresoComponent from './abm-tipo-ingreso/abm-tipo-ingreso.component';
 
 @Component({
   standalone: true,
@@ -26,23 +27,12 @@ import { FiltroTiposIngresosPipe } from '../../pipes/filtro-tipos-ingresos.pipe'
     RouterModule,
     PastillaEstadoComponent,
     TarjetaListaComponent,
-    FiltroTiposIngresosPipe
+    FiltroTiposIngresosPipe,
+    AbmTipoIngresoComponent
   ],
   styleUrls: []
 })
 export default class TiposIngresosComponent implements OnInit {
-
-  // Modal
-  public showModalTipo = false;
-
-  // Estado formulario
-  public estadoFormulario = 'crear';
-
-  // Tipo
-  public idTipo: string = '';
-  public tipos: any = [];
-  public tipoSeleccionado: any;
-  public descripcion: string = '';
 
   // Paginacion
   public paginaActual: number = 1;
@@ -61,8 +51,7 @@ export default class TiposIngresosComponent implements OnInit {
   }
 
   constructor(
-    private tiposIngresosService: TiposIngresosService,
-    private authService: AuthService,
+    public tiposIngresosService: TiposIngresosService,
     private alertService: AlertService,
     private dataService: DataService
   ) { }
@@ -73,30 +62,8 @@ export default class TiposIngresosComponent implements OnInit {
     this.listarTipos();
   }
 
-  // Abrir modal
-  abrirModal(estado: string, tipo: any = null): void {
-    this.reiniciarFormulario();
-    this.descripcion = '';
-    this.idTipo = '';
-
-    if (estado === 'editar') this.getTipo(tipo);
-    else this.showModalTipo = true;
-
-    this.estadoFormulario = estado;
-  }
-
-  // Traer datos de tipo
-  getTipo(tipo: any): void {
-    this.alertService.loading();
-    this.idTipo = tipo.id;
-    this.tipoSeleccionado = tipo;
-    this.tiposIngresosService.getTipo(tipo.id).subscribe({
-      next: ({ tipo }) => {
-        this.descripcion = tipo.descripcion;
-        this.alertService.close();
-        this.showModalTipo = true;
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    });
+  abrirAbm(estado: 'crear' | 'editar', tipo: any = null): void {
+    this.tiposIngresosService.abrirAbm(estado, tipo);
   }
 
   // Listar tipos
@@ -107,59 +74,22 @@ export default class TiposIngresosComponent implements OnInit {
     }
     this.tiposIngresosService.listarTipos(parametros).subscribe({
       next: ({ tipos }) => {
-        this.tipos = tipos;
-        this.showModalTipo = false;
+        this.tiposIngresosService.tipos = tipos;
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
   }
 
-  // Nuevo tipo
-  nuevoTipo(): void {
-
-    // Verificacion: Descripción vacia
-    if (this.descripcion.trim() === "") {
-      this.alertService.info('Debes colocar una descripción');
-      return;
-    }
-
-    this.alertService.loading();
-
-    const data = {
-      descripcion: this.descripcion,
-      creatorUserId: this.authService.usuario.userId,
-    }
-
-    this.tiposIngresosService.nuevoTipo(data).subscribe({
-      next: () => {
-        this.listarTipos();
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    })
-
+  nuevoTipo(tipo): void {
+    this.tiposIngresosService.tipos = [tipo, ...this.tiposIngresosService.tipos];
+    this.alertService.close();
   }
 
-  // Actualizar tipo
-  actualizarTipo(): void {
-
-    // Verificacion: Descripción vacia
-    if (this.descripcion.trim() === "") {
-      this.alertService.info('Debes colocar una descripción');
-      return;
-    }
-
-    this.alertService.loading();
-
-    const data = {
-      descripcion: this.descripcion,
-    }
-
-    this.tiposIngresosService.actualizarTipo(Number(this.idTipo), data).subscribe({
-      next: () => {
-        this.alertService.loading();
-        this.listarTipos();
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    });
-
+  actualizarTipo(tipo): void {
+    const index = this.tiposIngresosService.tipos.findIndex((t: any) => t.id === tipo.id);
+    this.tiposIngresosService.tipos[index] = tipo;
+    this.tiposIngresosService.tipos = [... this.tiposIngresosService.tipos];
+    this.alertService.close();
   }
 
   // Actualizar estado Activo/Inactivo
@@ -173,17 +103,11 @@ export default class TiposIngresosComponent implements OnInit {
           this.alertService.loading();
           this.tiposIngresosService.actualizarTipo(id, { activo: !activo }).subscribe({
             next: () => {
-              this.alertService.loading();
               this.listarTipos();
             }, error: ({ error }) => this.alertService.errorApi(error.message)
           })
         }
       });
-  }
-
-  // Reiniciando formulario
-  reiniciarFormulario(): void {
-    this.descripcion = '';
   }
 
   // Filtrar Activo/Inactivo

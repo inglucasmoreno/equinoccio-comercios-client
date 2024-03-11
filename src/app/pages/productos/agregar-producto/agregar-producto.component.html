@@ -1,0 +1,61 @@
+<app-modal [showModal]="productosService.showModalAgregarProducto">
+  <div>
+    <div class="text-white text-lg flex p-2 rounded-t items-center bg-gray-900 justify-between">
+      <h1> Listado de productos </h1>
+      <button (click)="productosService.showModalAgregarProducto= false">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Busqueda de productos -->
+    <div *ngIf="!productoSeleccionado" class="p-2">
+
+      <div>
+        <input type="text" [(ngModel)]="filtroProductos.parametro" placeholder="Buscar producto"
+          class="input-generico w-64 text-sm">
+      </div>
+
+      <div class="max-h-96 overflow-y-auto">
+        @for(producto of productos | filtroProductos:filtroProductos.parametro:'true'; track producto.id){
+        <div (click)="seleccionarProducto(producto)"
+          class="p-2 border text-sm mt-2 border-gray-400 hover:border-secondaryColor hover:bg-purple-50 cursor-pointer">
+          <p class="font-semibold"> {{ producto.descripcion }} </p>
+          <p class="text-gray-500 text-xs"> ${{ producto.precioVenta | moneda }} x {{ producto.unidadMedida.descripcion }}
+          </p>
+        </div>
+        }@empty {
+        <div class="pt-3">
+          <p class="text-gray-500 text-sm italic p-2 bg-gray-50 border border-gray-400 rounded w-full"> No se encontraron
+            productos </p>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Producto seleccionado -->
+    <div class="p-2" *ngIf="productoSeleccionado">
+      <div class="ml-1">
+        <p class="font-semibold"> {{ productoSeleccionado?.descripcion }} </p>
+        <p class="text-gray-500 text-xs"> ${{ productoSeleccionado?.precioVenta | moneda }} x {{
+          productoSeleccionado?.unidadMedida?.descripcion }} </p>
+      </div>
+      <div class="flex items-center mt-2">
+        <input (keyup.enter)="agregarProducto()" [(ngModel)]="cantidad" type="number" placeholder="Cantidad" class="input-generico w-46 text-sm">
+        <button (click)="agregarProducto()" title="Agregar producto" class="bg-green-700 hover:opacity-90 text-white p-2 ml-2 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+        </button>
+        <button (click)="deseleccionarProducto()" title="Regresar" class="bg-red-700 hover:opacity-90 ml-2 text-white p-2 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</app-modal>

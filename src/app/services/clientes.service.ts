@@ -10,6 +10,19 @@ const urlApi = environments.base_url + '/clientes';
 })
 export class ClientesService {
 
+  public showModalAbm = false;
+
+  public estadoAbm: 'crear' | 'editar' = 'crear';
+  public clientes: any[] = [];
+  public clienteSeleccionado: any = null;
+  public abmForm = {
+    descripcion: '',
+    tipo_identificacion: 'DNI',
+    identificacion: '',
+    telefono: '',
+    domicilio: '',
+  };
+
   get getToken(): any {
     return { 'Authorization': localStorage.getItem('token') }
   }
@@ -49,6 +62,29 @@ export class ClientesService {
     return this.http.patch(`${urlApi}/${id}`, data, {
       headers: this.getToken
     })
+  }
+
+  abrirAbm(estado: 'crear' | 'editar', cliente: any = null): void {
+    this.estadoAbm = estado;
+    this.clienteSeleccionado = cliente;
+    this.showModalAbm = true;
+    if (estado === 'editar') {
+      this.abmForm = {
+        descripcion: cliente.descripcion,
+        tipo_identificacion: cliente.tipo_identificacion,
+        identificacion: cliente.identificacion,
+        telefono: cliente.telefono,
+        domicilio: cliente.domicilio,
+      }
+    } else {
+      this.abmForm = {
+        descripcion: '',
+        tipo_identificacion: 'DNI',
+        identificacion: '',
+        telefono: '',
+        domicilio: '',
+      }
+    }
   }
 
 }

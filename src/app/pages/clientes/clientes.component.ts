@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
 import { PastillaEstadoComponent } from '../../components/pastilla-estado/pastilla-estado.component';
 import { TarjetaListaComponent } from '../../components/tarjeta-lista/tarjeta-lista.component';
 import { FiltroClientesPipe } from '../../pipes/filtro-clientes.pipe';
+import { AbmClienteComponent } from './abm-cliente/abm-cliente.component';
 
 @Component({
   standalone: true,
@@ -26,30 +27,12 @@ import { FiltroClientesPipe } from '../../pipes/filtro-clientes.pipe';
     RouterModule,
     PastillaEstadoComponent,
     TarjetaListaComponent,
-    FiltroClientesPipe
+    FiltroClientesPipe,
+    AbmClienteComponent
   ],
   styleUrls: []
 })
 export default class ClientesComponent implements OnInit {
-
-  // Modal
-  public showModalCliente = false;
-
-  // Estado formulario
-  public estadoFormulario = 'crear';
-
-  // Cliente
-  public idCliente: string = '';
-  public clientes: any = [];
-  public clienteSeleccionado: any;
-
-  public clienteForm = {
-    descripcion: '',
-    tipo_identificacion: 'DNI',
-    identificacion: '',
-    telefono: '',
-    domicilio: '',
-  }
 
   // Paginacion
   public paginaActual: number = 1;
@@ -68,8 +51,7 @@ export default class ClientesComponent implements OnInit {
   }
 
   constructor(
-    private clientesService: ClientesService,
-    private authService: AuthService,
+    public clientesService: ClientesService,
     private alertService: AlertService,
     private dataService: DataService
   ) { }
@@ -80,35 +62,6 @@ export default class ClientesComponent implements OnInit {
     this.listarClientes();
   }
 
-  // Abrir modal
-  abrirModal(estado: string, cliente: any = null): void {
-    this.reiniciarFormulario();
-    this.idCliente = '';
-    if (estado === 'editar') this.getCliente(cliente);
-    else this.showModalCliente = true;
-    this.estadoFormulario = estado;
-  }
-
-  // Traer datos de cliente
-  getCliente(cliente: any): void {
-    this.alertService.loading();
-    this.idCliente = cliente.id;
-    this.clienteSeleccionado = cliente;
-    this.clientesService.getCliente(cliente.id).subscribe({
-      next: ({ cliente }) => {
-        this.clienteForm = {
-          descripcion: cliente.descripcion,
-          tipo_identificacion: cliente.tipo_identificacion,
-          identificacion: cliente.identificacion,
-          telefono: cliente.telefono,
-          domicilio: cliente.domicilio,
-        };
-        this.alertService.close();
-        this.showModalCliente = true;
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    });
-  }
-
   // Listar clientes
   listarClientes(): void {
     const parametros: any = {
@@ -117,48 +70,23 @@ export default class ClientesComponent implements OnInit {
     }
     this.clientesService.listarClientes(parametros).subscribe({
       next: ({ clientes }) => {
-        this.clientes = clientes;
-        this.showModalCliente = false;
+        this.clientesService.clientes = clientes;
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
   }
 
   // Nuevo cliente
-  nuevoCliente(): void {
-
-    if(this.verificacionDatos() !== '') return this.alertService.info(this.verificacionDatos());
-
-    this.alertService.loading();
-
-    const data = {
-      ...this.clienteForm,
-      creatorUserId: this.authService.usuario.userId
-    }
-
-    this.clientesService.nuevoCliente(data).subscribe({
-      next: () => {
-        this.alertService.loading();
-        this.listarClientes();
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    })
-
+  nuevoCliente(cliente): void {
+    this.clientesService.clientes = [cliente, ...this.clientesService.clientes];
+    this.alertService.close();
   }
 
-  // Actualizar cliente
-  actualizarCliente(): void {
-
-    if(this.verificacionDatos() !== '') return this.alertService.info(this.verificacionDatos());
-
-    this.alertService.loading();
-
-    this.clientesService.actualizarCliente(this.clienteSeleccionado.id, this.clienteForm).subscribe({
-      next: () => {
-        this.alertService.loading();
-        this.listarClientes();
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    });
-
+  actualizarCliente(cliente): void {
+    const index = this.clientesService.clientes.findIndex((t: any) => t.id === cliente.id);
+    this.clientesService.clientes[index] = cliente;
+    this.clientesService.clientes = [...this.clientesService.clientes];
+    this.alertService.close();
   }
 
   // Actualizar estado Activo/Inactivo
@@ -178,26 +106,6 @@ export default class ClientesComponent implements OnInit {
           })
         }
       });
-  }
-
-  // Verificacion de datos
-  verificacionDatos(): string {
-    const { descripcion, identificacion } = this.clienteForm;
-    let msg = '';
-    if(descripcion.trim() === '') msg = 'Debe colocar un Nombre o Razon Social';
-    else if(identificacion.trim() === '') msg = 'Debe colocar una identificación';
-    return msg;
-  }
-
-  // Reiniciando formulario
-  reiniciarFormulario(): void {
-    this.clienteForm = {
-      descripcion: '',
-      tipo_identificacion: 'DNI',
-      identificacion: '',
-      telefono: '',
-      domicilio: '',
-    }
   }
 
   // Filtrar Activo/Inactivo

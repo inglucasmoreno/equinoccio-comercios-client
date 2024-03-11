@@ -1,77 +1,90 @@
 <!-- Modal: Agregar producto -->
-<app-modal [showModal]="showModalProductos">
+<app-agregar-producto (insertEvent)="agregarProducto($event)">
+</app-agregar-producto>
+
+<!-- Modal: Nuevo cliente -->
+<app-abm-cliente (insertEvent)="seleccionarCliente($event)">
+</app-abm-cliente>
+
+<!-- Modal -->
+<app-modal [showModal]="true">
   <div>
-    <div class="text-white text-lg flex p-2 rounded-t items-center bg-gray-900 justify-between">
-      <h1> Listado de productos </h1>
-      <button (click)="showModalProductos = false">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-          class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-        </svg>
-      </button>
+    <div class="flex items-center justify-between bg-gray-800 rounded-t p-2">
+      <h1 class=" text-white px-2 py-1 rounded-t text-lg"> Generando reserva </h1>
+      <svg (click)="showModalGenerarReserva = false" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="cursor-pointer feather feather-x text-white mr-2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
     </div>
-
-    <!-- Busqueda de productos -->
-    <div *ngIf="!productoSeleccionado" class="p-2">
-
-      <div>
-        <input type="text" [(ngModel)]="filtroProductos.parametro" placeholder="Buscar producto"
-          class="input-generico w-64 text-sm">
+    <div class="bg-white text-sm">
+      <div class="bg-gray-100 border-b border-gray-400 p-2 flex items-center justify-between">
+        <p> <span class="font-semibold"> Fecha de reserva: </span> {{ dataReserva.fechaReserva | fecha }} </p>
+        <p> <span class="font-semibold"> Precio total: </span> ${{ dataReserva.precioTotal | moneda }} </p>
       </div>
-
-      @for(producto of productos | filtroProductos:filtroProductos.parametro:'true'; track producto.id){
-      <div (click)="seleccionarProducto(producto)"
-        class="p-2 border text-sm mt-2 border-gray-400 hover:border-secondaryColor hover:bg-purple-50 cursor-pointer">
-        <p class="font-semibold"> {{ producto.descripcion }} </p>
-        <p class="text-gray-500 text-xs"> ${{ producto.precioVenta | moneda }} x {{ producto.unidadMedida.descripcion }}
-        </p>
-      </div>
-      }@empty {
-      <div class="pt-3">
-        <p class="text-gray-500 text-sm italic p-2 bg-gray-50 border border-gray-400 rounded w-full"> No se encontraron
-          productos </p>
-      </div>
-      }
-    </div>
-
-    <!-- Producto seleccionado -->
-    <div class="p-2" *ngIf="productoSeleccionado">
-      <div class="ml-1">
-        <p class="font-semibold"> {{ productoSeleccionado?.descripcion }} </p>
-        <p class="text-gray-500 text-xs"> ${{ productoSeleccionado?.precioVenta | moneda }} x {{
-          productoSeleccionado?.unidadMedida?.descripcion }} </p>
-      </div>
-      <div class="flex items-center mt-2">
-        <input type="number" placeholder="Cantidad" class="input-generico w-46 text-sm">
-        <button title="Agregar producto" class="bg-green-700 hover:opacity-90 text-white p-2 ml-2 rounded">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-          </svg>
+      <div class="p-2">
+        <div class="text-center mt-1">
+          <p class="font-semibold"> Fecha y hora de entrega </p>
+          <div class="mt-2 flex items-center">
+            <input [(ngModel)]="dataReserva.fechaEntrega" type="date" class="input-generico w-1/2">
+            <input [(ngModel)]="dataReserva.horaEntrega" type="time" class="input-generico w-1/2 ml-2">
+          </div>
+        </div>
+        <div class="text-center mt-3">
+          <p class="font-semibold"> La alerta se activará </p>
+          <select class="input-generico w-full mt-2">
+            <option value="1"> 1 hora antes </option>
+            <option value="2"> 2 hora antes </option>
+            <option value="3"> 3 hora antes </option>
+            <option value="4"> 4 hora antes </option>
+            <option value="5"> 5 hora antes </option>
+          </select>
+        </div>
+        <div class="text-center mt-3">
+          <p class="font-semibold"> Coloca tu nombre </p>
+          <input type="text" placeholder="Ej. Moreno Lucas Omar" class="input-generico w-full mt-2">
+        </div>
+        <div class="border-t flex items-center border-gray-400 pt-2 mt-4">
+          <div class="w-1/2">
+            <p class="text-center font-semibold"> Monto de seña </p>
+            <input type="number" placeholder="Ej. 3000" class="input-generico text-center w-full">
+          </div>
+          <div class="w-1/2 ml-2">
+            <p class="font-semibold text-center"> Falta pagar </p>
+            <div class="p-2 text-center bg-gray-200 rounded w-full border border-gray-400">
+              $ {{ 5000 | moneda }}
+            </div>
+          </div>
+        </div>
+        <button class="p-2 bg-secondaryColor text-white rounded w-full mt-4 hover:opacity-90">
+          Generar reserva
         </button>
-        <button title="Regresar" class="bg-red-700 hover:opacity-90 ml-2 text-white p-2 rounded">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-          </svg>
-        </button>
       </div>
     </div>
-
   </div>
 </app-modal>
 
 <!-- Pagina principal -->
 <div class="gsap-contenido">
-  <div class="border border-gray-400 mt-2 w-1/2 mx-auto">
+  <div class="border border-gray-400 mt-2 w-1/2 mb-4 mx-auto">
 
     <!-- Header -->
-    <div class="bg-gray-900 text-white flex items-center border border-gray-900 p-2 text-xl">
-      <button title="Regresar" routerLink="/dashboard/reservas" class="hover:text-secondaryColor p-2 shadow rounded">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-          class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+    <div class="bg-gray-900 text-white flex items-center justify-between border border-gray-900 p-2 text-xl">
+      <div class="flex items-center">
+        <button title="Regresar" routerLink="/dashboard/reservas" class="hover:text-secondaryColor p-2 shadow rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+          </svg>
+        </button>
+        <h1 class="ml-1"> Nueva Reserva </h1>
+      </div>
+      <button title="Completar reserva" class="p-2 text-gray-900 hover:text-secondaryColor bg-white rounded">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
         </svg>
       </button>
-      <h1 class="ml-1"> Nueva Reserva </h1>
     </div>
 
     <!-- Body -->
@@ -87,7 +100,7 @@
         <div class="text-center mr-2">
           <p class="font-semibold"> Precio total </p>
           <div class="w-40 p-2 bg-gray-200 mt-2 font-semibold text-center border border-gray-400">
-            $ 0,00
+            ${{ dataReserva.precioTotal | moneda }}
           </div>
         </div>
       </div>
@@ -135,7 +148,7 @@
           <h2>
             Datos de producto
           </h2>
-          <button title="Agregar producto" (click)="abrirModalProductos()"
+          <button title="Agregar producto" (click)="abrirModalAgregarProducto()"
             class="bg-white focus:outline-none rounded border border-gray-400 p-2 hover:text-secondaryColor">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="w-5 h-5">
@@ -143,22 +156,99 @@
             </svg>
           </button>
         </div>
-        <p class="text-gray-500 mt-2">
-          Todavia no se cargo ningun producto
-        </p>
-        <button (click)="abrirModalProductos()" class="p-2 rounded bg-secondaryColor hover:opacity-90 text-white mt-2">
-          Agregar producto
-        </button>
+
+        <div class="max-h-96 overflow-y-auto">
+          @for(producto of carrito; track producto.producto.id){
+            <div class="p-2 border my-2 flex items-center justify-between border-gray-400">
+              <div>
+                <p class="font-semibold"> {{ producto.producto.descripcion }} </p>
+                <p class="text-gray-500 text-xs mt-1"> ${{ producto.producto.precioVenta | moneda }} x {{ producto.producto.unidadMedida.descripcion }} </p>
+                <p class="text-gray-500 text-xs mt-1"> Cantidad: {{ producto.cantidad }} </p>
+                <p class="font-semibold mt-1"> Precio: ${{ producto.precioTotal | moneda }} </p>
+              </div>
+              <div class="mr-2">
+                <button (click)="eliminarProducto(producto)" title="Eliminar producto" class="p-2 bg-red-700 hover:opacity-90 text-white rounded">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          }@empty {
+          <div>
+            <p class="text-gray-500 mt-2">
+              Todavia no se cargo ningun producto
+            </p>
+            <button (click)="abrirModalAgregarProducto()"
+              class="p-2 rounded bg-secondaryColor hover:opacity-90 text-white mt-2">
+              Agregar producto
+            </button>
+          </div>
+          }
+        </div>
+
       </div>
 
       <!-- Datos de producto -->
       <div class="p-2">
-        <div class="bg-gray-100 font-semibold p-2 border border-gray-400">
-          Observaciones
+        <div class="bg-gray-100 flex items-center justify-between p-2 border border-gray-400">
+          <h2 class="font-semibold"> Observaciones </h2>
+          <select [(ngModel)]="dataReserva.tipoObservacion" class="input-generico">
+            <option value="General"> General </option>
+            <option value="Torta"> Torta </option>
+          </select>
         </div>
-        <textarea [(ngModel)]="dataReserva.observaciones"
-          placeholder="Puede colocar una observacion aquí (No saldra en el comprobante)"
-          class="w-full border border-gray-400 focus:outline-none p-2 mt-4"></textarea>
+        <div *ngIf="dataReserva.tipoObservacion === 'General'">
+          <textarea [(ngModel)]="dataReserva.observaciones"
+            placeholder="Puede colocar una observacion aquí (No saldra en el comprobante)"
+            class="w-full border border-gray-400 focus:outline-none p-2 mt-4"></textarea>
+        </div>
+        <div *ngIf="dataReserva.tipoObservacion === 'Torta'">
+          <div class="p-2 mt-2">
+            <div class="flex items-center">
+              <div class="w-1/2">
+                <p class="font-semibold"> <span class="text-red-500"> * </span> Relleno 1 </p>
+                <input [(ngModel)]="dataObservacionesTorta.relleno1" type="text" class="input-generico w-full mt-2" placeholder="Ej. Chocolate">
+              </div>
+              <div class="ml-2 w-1/2">
+                <p class="font-semibold"> Relleno 2 </p>
+                <input [(ngModel)]="dataObservacionesTorta.relleno2" type="text" class="input-generico w-full mt-2" placeholder="Ej. Vainilla">
+              </div>
+            </div>
+          </div>
+          <div class="p-2 mt-1">
+            <div class="flex items-center">
+              <div class="w-1/2">
+                <p class="font-semibold"> Relleno 3 </p>
+                <input [(ngModel)]="dataObservacionesTorta.relleno3" type="text" class="input-generico w-full mt-2" placeholder="Ej. Frutilla">
+              </div>
+              <div class="ml-2 w-1/2">
+                <p class="font-semibold"> <span class="text-red-500"> * </span> Forma </p>
+                <input [(ngModel)]="dataObservacionesTorta.forma" type="text" class="input-generico w-full mt-2" placeholder="Ej. Vainilla">
+              </div>
+            </div>
+          </div>
+          <div class="p-2 mt-1">
+            <div class="flex items-center">
+              <div class="w-1/2">
+                <p class="font-semibold"> <span class="text-red-500"> * </span> Peso (kg) </p>
+                <input [(ngModel)]="dataObservacionesTorta.peso" type="number" class="input-generico w-full mt-2" placeholder="Ej. 1.5">
+              </div>
+              <div class="ml-2 w-1/2">
+                <p class="font-semibold"> <span class="text-red-500"> * </span> Cobertura </p>
+                <input [(ngModel)]="dataObservacionesTorta.cobertura" type="text" class="input-generico w-full mt-2" placeholder="Ej. Chocolate">
+              </div>
+            </div>
+          </div>
+          <div class="p-2">
+            <p class="font-semibold"> Detalles de torta </p>
+            <textarea [(ngModel)]="dataObservacionesTorta.otrosDetalles" placeholder="Otros detalles de la torta" class="input-generico w-full mt-2"></textarea>
+          </div>
+          <div class="px-2">
+            <p class="font-semibold"> Observaciones generales (No impacta en comprobante) </p>
+            <textarea [(ngModel)]="dataReserva.observaciones" placeholder="Puede colocar una observación aquí (No saldra en el comprobante)" class="input-generico w-full mt-2"></textarea>
+          </div>
+        </div>
       </div>
 
     </div>

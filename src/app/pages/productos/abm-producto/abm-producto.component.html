@@ -1,0 +1,130 @@
+<app-modal [showModal]="productosService.showModalAbm">
+  <div>
+    <div class="flex items-center justify-between bg-gray-800 rounded-t p-2">
+      <h1 class=" text-white px-2 py-1 rounded-t text-lg"> {{ productosService.estadoAbm == 'crear' ? 'Creando producto' :
+        'Editando producto' }} </h1>
+      <svg (click)="productosService.showModalAbm = false" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="cursor-pointer feather feather-x text-white mr-2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </div>
+    <div class="px-4 pt-2 max-h-96 overflow-y-auto text-sm">
+      <div class="flex items-center">
+        <div class="w-1/2">
+          <p class="font-semibold"> <span class="text-red-500"> * </span> Descripción </p>
+          <input (keyup.enter)="submit()" [(ngModel)]="productosService.abmForm.descripcion" class="input-generico w-full mt-2"
+            placeholder="Ej. Coca cola" type="text">
+        </div>
+        <div class="w-1/2 ml-2">
+          <p class="font-semibold"> <span class="text-red-500"> * </span> Balanza </p>
+          <select (change)="adaptandoUnidadMedida()" [(ngModel)]="productosService.abmForm.balanza" class="input-generico w-full mt-2">
+            <option value="false"> No </option>
+            <option value="true"> Si </option>
+          </select>
+        </div>
+      </div>
+      <div class="flex items-center mt-2">
+        <div class="w-1/2">
+          <p class="font-semibold"> <span class="text-red-500"> * </span> Unidad de medida </p>
+          <select [(ngModel)]="productosService.abmForm.unidadMedidaId" class="input-generico w-full mt-2">
+            <option value=""> Seleccionar unidad </option>
+            <option *ngFor="let unidad of unidadesMedida" [value]="unidad.id"> {{ unidad.descripcion }} </option>
+          </select>
+        </div>
+        <div class="w-1/2 ml-2">
+          <p class="font-semibold"> Código </p>
+          <div class="flex items-center">
+            <input (keyup.enter)="adaptandoCodigo()" [(ngModel)]="productosService.abmForm.codigo" class="input-generico w-full mt-2"
+              placeholder="Ej. 110002220" type="text">
+            <button *ngIf="productosService.abmForm.balanza === 'false'" (click)="generarCodigo()" title="Generar código" class="ml-2 p-2 hover:text-secondaryColor border border-gray-400 mt-2 bg-gray-100 rounded">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="border border-gray-400 mt-3">
+        <p class="bg-gray-50 p-2 text-sm font-semibold border-b border-gray-400"> Datos de precio </p>
+        <div class="px-2 mt-2 flex items-center">
+          <div class="w-1/2">
+            <p class="font-semibold"> Precio compra </p>
+            <input (keyup)="calcularPrecioVenta()" type="number" min="0" step="0.01"
+              [(ngModel)]="productosService.abmForm.precioCompra" class="input-generico w-full mt-2" placeholder="Ej. 2500">
+          </div>
+          <div class="w-1/2 ml-2">
+            <p class="font-semibold"> % Ganancia </p>
+            <input [disabled]="!productosService.abmForm.precioCompra || productosService.abmForm.precioCompra < 0"
+              (keyup)="calcularPrecioVenta()" type="number" min="0" step="0.01"
+              [(ngModel)]="productosService.abmForm.porcentajeGanancia" class="input-generico w-full mt-2" placeholder="Ej. 5">
+          </div>
+        </div>
+        <div class="p-2 flex items-center">
+          <div class="w-1/2">
+            <p class="font-semibold"> <span class="text-red-500"> * </span> Precio venta </p>
+            <input
+              [disabled]="productosService.abmForm.precioCompra > 0 && productosService.abmForm.porcentajeGanancia > 0" type="number" min="0"
+              step="0.01" [(ngModel)]="productosService.abmForm.precioVenta" class="input-generico w-full mt-2"
+              placeholder="Ej. 3000">
+          </div>
+          <div class="w-1/2 ml-2">
+            <p class="font-semibold"> <span class="text-red-500"> * </span> Alicuota </p>
+            <select [(ngModel)]="productosService.abmForm.alicuota" class="input-generico w-full mt-2">
+              <option value="21">21</option>
+              <option value="10.5">10.5</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="border border-gray-400 mt-3">
+        <p class="bg-gray-50 p-2 text-sm font-semibold border-b border-gray-400"> Datos de stock </p>
+        <div class="p-2 flex items-center">
+          <div class="w-1/3">
+            <p class="font-semibold"> <span class="text-red-500"> * </span> Cantidad </p>
+            <input (keyup.enter)="submit()" type="number" min="0" step="0.01" [(ngModel)]="productosService.abmForm.cantidad"
+              class="input-generico w-full mt-2" placeholder="Ej. 2500">
+          </div>
+          <div class="w-1/3 ml-2">
+            <p class="font-semibold"> Alerta </p>
+            <select (change)="cambioAlerta()" [(ngModel)]="productosService.abmForm.alertaStock" class="input-generico w-full mt-2">
+              <option value="false"> Sin alerta </option>
+              <option value="true"> Con alerta </option>
+            </select>
+          </div>
+          <div class="w-1/3 ml-2">
+            <p class="font-semibold"> <span *ngIf="productosService.abmForm.alertaStock === 'true'" class="text-red-500"> * </span>
+              Cantidad minima </p>
+            <input (keyup.enter)="submit()" [(ngModel)]="this.productosService.abmForm.cantidadMinima"
+              [disabled]="productosService.abmForm.alertaStock === 'false'" type="number" min="0" step="0.01"
+              class="input-generico w-full mt-2" placeholder="Ej. 10">
+          </div>
+        </div>
+      </div>
+      <div *ngIf="productosService.productoSeleccionado && productosService.estadoAbm === 'editar'" class="xl:flex items-center mt-4">
+        <div class="xl:w-1/2">
+          <p class="font-semibold text-sm"> Fecha de alta </p>
+          <div class="border text-sm mt-2 border-gray-400 rounded p-2 bg-gray-100">
+            {{ productosService.productoSeleccionado.createdAt | fecha }}
+          </div>
+        </div>
+        <div class="xl:ml-4 xl:w-1/2 mt-4 xl:mt-0">
+          <p class="font-semibold text-sm"> Usuario creador </p>
+          <div class="border text-sm capitalize mt-2 border-gray-400 rounded p-2 bg-gray-100">
+            {{ productosService.productoSeleccionado.creatorUser.apellido.toLowerCase() }} {{
+            productosService.productoSeleccionado.creatorUser.nombre.toLowerCase() }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="px-2 mt-1 pb-2">
+      <button *ngIf="productosService.estadoAbm == 'crear'" (click)="nuevoProducto()" class="boton-crear w-full mt-4"> Crear
+        producto
+      </button>
+      <button *ngIf="productosService.estadoAbm == 'editar'" (click)="actualizarProducto()" class="boton-editar w-full mt-4">
+        Actualizar producto </button>
+    </div>
+  </div>
+</app-modal>

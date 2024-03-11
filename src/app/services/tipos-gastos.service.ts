@@ -10,6 +10,12 @@ const urlApi = environments.base_url + '/tipos-gastos';
 })
 export class TiposGastosService {
 
+  public estadoAbm: 'crear' | 'editar' = 'crear';
+  public showModalAbm = false;
+  public tipos: any[] = [];
+  public tipoSeleccionado: any = null;
+  public abmForm = { descripcion: '' };
+
   get getToken(): any {
     return { 'Authorization': localStorage.getItem('token') }
   }
@@ -43,6 +49,17 @@ export class TiposGastosService {
     return this.http.patch(`${urlApi}/${id}`, data, {
       headers: this.getToken
     })
+  }
+
+  abrirAbm(estado: 'crear' | 'editar', tipo: any = null): void {
+    this.estadoAbm = estado;
+    this.tipoSeleccionado = tipo;
+    this.showModalAbm = true;
+    if (estado === 'editar') {
+      this.abmForm = { descripcion: tipo.descripcion }
+    } else {
+      this.abmForm = { descripcion: '' }
+    }
   }
 
 }
