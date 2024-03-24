@@ -120,7 +120,6 @@
   </div>
 
   <div class="w-full lg:w-1/2 mt-2 lg:mt-0 h-full">
-    <!-- Creacion de usuario -->
     <div class="bg-white border shadow border-gray-400 p-4 rounded ">
       <div class="flex mb-2">
         <div *ngIf="usuarioForm.value.role === 'ADMIN_ROLE'"
@@ -134,14 +133,12 @@
         <div class="ml-4 mt-2">
           <div class="mt-1">
 
-            <!-- Usuario de sistema -->
             <div class="text-xl lg:text-3xl">
               <p *ngIf="usuarioForm.value.usuario.trim() !== ''" class="font-semibold"> {{ usuarioForm.value.usuario }}
               </p>
               <p class="text-gray-400" *ngIf="usuarioForm.value.usuario.trim() == ''"> Nombre de usuario </p>
             </div>
 
-            <!-- Apellido y Nombre -->
             <div class="text-md lg:text-2xl">
               <p *ngIf="usuarioForm.value.nombre.trim() || usuarioForm.value.apellido.trim()" class="capitalize"> {{
                 usuarioForm.value.nombre.toLowerCase() }} {{ usuarioForm.value.apellido.toLowerCase() }} </p>
@@ -150,7 +147,6 @@
                 Nombre </p>
             </div>
 
-            <!-- Correo electronico -->
             <div class="text-xs lg:text-lg text-gray-400">
               <p *ngIf="usuarioForm.value.email.trim() !== ''"> {{ usuarioForm.value.email.toLowerCase() }} </p>
               <p *ngIf="usuarioForm.value.email.trim() == ''"> Correo electrónico </p>
@@ -160,6 +156,5 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>

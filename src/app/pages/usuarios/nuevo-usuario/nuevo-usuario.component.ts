@@ -13,6 +13,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './nuevo-usuario.component.html',
   imports: [
     RouterModule,
+    FormsModule,
     ReactiveFormsModule,
     CommonModule
   ],
@@ -55,11 +56,16 @@ export default class NuevoUsuarioComponent implements OnInit {
   // Modelo reactivo
   public usuarioForm: FormGroup;
 
+  // Listado de sucursales
+  public sucursales: any[] = [];
+  public sucursalSeleccionada: any = '';
+  public sucursalesAsignadas: any[] = [];
+
   constructor(private fb: FormBuilder,
     private router: Router,
     private usuariosService: UsuariosService,
     private alertService: AlertService,
-    private dataService: DataService
+    private dataService: DataService,
   ) { }
 
   ngOnInit(): void {

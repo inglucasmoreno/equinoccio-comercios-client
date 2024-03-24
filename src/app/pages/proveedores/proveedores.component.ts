@@ -9,7 +9,6 @@ import { PastillaEstadoComponent } from '../../components/pastilla-estado/pastil
 import { TarjetaListaComponent } from '../../components/tarjeta-lista/tarjeta-lista.component';
 import { FiltroProveedoresPipe } from '../../pipes/filtro-proveedores.pipe';
 import { ProveedoresService } from '../../services/proveedores.service';
-import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../services/alert.service';
 import { DataService } from '../../services/data.service';
 import AbmProveedorComponent from './abm-proveedor/abm-proveedor.component';

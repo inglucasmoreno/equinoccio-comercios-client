@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environments } from '../../environments/environments';
+import { generales } from '../constants/generales';
 
 const urlApi = environments.base_url + '/ventas';
 

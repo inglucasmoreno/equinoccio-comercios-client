@@ -3,11 +3,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FechaPipe } from '../../../pipes/fecha.pipe';
 import { ModalComponent } from '../../../components/modal/modal.component';
-import { NgxPaginationModule } from 'ngx-pagination';
 import { RouterModule } from '@angular/router';
-import { PastillaEstadoComponent } from '../../../components/pastilla-estado/pastilla-estado.component';
-import { TarjetaListaComponent } from '../../../components/tarjeta-lista/tarjeta-lista.component';
-import { FiltroProveedoresPipe } from '../../../pipes/filtro-proveedores.pipe';
 import { AuthService } from '../../../services/auth.service';
 import { AlertService } from '../../../services/alert.service';
 import { ProveedoresService } from '../../../services/proveedores.service';
@@ -22,11 +18,7 @@ import { ProveedoresService } from '../../../services/proveedores.service';
     FormsModule,
     FechaPipe,
     ModalComponent,
-    NgxPaginationModule,
     RouterModule,
-    PastillaEstadoComponent,
-    TarjetaListaComponent,
-    FiltroProveedoresPipe
   ]
 })
 export default class AbmProveedorComponent implements OnInit {
