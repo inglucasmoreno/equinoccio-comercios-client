@@ -78,6 +78,13 @@ export default class ReservasNuevaComponent implements OnInit {
     horasAntes: '3',
     fechaAlerta: '',
     tipoObservacion: 'General',
+    tortaRelleno1: '',
+    tortaRelleno2: '',
+    tortaRelleno3: '',
+    tortaForma: '',
+    tortaPeso: null,
+    tortaCobertura: '',
+    tortaDetalles: ''
   };
 
   // Venta
@@ -96,17 +103,6 @@ export default class ReservasNuevaComponent implements OnInit {
   public pagaCon: number = null;
 
   public formasPagoArray: any[] = formasPagoArray;
-
-  // Observaciones torta
-  public dataObservacionesTorta: any = {
-    relleno1: '',
-    relleno2: '',
-    relleno3: '',
-    forma: '',
-    peso: null,
-    cobertura: '',
-    otrosDetalles: ''
-  }
 
   // Clientes
   public clienteSeleccionado: any = null;
@@ -136,6 +132,21 @@ export default class ReservasNuevaComponent implements OnInit {
   // TODO: Reserva
 
   abrirCompletarReserva(): void {
+
+    const { 
+      tipoObservacion,
+      tortaRelleno1,
+      tortaForma,
+      tortaPeso,
+      tortaCobertura
+    } = this.dataReserva;
+
+    // Verificacion: Observaciones de torta
+    if (tipoObservacion === 'Torta' && tortaRelleno1.trim() === '') return this.alertService.info('Debe colocar el primer relleno de la torta');
+    if (tipoObservacion === 'Torta' && tortaForma.trim() === '') return this.alertService.info('Debe colocar la forma de la torta');
+    if (tipoObservacion === 'Torta' && !tortaPeso) return this.alertService.info('Debe colocar el peso de la torta');
+    if (tipoObservacion === 'Torta' && tortaCobertura.trim() === '') return this.alertService.info('Debe colocar la cobertura de la torta');
+
     this.showModalGenerarReserva = true;
     this.dataReserva.adelanto = this.dataReserva.precioTotal / 2;
     this.calcularFaltaPagarReserva();
@@ -457,6 +468,13 @@ export default class ReservasNuevaComponent implements OnInit {
             horasAntes: this.dataReserva.horasAntes,
             tipoObservacion: this.dataReserva.tipoObservacion,
             fechaAlerta,
+            tortaRelleno1: this.dataReserva.tipoObservacion === 'Torta' ? this.dataReserva.tortaRelleno1 : '',
+            tortaRelleno2: this.dataReserva.tipoObservacion === 'Torta' ? this.dataReserva.tortaRelleno2 : '',
+            tortaRelleno3: this.dataReserva.tipoObservacion === 'Torta' ? this.dataReserva.tortaRelleno3 : '',
+            tortaForma: this.dataReserva.tipoObservacion === 'Torta' ? this.dataReserva.tortaForma : '',
+            tortaPeso: this.dataReserva.tipoObservacion === 'Torta' ? this.dataReserva.tortaPeso : 0,
+            tortaCobertura: this.dataReserva.tipoObservacion === 'Torta' ? this.dataReserva.tortaCobertura : '',
+            tortaDetalles: this.dataReserva.tipoObservacion === 'Torta' ? this.dataReserva.tortaDetalles : '',
             creatorUserId: this.authService.usuario.userId
           }
 
