@@ -26,10 +26,17 @@ import { format } from 'date-fns';
 })
 export default class ReservasDetallesComponent implements OnInit {
 
+  // Flag
+  public showActualizarUsuarioGenerador: boolean = false;
+  public showActualizarObservaciones: boolean = false;
+
   public fechaReserva: string = '';
   public fechaEntrega: string = '';
   public horaEntrega: string = '';
   public reserva: any = null;
+
+  public usuarioGenerador: string = '';
+  public observaciones: string = '';
 
   constructor(
     private reservasService: ReservasService,
@@ -60,5 +67,63 @@ export default class ReservasDetallesComponent implements OnInit {
       }
     })
   }
+
+  actualizarFechaReserva(): void {
+
+    if(!this.fechaReserva){
+      this.alertService.info('Debe colocar una fecha de reserva vàlida');
+      return;
+    }
+
+    this.alertService.loading();
+
+    this.reservasService.actualizarReserva(this.reserva.id, { fechaReserva: this.fechaReserva }).subscribe({
+      next: () => {
+        this.alertService.success('Fecha de reserva actualizada!');
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    })
+
+  }
+
+  abrirActualizarUsuarioGenerador(): void {
+    this.showActualizarUsuarioGenerador = true;
+    this.usuarioGenerador = this.reserva.usuarioCreador;
+  }
+
+  abrirActualizarObservaciones(): void {
+    this.showActualizarObservaciones = true;
+    this.observaciones = this.reserva.observaciones;
+  }
+
+  actualizarUsuarioGenerador(): void {
+      
+      if(this.usuarioGenerador === ''){
+        this.alertService.info('Debe colocar un usuario generador');
+        return;
+      }
+  
+      this.alertService.loading();
+  
+      this.reservasService.actualizarReserva(this.reserva.id, { usuarioCreador: this.usuarioGenerador }).subscribe({
+        next: ({ reserva }) => {
+          this.alertService.success('Usuario generador actualizado!');
+          this.reserva.usuarioCreador = reserva.usuarioCreador;
+          this.showActualizarUsuarioGenerador = false;
+        }, error: ({ error }) => this.alertService.errorApi(error.message)
+      })
+  }
+
+  actualizarObservaciones(): void {
+      
+    this.alertService.loading();
+
+    this.reservasService.actualizarReserva(this.reserva.id, { observaciones: this.observaciones }).subscribe({
+      next: ({ reserva }) => {
+        this.alertService.success('Observaciones actualizadas!');
+        this.reserva.observaciones = reserva.observaciones;
+        this.showActualizarObservaciones = false;
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    })
+}
 
 }
