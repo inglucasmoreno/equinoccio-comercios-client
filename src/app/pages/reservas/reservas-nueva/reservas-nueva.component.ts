@@ -21,6 +21,7 @@ import { formasPagoArrayMulti } from '../../../constants/formasPagoArrayMulti';
 import { AuthService } from '../../../services/auth.service';
 import { VentasService } from '../../../services/ventas.service';
 import { ReservasService } from '../../../services/reservas.service';
+import { VentasReservasService } from '../../../services/ventas-reservas.service';
 
 interface FormaPago {
   valor: number;
@@ -121,6 +122,7 @@ export default class ReservasNuevaComponent implements OnInit {
     private authService: AuthService,
     private ventasService: VentasService,
     private reservasService: ReservasService,
+    private ventasReservasService: VentasReservasService,
     private router: Router
   ) { }
 
@@ -133,7 +135,7 @@ export default class ReservasNuevaComponent implements OnInit {
 
   abrirCompletarReserva(): void {
 
-    const { 
+    const {
       tipoObservacion,
       tortaRelleno1,
       tortaForma,
@@ -382,8 +384,10 @@ export default class ReservasNuevaComponent implements OnInit {
     const venta: any = {
       comprobante: this.comprobante,
       precioTotal: this.precioTotalVenta,
-      totalBalanza: this.totalBalanza,
-      totalNoBalanza: this.totalNoBalanza,
+      totalAdelantoReserva: this.precioTotalVenta,
+      totalCompletarReserva: 0,
+      totalBalanza: 0,
+      totalNoBalanza: 0,
       precioTotalLimpio: this.precioTotalLimpio,
       adicionalCredito: !this.multiplesFormasPago && this.formaPago === 'Credito' ? this.adicionalCredito : 0,
       creatorUserId: this.authService.usuario.userId
@@ -424,11 +428,11 @@ export default class ReservasNuevaComponent implements OnInit {
       nroComprobante: 0,
     }
 
-    const data = {
+    const dataVenta = {
       dataVenta: venta,
       dataFacturacion: facturacion,
       dataFormasPago: formasPago,
-      dataProductos: productos,
+      dataProductos: [],
       dataOtros: {
         imprimirTicket: this.imprimirTicket
       }
@@ -438,7 +442,7 @@ export default class ReservasNuevaComponent implements OnInit {
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
 
-          // this.alertService.loading();
+          this.alertService.loading();
 
           // Adaptando - Fechas
           let fechaEntregaCompleta = this.dataReserva.fechaEntrega + ':' + this.dataReserva.horaEntrega;
@@ -477,21 +481,30 @@ export default class ReservasNuevaComponent implements OnInit {
             tortaDetalles: this.dataReserva.tipoObservacion === 'Torta' ? this.dataReserva.tortaDetalles : '',
             creatorUserId: this.authService.usuario.userId
           }
-
+          // Se crea la reserva
           this.reservasService.nuevaReserva(dataReserva).subscribe({
-            next: () => {
-              this.router.navigateByUrl('/dashboard/reservas');
-              this.alertService.close();
+            next: ({ reserva }) => {
+              // Se crea la venta
+              this.ventasService.nuevaVenta(dataVenta).subscribe({
+                next: ({ venta }) => {
+                  const dataVentaReserva = {
+                    ventaId: venta.id,
+                    reservaId: reserva.id,
+                    tipo: 'Adelanto',
+                    creatorUserId: this.authService.usuario.userId
+                  }
+                  // Se crea la relacion -> Venta - Reserva
+                  this.ventasReservasService.nuevaVentaReserva(dataVentaReserva).subscribe({
+                    next: () => {
+                      this.router.navigateByUrl('/dashboard/reservas');
+                      this.alertService.close();
+                    }, error: ({ error }) => this.alertService.errorApi(error.message)
+                  })
+                }, error: ({ error }) => this.alertService.errorApi(error.message)
+              })
             }, error: ({ error }) => this.alertService.errorApi(error.message)
           })
-          // this.ventasService.nuevaVenta(data).subscribe({
-          //   next: () => {
-          //     this.router.navigateByUrl('/dashboard/reservas');
-          //     this.alertService.close();
-          //   }, error: ({ error }) => this.alertService.errorApi(error.message)
-          // })
         }
-
       });
 
   }
