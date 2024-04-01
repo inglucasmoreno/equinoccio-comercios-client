@@ -154,11 +154,14 @@
     <li (click)="mostrarOcultarSeccion('reservas')" routerLinkActive="bg-secondaryColor rounded"
       class="flex justify-between items-center outline-none cursor-pointer p-2">
       <div class="flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-          class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
-        </svg>
+        <span *ngIf="!dataService.showAlertaReservaBarra">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+        </span>
+        <span class="bg-orange-100 rounded" *ngIf="dataService.showAlertaReservaBarra">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><style>@keyframes rotate{0%{transform:rotate(0)}to{transform:rotate(360deg)}}</style><rect width="16" height="16" x="4" y="4" stroke="#0A0A30" stroke-width="1.5" rx="8"/><path stroke="#0A0A30" stroke-linecap="round" stroke-width="1.5" d="M12.021 12l2.325 2.325"/><path stroke="#265BFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12.021 12V6.84" style="animation:rotate 2s linear infinite both;transform-origin:center"/></svg>
+        </span>
         <a class="ml-2 mt-1"> Reservas </a>
       </div>
       <div class="mt-2">

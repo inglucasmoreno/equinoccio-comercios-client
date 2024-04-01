@@ -43,6 +43,12 @@ export class ReservasService {
     })
   }
 
+  reservasPorVencer(): Observable<any> {
+    return this.http.get(`${urlApi}/estado/por-vencer`, {
+      headers: this.getToken
+    })
+  }
+
   nuevaReserva(data: any): Observable<any> {
     return this.http.post(urlApi, data, {
       headers: this.getToken

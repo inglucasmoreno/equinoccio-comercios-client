@@ -8,7 +8,7 @@ import { ReservasService } from '../../../services/reservas.service';
 import { DataService } from '../../../services/data.service';
 import { AlertService } from '../../../services/alert.service';
 import { MonedaPipe } from '../../../pipes/moneda.pipe';
-import { format } from 'date-fns';
+import { add, format } from 'date-fns';
 import { generales } from '../../../constants/generales';
 import { formasPagoArray } from '../../../constants/formasPagoArray';
 import { formasPagoArrayMulti } from '../../../constants/formasPagoArrayMulti';
@@ -48,6 +48,7 @@ export default class ReservasDetallesComponent implements OnInit {
   public fechaReserva: string = '';
   public fechaEntrega: string = '';
   public horaEntrega: string = '';
+  public horasAntes: string = '';
 
   // Reserva
   public reserva: any = null;
@@ -113,6 +114,7 @@ export default class ReservasDetallesComponent implements OnInit {
         this.fechaReserva = format(reserva.fechaReserva, 'yyyy-MM-dd');
         this.fechaEntrega = format(reserva.fechaEntrega, 'yyyy-MM-dd');
         this.horaEntrega = reserva.horaEntrega;
+        this.horasAntes = reserva.horasAntes;
         this.reserva = reserva;
         this.alertService.close();
       },
@@ -129,14 +131,24 @@ export default class ReservasDetallesComponent implements OnInit {
       return;
     }
 
-    this.alertService.loading();
+    this.alertService.question({ msg: '¿Quieres actualizar la fecha de reserva?', buttonText: 'Aceptar' })
+      .then(({ isConfirmed }) => {
+        if (isConfirmed) {
 
-    this.reservasService.actualizarReserva(this.reserva.id, { fechaReserva: this.fechaReserva }).subscribe({
-      next: () => {
-        this.alertService.success('Fecha de reserva actualizada!');
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
-    })
+          this.alertService.loading();
 
+          this.reservasService.actualizarReserva(this.reserva.id, { fechaReserva: this.fechaReserva }).subscribe({
+            next: () => {
+              this.alertService.success('Fecha de reserva actualizada!');
+            }, error: ({ error }) => {
+              this.fechaReserva = format(this.reserva.fechaReserva, 'yyyy-MM-dd');
+              this.alertService.errorApi(error.message);
+            }
+          })
+        }else{
+          this.fechaReserva = format(this.reserva.fechaReserva, 'yyyy-MM-dd');
+        }
+      });
   }
 
   abrirActualizarUsuarioGenerador(): void {
@@ -319,8 +331,8 @@ export default class ReservasDetallesComponent implements OnInit {
 
   completarReserva(): void {
 
-     // Si la forma de pago es pedidosYa y el nroComprobante esta vacio se debe colocar el nroComprobante
-     if ((this.formaPago === 'PedidosYa - Efectivo' || this.formaPago === 'PedidosYa - Online') && !this.multiplesFormasPago) {
+    // Si la forma de pago es pedidosYa y el nroComprobante esta vacio se debe colocar el nroComprobante
+    if ((this.formaPago === 'PedidosYa - Efectivo' || this.formaPago === 'PedidosYa - Online') && !this.multiplesFormasPago) {
       if (this.pedidosYaComprobante === '') {
         this.alertService.info('Debe colocar el nro de comprobante');
         return;
@@ -436,6 +448,7 @@ export default class ReservasDetallesComponent implements OnInit {
               this.reserva.estado = 'No retirada';
               this.reserva.activo = false;
               this.showModalCompletar = false;
+              this.dataService.alertaReservas();
               this.router.navigateByUrl('/dashboard/reservas');
             }, error: ({ error }) => this.alertService.errorApi(error.message)
           })
@@ -445,18 +458,53 @@ export default class ReservasDetallesComponent implements OnInit {
 
   altaReserva(): void {
     this.alertService.question({ msg: '¿Quieres dar de alta la reserva?', buttonText: 'Aceptar' })
-    .then(({ isConfirmed }) => {
-      if (isConfirmed) {
-        this.alertService.loading();
-        this.reservasService.actualizarReserva(this.reserva.id, { estado: 'Pendiente', activo: true }).subscribe({
-          next: () => {
-            this.reserva.estado = 'Pendiente';
-            this.reserva.activo = true;
-            this.alertService.success('Reserva dada de alta!');
-          }, error: ({ error }) => this.alertService.errorApi(error.message)
-        })
-      }
-    });
+      .then(({ isConfirmed }) => {
+        if (isConfirmed) {
+          this.alertService.loading();
+          this.reservasService.actualizarReserva(this.reserva.id, { estado: 'Pendiente', activo: true }).subscribe({
+            next: () => {
+              this.reserva.estado = 'Pendiente';
+              this.reserva.activo = true;
+              this.dataService.alertaReservas();
+              this.alertService.success('Reserva dada de alta!');
+            }, error: ({ error }) => this.alertService.errorApi(error.message)
+          })
+        }
+      });
+  }
+
+  actualizarFechaAlerta(): void {
+
+    let fechaEntregaCompleta = this.fechaEntrega + ':' + this.horaEntrega;
+    let fechaAlerta = format(add(new Date(fechaEntregaCompleta), { hours: -Number(this.horasAntes) }), 'yyyy-MM-dd:HH:mm');
+
+    this.alertService.question({ msg: '¿Quieres actualizar la fecha de entrega?', buttonText: 'Aceptar' })
+      .then(({ isConfirmed }) => {
+        if (isConfirmed) {
+          this.alertService.loading();
+          this.reservasService.actualizarReserva(this.reserva.id, {
+            fechaEntrega: this.fechaEntrega,
+            horaEntrega: this.horaEntrega,
+            horasAntes: this.horasAntes,
+            fechaAlerta
+          }).subscribe({
+            next: () => {
+              this.dataService.alertaReservas();
+              this.alertService.success('Fecha actualizada correctamente!');
+            }, error: ({ error }) => {
+              this.fechaEntrega = format(this.reserva.fechaEntrega, 'yyyy-MM-dd');
+              this.horasAntes = this.reserva.horasAntes;
+              this.horaEntrega = this.reserva.horaEntrega;
+              this.alertService.errorApi(error.message);
+            }
+          })
+        }
+        else {
+          this.fechaEntrega = format(this.reserva.fechaEntrega, 'yyyy-MM-dd');
+          this.horasAntes = this.reserva.horasAntes;
+          this.horaEntrega = this.reserva.horaEntrega;
+        }
+      });
   }
 
 }

@@ -125,7 +125,6 @@ export default class CierreCajaComponent implements OnInit {
         this.totalIngresos = totales.totalIngresos;
         this.totalGastos = totales.totalGastos;
         this.alertService.close();
-        console.log(totales);
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
   }

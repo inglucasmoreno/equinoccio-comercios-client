@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AlertService } from './alert.service';
 import { ConfigGeneralesService } from './config-generales.service';
+import { ReservasService } from './reservas.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,15 @@ export class DataService {
   public mascaraProducto: string = '';
   public mascaraPeso: string = '';
 
+  // Alerta de reservas
+  public showAlertaReserva: Boolean = false;
+  public showAlertaReservaBarra: Boolean = false;
+  public cantidadReservasPorVencer: number = 0;
+  public audioReserva = new Audio();
+
   constructor(
     private alertService: AlertService,
+    private reservasService: ReservasService,
     private configGeneralesService: ConfigGeneralesService,
   ) { }
 
@@ -43,6 +51,34 @@ export class DataService {
         this.mascaraPeso = mascaraPeso;
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
+  }
+
+  // Consultar reservas por vencer
+  alertaReservas(): void {
+    this.reservasService.reservasPorVencer().subscribe({
+      next: ({ reservas }) => {
+        if (reservas.length > 0) {
+          this.cantidadReservasPorVencer = reservas.length;
+          this.showAlertaReserva = true;
+          this.showAlertaReservaBarra = true;
+          this.sonidoReserva();
+        } else {
+          this.showAlertaReserva = false;
+          this.showAlertaReservaBarra = false;
+        }
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    })
+  }
+
+  // Sonido - Alerta -> Reserva por vencer
+  sonidoReserva(): void {
+    this.audioReserva.src = "assets/sounds/Alert-Reserva.wav";
+    this.audioReserva.load();
+    this.audioReserva.play();
+  }
+
+  cerrarAlertaReservas(): void {
+    this.showAlertaReserva = false;
   }
 
 }

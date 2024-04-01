@@ -1,0 +1,20 @@
+<div *ngIf="dataService.showAlertaReserva" class="fixed z-20 bg-white w-56 text-sm border right-5 bottom-5 border-gray-400 shadow-2xl">
+  <div class="border-t-8 border-orange-400 p-2">
+    <div class="text-center">
+      <h1 class="font-semibold">
+        Reservas por vencer!
+      </h1>
+    </div>
+    <div class="flex items-center justify-center mt-1">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none"><style>@keyframes rotate{0%{transform:rotate(0)}to{transform:rotate(360deg)}}</style><rect width="16" height="16" x="4" y="4" stroke="#0A0A30" stroke-width="1.5" rx="8"/><path stroke="#0A0A30" stroke-linecap="round" stroke-width="1.5" d="M12.021 12l2.325 2.325"/><path stroke="#265BFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12.021 12V6.84" style="animation:rotate 2s linear infinite both;transform-origin:center"/></svg>
+    </div>
+    <div class="flex items-center justify-between mt-2">
+      <button routerLink="/dashboard/reservas" class="boton-crear w-1/2">
+        Ir a reservas
+      </button>
+      <button (click)="dataService.cerrarAlertaReservas()" class="boton-eliminar w-1/2 ml-2">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>

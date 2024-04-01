@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../shared/header/header.component';
 import { NavbarComponent } from '../shared/navbar/navbar.component';
+import AlertaReservaComponent from '../components/alerta-reserva/alerta-reserva.component';
 
 @Component({
   selector: 'app-pages',
@@ -12,6 +13,7 @@ import { NavbarComponent } from '../shared/navbar/navbar.component';
     RouterOutlet,
     HeaderComponent,
     NavbarComponent,
+    AlertaReservaComponent
   ],
   templateUrl: './pages.component.html',
   styleUrls: []

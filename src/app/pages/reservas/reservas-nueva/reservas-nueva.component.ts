@@ -497,6 +497,7 @@ export default class ReservasNuevaComponent implements OnInit {
                   this.ventasReservasService.nuevaVentaReserva(dataVentaReserva).subscribe({
                     next: () => {
                       this.router.navigateByUrl('/dashboard/reservas');
+                      this.dataService.alertaReservas();
                       this.alertService.close();
                     }, error: ({ error }) => this.alertService.errorApi(error.message)
                   })
