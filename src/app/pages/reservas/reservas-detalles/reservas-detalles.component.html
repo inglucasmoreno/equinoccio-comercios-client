@@ -1,5 +1,33 @@
+<!-- Modal: Actualizar Horas antes -->
+<app-modal [showModal]="showActualizarHorasAntes">
+  <div>
+    <div class="bg-gray-800 p-2 text-white flex items-center justify-between">
+      <p> Datos de alerta </p>
+      <button (click)="showActualizarHorasAntes = false" class="ml-2 hover:text-secondaryColor">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <div class="bg-white p-2 text-sm">
+      <p class="text-center font-semibold"> La alerta se activará </p>
+      <select [(ngModel)]="horasAntes" class="input-generico w-full mt-2">
+        <option value="1">1 hora antes</option>
+        <option value="2">2 hora antes</option>
+        <option value="3">3 hora antes</option>
+        <option value="4">4 hora antes</option>
+        <option value="5">5 hora antes</option>
+      </select>
+      <button (click)="actualizarFechaAlerta()" class="boton-editar w-full mt-2">
+        Actualizar datos
+      </button>
+    </div>
+  </div>
+</app-modal>
+
 <!-- Modal: Actualizar observaciones -->
-<app-modal [showModal]="showActualizarObservaciones">
+\<app-modal [showModal]="showActualizarObservaciones">
   <div class="bg-gray-800 p-2 text-white flex items-center justify-between">
     <p> Actualizando observaciones </p>
     <button (click)="showActualizarObservaciones = false" class="ml-2 hover:text-secondaryColor">
@@ -263,7 +291,7 @@
       </div>
     </div>
     <div class="flex items-center">
-      <button title="Imprimir comprobante" class="p-2 bg-white hover:text-secondaryColor rounded">
+      <button (click)="generarComprobante()" title="Imprimir comprobante" class="p-2 bg-white hover:text-secondaryColor rounded">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
           class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round"
@@ -298,14 +326,16 @@
       </div>
 
       <div class="mr-4 text-center mt-2">
-        <p class="font-semibold"> Fecha y hora de entrega </p>
+        <p class="font-semibold mb-2"> Fecha y hora de entrega </p>
         <div class="flex items-center mt-2 md:mt-0">
-          <input onkeydown="return false" (change)="actualizarFechaAlerta()" [disabled]="reserva?.estado !== 'Pendiente'" [(ngModel)]="fechaEntrega" type="date"
-            class="input-generico">
-          <input onkeydown="return false" (change)="actualizarFechaAlerta()" [disabled]="reserva?.estado !== 'Pendiente'" [(ngModel)]="horaEntrega" type="time"
+          <input onkeydown="return false" (change)="actualizarFechaAlerta()"
+            [disabled]="reserva?.estado !== 'Pendiente'" [(ngModel)]="fechaEntrega" type="date" class="input-generico">
+          <input onkeydown="return false" (change)="actualizarFechaAlerta()"
+            [disabled]="reserva?.estado !== 'Pendiente'" [(ngModel)]="horaEntrega" type="time"
             class="input-generico ml-2">
-          <button class="p-2 border border-gray-400 rounded ml-2">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+          <button title="Datos de alarma" [ngClass]="{'bg-orange-100': (reserva?.fechaAlerta | alertaReserva:reserva?.estado)}" (click)="abrirActualizarDatosAlerta()" class="p-2 border border-gray-400 rounded ml-2">
+            <svg *ngIf="!(reserva?.fechaAlerta | alertaReserva:reserva?.estado)" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
               <style>
                 @keyframes n-snooze {
                   0% {
@@ -330,6 +360,23 @@
                 d="M14.39 20.312l-.043.01a9.714 9.714 0 01-4.67-.01" />
               <path fill="#265BFF" d="M14.48 13.918H9.676l2.648-3.642H9.677v-.911h4.802l-2.639 3.641h2.64v.912z"
                 style="animation:n-snooze 1.5s cubic-bezier(.165,.84,.44,1) infinite both;transform-origin:center center" />
+            </svg>
+            <svg *ngIf="(reserva?.fechaAlerta | alertaReserva:reserva?.estado)" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+              <style>
+                @keyframes rotate {
+                  0% {
+                    transform: rotate(0)
+                  }
+
+                  to {
+                    transform: rotate(360deg)
+                  }
+                }
+              </style>
+              <rect width="16" height="16" x="4" y="4" stroke="#0A0A30" stroke-width="1.5" rx="8" />
+              <path stroke="#0A0A30" stroke-linecap="round" stroke-width="1.5" d="M12.021 12l2.325 2.325" />
+              <path stroke="#265BFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M12.021 12V6.84" style="animation:rotate 2s linear infinite both;transform-origin:center" />
             </svg>
           </button>
         </div>

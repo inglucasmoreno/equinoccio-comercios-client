@@ -15,6 +15,10 @@ import { formasPagoArrayMulti } from '../../../constants/formasPagoArrayMulti';
 import { AuthService } from '../../../services/auth.service';
 import { VentasService } from '../../../services/ventas.service';
 import { VentasReservasService } from '../../../services/ventas-reservas.service';
+import { AlertaReservaPipe } from '../../../pipes/alerta-reserva.pipe';
+import { environments } from '../../../../environments/environments';
+
+const baseUrl = environments.base_url;
 
 interface FormaPago {
   valor: number;
@@ -35,11 +39,13 @@ interface FormaPago {
     MonedaPipe,
     ModalComponent,
     RouterModule,
+    AlertaReservaPipe
   ]
 })
 export default class ReservasDetallesComponent implements OnInit {
 
   // Flag
+  public showActualizarHorasAntes: boolean = false;
   public showActualizarUsuarioGenerador: boolean = false;
   public showActualizarObservaciones: boolean = false;
   public showModalCompletar: boolean = false;
@@ -145,7 +151,7 @@ export default class ReservasDetallesComponent implements OnInit {
               this.alertService.errorApi(error.message);
             }
           })
-        }else{
+        } else {
           this.fechaReserva = format(this.reserva.fechaReserva, 'yyyy-MM-dd');
         }
       });
@@ -473,12 +479,17 @@ export default class ReservasDetallesComponent implements OnInit {
       });
   }
 
+  abrirActualizarDatosAlerta(): void {
+    this.horasAntes = this.reserva.horasAntes;
+    this.showActualizarHorasAntes = true;
+  }
+
   actualizarFechaAlerta(): void {
 
     let fechaEntregaCompleta = this.fechaEntrega + ':' + this.horaEntrega;
     let fechaAlerta = format(add(new Date(fechaEntregaCompleta), { hours: -Number(this.horasAntes) }), 'yyyy-MM-dd:HH:mm');
 
-    this.alertService.question({ msg: '¿Quieres actualizar la fecha de entrega?', buttonText: 'Aceptar' })
+    this.alertService.question({ msg: '¿Quieres actualizar la reserva?', buttonText: 'Aceptar' })
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();
@@ -490,11 +501,14 @@ export default class ReservasDetallesComponent implements OnInit {
           }).subscribe({
             next: () => {
               this.dataService.alertaReservas();
-              this.alertService.success('Fecha actualizada correctamente!');
+              this.reserva.horasAntes = this.horasAntes;
+              this.showActualizarHorasAntes = false;
+              this.alertService.success('Reserva actualizada correctamente!');
             }, error: ({ error }) => {
               this.fechaEntrega = format(this.reserva.fechaEntrega, 'yyyy-MM-dd');
               this.horasAntes = this.reserva.horasAntes;
               this.horaEntrega = this.reserva.horaEntrega;
+              this.showActualizarHorasAntes = false;
               this.alertService.errorApi(error.message);
             }
           })
@@ -503,8 +517,14 @@ export default class ReservasDetallesComponent implements OnInit {
           this.fechaEntrega = format(this.reserva.fechaEntrega, 'yyyy-MM-dd');
           this.horasAntes = this.reserva.horasAntes;
           this.horaEntrega = this.reserva.horaEntrega;
+          this.showActualizarHorasAntes = false;
         }
       });
+  }
+
+  // Generar comprobate
+  generarComprobante(): void {
+    window.open(`${baseUrl}/reservas/generar/comprobante/${this.reserva.id}`, '_blank');
   }
 
 }

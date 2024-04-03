@@ -18,6 +18,7 @@ import { formasPagoArrayMulti } from '../../constants/formasPagoArrayMulti';
 import { generales } from '../../constants/generales';
 import { VentasService } from '../../services/ventas.service';
 import gsap from 'gsap';
+import { environments } from '../../../environments/environments';
 
 interface ProductoMuestra {
   descripcion: string;
@@ -35,6 +36,8 @@ interface FormaPago {
 }
 
 type EstadoVenta = 'Codigo' | 'Precio' | 'Cantidad';
+
+const baseUrl = environments.base_url;
 
 @Component({
   standalone: true,
@@ -434,9 +437,10 @@ export default class VentasComponent implements OnInit {
         if (isConfirmed) {
           this.alertService.loading();
           this.ventasService.nuevaVenta(data).subscribe({
-            next: () => {
+            next: ({ venta }) => {
               this.reiniciarVenta();
               this.alertService.close();
+              if(this.imprimirTicket) window.open(`${baseUrl}/ventas/generar/comprobante/${venta.id}`, '_blank');
             }, error: ({ error }) => this.alertService.errorApi(error.message)
           })
         }

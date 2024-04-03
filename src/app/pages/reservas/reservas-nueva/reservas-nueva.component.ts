@@ -22,6 +22,9 @@ import { AuthService } from '../../../services/auth.service';
 import { VentasService } from '../../../services/ventas.service';
 import { ReservasService } from '../../../services/reservas.service';
 import { VentasReservasService } from '../../../services/ventas-reservas.service';
+import { environments } from '../../../../environments/environments';
+
+const baseUrl = environments.base_url;
 
 interface FormaPago {
   valor: number;
@@ -498,6 +501,7 @@ export default class ReservasNuevaComponent implements OnInit {
                     next: () => {
                       this.router.navigateByUrl('/dashboard/reservas');
                       this.dataService.alertaReservas();
+                      window.open(`${baseUrl}/reservas/generar/comprobante/${reserva.id}`, '_blank');
                       this.alertService.close();
                     }, error: ({ error }) => this.alertService.errorApi(error.message)
                   })

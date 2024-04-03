@@ -26,6 +26,7 @@ export class ReservasService {
     direccion = 'desc',
     columna = 'id',
     parametro = '',
+    filtroPorVencer = 'false',
     estado = '',
     fechaDesde = '',
     fechaHasta = '',
@@ -34,6 +35,7 @@ export class ReservasService {
       params: {
         direccion: String(direccion),
         columna,
+        filtroPorVencer,
         parametro,
         estado,
         fechaDesde,

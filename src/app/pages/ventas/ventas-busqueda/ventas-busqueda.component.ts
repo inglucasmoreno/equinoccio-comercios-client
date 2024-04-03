@@ -101,7 +101,7 @@ export default class VentasBusquedaComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataService.ubicacionActual = 'Dashboard - Busqueda de ventas';
-    gsap.from('.gsap-contenido', { y:100, opacity: 0, duration: .2 });
+    gsap.from('.gsap-contenido', { y: 100, opacity: 0, duration: .2 });
   }
 
   buscarVentas(): void {
@@ -189,6 +189,16 @@ export default class VentasBusquedaComponent implements OnInit {
   cambiarPagina(nroPagina): void {
     this.paginaActual = nroPagina;
     this.buscarVentas();
+  }
+
+  // Generar comprobate - Venta
+  generarComprobanteVenta(idVenta: string): void {
+    window.open(`${baseUrl}/ventas/generar/comprobante/${idVenta}`, '_blank');
+  }
+
+  // Generar comprobate - Reserva
+  generarComprobanteReserva(idReserva: string): void {
+    window.open(`${baseUrl}/reservas/generar/comprobante/${idReserva}`, '_blank');
   }
 
 }

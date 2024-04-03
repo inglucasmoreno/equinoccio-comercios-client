@@ -160,9 +160,14 @@ export default class VentasActivasComponent implements OnInit {
     });
   }
 
-  // Generar comprobate
-  generarComprobante(idVenta: string): void {
+  // Generar comprobate - Venta
+  generarComprobanteVenta(idVenta: string): void {
     window.open(`${baseUrl}/ventas/generar/comprobante/${idVenta}`, '_blank');
+  }
+
+  // Generar comprobate - Reserva
+  generarComprobanteReserva(idReserva: string): void {
+    window.open(`${baseUrl}/reservas/generar/comprobante/${idReserva}`, '_blank');
   }
 
   // Ordenar por columna

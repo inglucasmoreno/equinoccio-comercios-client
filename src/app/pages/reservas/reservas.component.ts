@@ -10,6 +10,10 @@ import { ReservasService } from '../../services/reservas.service';
 import { AlertService } from '../../services/alert.service';
 import { DataService } from '../../services/data.service';
 import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
+import { AlertaReservaPipe } from '../../pipes/alerta-reserva.pipe';
+import { environments } from '../../../environments/environments';
+
+const baseUrl = environments.base_url;
 
 @Component({
   standalone: true,
@@ -21,6 +25,7 @@ import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
     NgxPaginationModule,
     RouterModule,
     TarjetaListaComponent,
+    AlertaReservaPipe
   ],
   selector: 'app-reservas',
   templateUrl: './reservas.component.html',
@@ -31,6 +36,7 @@ export default class ReservasComponent implements OnInit, AfterViewInit {
   // Reservas
   public reservas: any = [];
   public flagBuscandoReservas: boolean = false;
+  public flagBuscandoPorVencer: string = 'false';
 
   // Paginacion
   public totalItems: number;
@@ -91,6 +97,7 @@ export default class ReservasComponent implements OnInit, AfterViewInit {
       parametro: this.filtro.parametro,
       fechaDesde: this.filtro.fechaDesde,
       fechaHasta: this.filtro.fechaHasta,
+      filtroPorVencer: this.flagBuscandoPorVencer,
       estado: this.filtro.estado
     }
     this.reservasService.listarReservas(parametros).subscribe({
@@ -128,6 +135,17 @@ export default class ReservasComponent implements OnInit, AfterViewInit {
     this.paginaActual = nroPagina;
     this.alertService.loading();
     this.listarReservas();
+  }
+
+  // Generar comprobate
+  generarComprobante(idReserva: any): void {
+    window.open(`${baseUrl}/reservas/generar/comprobante/${idReserva}`, '_blank');
+  }
+
+  // Filtrado de reservas por vencer
+  filtroPorVencer(): void {
+    this.flagBuscandoPorVencer = this.flagBuscandoPorVencer == 'true' ? 'false' : 'true';
+    this.cambiarPagina(1);
   }
 
 }

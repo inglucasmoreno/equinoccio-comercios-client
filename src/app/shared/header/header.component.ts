@@ -11,7 +11,7 @@ import { Subscription, interval } from 'rxjs';
 export class HeaderComponent implements OnInit {
 
   // Observable - Consultar reservas
-  public TIEMPO_CONSULTA_RESERVA = 60000 * 1;
+  public TIEMPO_CONSULTA_RESERVA = 60000 * 5;
   public consultarReservasSubscription: Subscription;
   public consultarReservas: any;
 
