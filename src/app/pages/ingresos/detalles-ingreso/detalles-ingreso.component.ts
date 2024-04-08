@@ -20,6 +20,7 @@ import { FiltroIngresosProductosPipe } from '../../../pipes/filtro-ingresos-prod
 import gsap from 'gsap';
 import { FiltroProveedoresPipe } from '../../../pipes/filtro-proveedores.pipe';
 import { ProveedoresService } from '../../../services/proveedores.service';
+import { PermisosDirective } from '../../../directives/permisos.directive';
 
 @Component({
   standalone: true,
@@ -36,12 +37,16 @@ import { ProveedoresService } from '../../../services/proveedores.service';
     MonedaPipe,
     FiltroProductosPipe,
     FiltroIngresosProductosPipe,
-    FiltroProveedoresPipe
+    FiltroProveedoresPipe,
+    PermisosDirective
   ],
   templateUrl: './detalles-ingreso.component.html',
   styleUrls: []
 })
 export default class DetallesIngresoComponent implements OnInit {
+
+  // Permisos
+  public permiso_escritura: string[] = ['INGRESOS_ALL'];
 
   // Modals
   public showModalIngreso: boolean = false;

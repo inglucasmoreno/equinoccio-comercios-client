@@ -224,15 +224,15 @@
   <div class="border border-gray-400 mt-2 w-11/12 md:w-1/2 mb-4 mx-auto">
 
     <!-- Header -->
-    <div class="bg-gray-900 text-white flex items-center justify-between border border-gray-900 p-2 text-xl">
+    <div class="bg-gray-900 text-white flex items-center justify-between border border-gray-900 p-3 text-xl">
       <div class="flex items-center">
-        <button title="Regresar" routerLink="/dashboard/reservas" class="hover:text-secondaryColor p-2 shadow rounded">
+        <!-- <button title="Regresar" routerLink="/dashboard/reservas" class="hover:text-secondaryColor p-2 shadow rounded">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
             class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
           </svg>
-        </button>
-        <h1 class="ml-1"> Nueva Reserva </h1>
+        </button> -->
+        <h1 class="ml-4"> Nueva Reserva </h1>
       </div>
       <button *ngIf="carritoProductos.length > 0 && clienteSeleccionado" (click)="abrirCompletarReserva()" title="Completar reserva" class="p-2 text-gray-900 hover:text-secondaryColor bg-white rounded">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">

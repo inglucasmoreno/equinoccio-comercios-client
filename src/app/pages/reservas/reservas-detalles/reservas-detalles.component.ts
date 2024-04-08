@@ -17,6 +17,7 @@ import { VentasService } from '../../../services/ventas.service';
 import { VentasReservasService } from '../../../services/ventas-reservas.service';
 import { AlertaReservaPipe } from '../../../pipes/alerta-reserva.pipe';
 import { environments } from '../../../../environments/environments';
+import { PermisosDirective } from '../../../directives/permisos.directive';
 
 const baseUrl = environments.base_url;
 
@@ -39,10 +40,14 @@ interface FormaPago {
     MonedaPipe,
     ModalComponent,
     RouterModule,
-    AlertaReservaPipe
+    AlertaReservaPipe,
+    PermisosDirective
   ]
 })
 export default class ReservasDetallesComponent implements OnInit {
+
+  // Permisos
+  public permiso_escritura: string[] = ['LISTADO_RESERVAS_ALL'];
 
   // Flag
   public showActualizarHorasAntes: boolean = false;

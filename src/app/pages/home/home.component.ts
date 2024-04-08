@@ -3,12 +3,14 @@ import { DataService } from '../../services/data.service';
 import gsap from 'gsap';
 import { RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
+import { PermisosDirective } from '../../directives/permisos.directive';
 
 @Component({
   standalone: true,
   selector: 'app-home',
   imports: [
-    RouterModule
+    RouterModule,
+    PermisosDirective
   ],
   templateUrl: './home.component.html',
   styleUrls: []

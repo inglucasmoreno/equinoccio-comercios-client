@@ -9,6 +9,7 @@ import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
 import { ConfigGeneralesService } from '../../services/config-generales.service';
 import gsap from 'gsap';
+import { PermisosDirective } from '../../directives/permisos.directive';
 
 @Component({
   standalone: true,
@@ -19,11 +20,15 @@ import gsap from 'gsap';
     FechaPipe,
     MonedaPipe,
     ModalComponent,
+    PermisosDirective
   ],
   templateUrl: './configBalanza.component.html',
   styleUrls: []
 })
 export default class ConfigBalanzaComponent implements OnInit {
+
+  // Permisos
+  public permiso_escritura: string[] = ['BALANZA_ALL'];
 
   public showModalAyuda = false;
   public arregloFormato = [];

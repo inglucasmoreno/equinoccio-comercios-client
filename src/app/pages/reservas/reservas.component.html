@@ -10,14 +10,14 @@
             </h2>
             <p> Total de reservas: {{ totalItems }} </p>
           </div>
-          <div>
-            <button title="Nueva reserva" routerLink="/dashboard/nueva-reserva" class="boton-nuevo-header">
+          <!-- <div>
+            <button *appPermisos="permiso_escritura" title="Nueva reserva" routerLink="/dashboard/nueva-reserva" class="boton-nuevo-header">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
             </button>
-          </div>
+          </div> -->
         </div>
         <div class="md:flex md:items-center md:justify-between px-4 py-2">
           <div class="my-2 flex sm:flex-row flex-col">
@@ -310,7 +310,7 @@
                       'bg-yellow-100 border-yellow-300': reserva.estado == 'Pendiente',
                       'bg-green-100 border-green-300': reserva.estado == 'Completada',
                       'bg-red-100 border-red-300': reserva.estado == 'No retirada',
-                    }" class="text-gray-900 rounded border px-2 py-1 whitespace-no-wrap">
+                    }" class="text-gray-900 w-max rounded border px-2 py-1 whitespace-no-wrap">
                       {{ reserva.estado }}
                     </p>
                   </td>

@@ -1,7 +1,4 @@
-<app-abm-tipo-ingreso
-  (insertEvent)="nuevoTipo($event)"
-  (updateEvent)="actualizarTipo($event)"
-></app-abm-tipo-ingreso>
+<app-abm-tipo-ingreso (insertEvent)="nuevoTipo($event)" (updateEvent)="actualizarTipo($event)"></app-abm-tipo-ingreso>
 
 <!-- Listado de tipos -->
 <div class="md:max-w-7xl mx-auto">
@@ -16,7 +13,8 @@
             <p> Total de tipos: {{ tiposIngresosService.tipos.length }} </p>
           </div>
           <div>
-            <button title="Nuevo tipo" (click)="abrirAbm('crear')" class="boton-nuevo-header">
+            <button *appPermisos="permiso_escritura" title="Nuevo tipo" (click)="abrirAbm('crear')"
+              class="boton-nuevo-header">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -118,7 +116,7 @@
                       </span>
                     </div>
                   </th>
-                  <th
+                  <th *appPermisos="permiso_escritura"
                     class="px-5 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-900 tracking-wider">
                     <div (click)="ordenarPorColumna('activo')"
                       class="cursor-pointer flex items-center focus:outline-none">
@@ -144,18 +142,19 @@
                       </span>
                     </div>
                   </th>
-                  <th
+                  <th *appPermisos="permiso_escritura"
                     class="px-5 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-900 tracking-wider">
                     Acción
                   </th>
                 </tr>
               </thead>
               <tbody *ngIf="tiposIngresosService.tipos">
-                @for(tipo of tiposIngresosService.tipos | filtroTiposIngresos:filtro.parametro:filtro.activo | paginate: {itemsPerPage:
+                @for(tipo of tiposIngresosService.tipos | filtroTiposIngresos:filtro.parametro:filtro.activo | paginate:
+                {itemsPerPage:
                 cantidadItems, currentPage: paginaActual}; track tipo.id){
                 <tr class="animate__animated animate__fadeIn">
                   <td class="px-5 py-2 border-b border-gray-200 text-xs">
-                    <p class="text-gray-900 w-max whitespace-no-wrap">
+                    <p class="text-gray-900 w-max whitespace-no-wrap p-2">
                       {{ tipo.descripcion }}
                     </p>
                   </td>
@@ -164,10 +163,10 @@
                       {{ tipo.createdAt | fecha }}
                     </p>
                   </td>
-                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                  <td *appPermisos="permiso_escritura" class="px-5 py-2 border-b border-gray-200 text-xs">
                     <app-pastilla-estado [activo]=tipo.activo (click)="actualizarEstado(tipo)"></app-pastilla-estado>
                   </td>
-                  <td class="px-5 py-2 border-b border-gray-200 text-xs text-center">
+                  <td *appPermisos="permiso_escritura" class="px-5 py-2 border-b border-gray-200 text-xs text-center">
                     <span class="flex items-center justify-center text-gray-900 whitespace-no-wrap">
                       <button (click)="abrirAbm('editar', tipo)" title="Editar tipo" class="boton-editar ml-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

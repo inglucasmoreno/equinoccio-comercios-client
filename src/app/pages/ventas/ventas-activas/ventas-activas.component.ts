@@ -16,6 +16,7 @@ import { formasPagoArray } from '../../../constants/formasPagoArray';
 import { VentasFormasPagoService } from '../../../services/ventas-formas-pago.service';
 import { tiposVenta } from '../../../constants/tiposVenta';
 import { environments } from '../../../../environments/environments';
+import { PermisosDirective } from '../../../directives/permisos.directive';
 
 const baseUrl = environments.base_url;
 
@@ -31,13 +32,17 @@ const baseUrl = environments.base_url;
     PastillaEstadoComponent,
     TarjetaListaComponent,
     MonedaPipe,
-    FiltroVentasPipe
+    FiltroVentasPipe,
+    PermisosDirective
   ],
   selector: 'app-ventas-activas',
   templateUrl: './ventas-activas.component.html',
   styleUrls: []
 })
 export default class VentasActivasComponent implements OnInit {
+
+  // Permisos
+  public permiso_escritura: string[] = ['VENTAS_ACTIVAS_ALL'];
 
   // Constantes
   public formasPago: any[] = formasPagoArray;

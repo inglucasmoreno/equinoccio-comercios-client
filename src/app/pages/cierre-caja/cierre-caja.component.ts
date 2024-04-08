@@ -16,6 +16,7 @@ import { CajasService } from '../../services/cajas.service';
 import { IngresosCajasService } from '../../services/ingresos-cajas.service';
 import { GastosCajasService } from '../../services/gastos-cajas.service';
 import { format } from 'date-fns';
+import { PermisosDirective } from '../../directives/permisos.directive';
 
 @Component({
   standalone: true,
@@ -28,12 +29,16 @@ import { format } from 'date-fns';
     RouterModule,
     MonedaPipe,
     TarjetaListaComponent,
+    PermisosDirective
   ],
   selector: 'app-cierre-caja',
   templateUrl: './cierre-caja.component.html',
   styleUrls: []
 })
 export default class CierreCajaComponent implements OnInit {
+
+  // Permisos
+  public permiso_escritura: string[] = ['CIERRE_CAJA_ALL'];
 
   // Modals
   public showModalPostnet = false;
@@ -77,7 +82,7 @@ export default class CierreCajaComponent implements OnInit {
   // Ingresos gastos
   constructor(
     private alertService: AlertService,
-    private authService: AuthService,
+    public authService: AuthService,
     private dataService: DataService,
     private tiposIngresos: TiposIngresosService,
     private tiposGastos: TiposGastosService,
@@ -275,7 +280,7 @@ export default class CierreCajaComponent implements OnInit {
         if (isConfirmed) {
           this.alertService.loading();
           this.cajasService.nuevaCaja({
-          creatorUserId: this.authService.usuario.userId
+            creatorUserId: this.authService.usuario.userId
           }).subscribe({
             next: ({ caja }) => {
               this.idCaja = caja.id;

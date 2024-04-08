@@ -16,6 +16,7 @@ import { FiltroIngresosPipe } from '../../pipes/filtro-ingresos.pipe';
 import { ProveedoresService } from '../../services/proveedores.service';
 import { FiltroProveedoresPipe } from '../../pipes/filtro-proveedores.pipe';
 import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
+import { PermisosDirective } from '../../directives/permisos.directive';
 
 @Component({
   standalone: true,
@@ -31,11 +32,15 @@ import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
     PastillaEstadoComponent,
     TarjetaListaComponent,
     FiltroIngresosPipe,
-    FiltroProveedoresPipe
+    FiltroProveedoresPipe,
+    PermisosDirective
   ],
   styleUrls: []
 })
 export default class IngresosComponent implements OnInit, AfterViewInit {
+
+  // Permisos
+  public permiso_escritura: string[] = ['INGRESOS_ALL'];
 
   // Flags
   public estadoFormulario = 'crear';

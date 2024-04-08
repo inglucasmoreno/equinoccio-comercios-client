@@ -83,7 +83,7 @@
       </div>
     </div>
 
-    <div class="text-sm w-11/12 md:w-1/3 mx-auto">
+    <div *appPermisos="permiso_escritura" class="text-sm w-11/12 md:w-1/3 mx-auto">
       <div class="flex items-center mt-4">
         <input [ngClass]="{'font-semibold':nuevoFormato.length > 0}" (keyup.enter)="actualizarFormato()" [(ngModel)]="nuevoFormato" type="text" placeholder="Formato de codigo de balanza" class="md:text-xl input-generico w-full">
         <button title="Ayuda" (click)="showModalAyuda = true" class="p-2 border cursor-help hover:text-secondaryColor border-gray-400 bg-gray-100 rounded ml-2">

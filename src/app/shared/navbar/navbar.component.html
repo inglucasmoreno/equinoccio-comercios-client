@@ -43,7 +43,8 @@
     </li>
 
     <!-- Ventas -->
-    <li (click)="mostrarOcultarSeccion('ventas')" routerLinkActive="bg-secondaryColor rounded"
+    <li *ngIf="condicionShowVentas" (click)="mostrarOcultarSeccion('ventas')"
+      routerLinkActive="bg-secondaryColor rounded"
       class="flex justify-between items-center outline-none cursor-pointer p-2">
       <div class="flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -73,25 +74,29 @@
     <div class="p-1 bg-gray-500 rounded">
 
       <!-- Listado de ventas -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="ventas"
+      <li *appPermisos="['GENERAR_VENTA_ALL', 'GENERAR_VENTA_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="ventas"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Generar venta </a>
       </li>
 
       <!-- Ventas activas -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="ventas-activas"
+      <li *appPermisos="['VENTAS_ACTIVAS_ALL', 'VENTAS_ACTIVAS_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="ventas-activas"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Ventas activas </a>
       </li>
 
       <!-- Busqueda ventas -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="ventas-busqueda"
+      <li *appPermisos="['BUSQUEDA_VENTAS_ALL', 'BUSQUEDA_VENTAS_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="ventas-busqueda"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Busqueda ventas </a>
       </li>
 
       <!-- Clientes -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="clientes"
+      <li *appPermisos="['CLIENTES_ALL', 'CLIENTES_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="clientes"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Clientes </a>
       </li>
@@ -100,7 +105,8 @@
     }
 
     <!-- Productos -->
-    <li (click)="mostrarOcultarSeccion('productos')" routerLinkActive="bg-secondaryColor rounded"
+    <li *ngIf="condicionShowProductos" (click)="mostrarOcultarSeccion('productos')"
+      routerLinkActive="bg-secondaryColor rounded"
       class="flex justify-between items-center outline-none cursor-pointer p-2">
       <div class="flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -130,19 +136,22 @@
     <div class="p-1 bg-gray-500 rounded">
 
       <!-- Listado de productos -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="productos"
+      <li *appPermisos="['LISTADO_PRODUCTOS_ALL', 'LISTADO_PRODUCTOS_READ']"
+        routerLinkActive="bg-secondaryColor rounded" routerLink="productos"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Listado de productos </a>
       </li>
 
       <!-- Ingresos -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="ingresos"
+      <li *appPermisos="['INGRESOS_ALL', 'INGRESOS_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="ingresos"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Ingresos </a>
       </li>
 
       <!-- Proveedores -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="proveedores"
+      <li *appPermisos="['PROVEEDORES_ALL', 'PROVEEDORES_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="proveedores"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Proveedores </a>
       </li>
@@ -151,16 +160,34 @@
     }
 
     <!-- Reservas -->
-    <li (click)="mostrarOcultarSeccion('reservas')" routerLinkActive="bg-secondaryColor rounded"
+    <li *ngIf="condicionShowReservas" (click)="mostrarOcultarSeccion('reservas')"
+      routerLinkActive="bg-secondaryColor rounded"
       class="flex justify-between items-center outline-none cursor-pointer p-2">
       <div class="flex items-center">
         <span *ngIf="!dataService.showAlertaReservaBarra">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+            stroke="currentColor" class="w-5 h-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
           </svg>
         </span>
         <span class="bg-orange-100 rounded" *ngIf="dataService.showAlertaReservaBarra">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"><style>@keyframes rotate{0%{transform:rotate(0)}to{transform:rotate(360deg)}}</style><rect width="16" height="16" x="4" y="4" stroke="#0A0A30" stroke-width="1.5" rx="8"/><path stroke="#0A0A30" stroke-linecap="round" stroke-width="1.5" d="M12.021 12l2.325 2.325"/><path stroke="#265BFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12.021 12V6.84" style="animation:rotate 2s linear infinite both;transform-origin:center"/></svg>
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">
+            <style>
+              @keyframes rotate {
+                0% {
+                  transform: rotate(0)
+                }
+
+                to {
+                  transform: rotate(360deg)
+                }
+              }
+            </style>
+            <rect width="16" height="16" x="4" y="4" stroke="#0A0A30" stroke-width="1.5" rx="8" />
+            <path stroke="#0A0A30" stroke-linecap="round" stroke-width="1.5" d="M12.021 12l2.325 2.325" />
+            <path stroke="#265BFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12.021 12V6.84"
+              style="animation:rotate 2s linear infinite both;transform-origin:center" />
+          </svg>
         </span>
         <a class="ml-2 mt-1"> Reservas </a>
       </div>
@@ -185,13 +212,15 @@
     <div class="p-1 bg-gray-500 rounded">
 
       <!-- Generar reserva -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="nueva-reserva"
+      <li *appPermisos="['NUEVA_RESERVA_ALL']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="nueva-reserva"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Nueva reserva </a>
       </li>
 
       <!-- Listado de reservas -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="reservas"
+      <li *appPermisos="['LISTADO_RESERVAS_ALL', 'LISTADO_RESERVAS_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="reservas"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Listado de reservas </a>
       </li>
@@ -200,7 +229,8 @@
     }
 
     <!-- Cajas -->
-    <li (click)="mostrarOcultarSeccion('cajas')" routerLinkActive="bg-secondaryColor rounded"
+    <li *ngIf="condicionShowCajas" (click)="mostrarOcultarSeccion('cajas')"
+      routerLinkActive="bg-secondaryColor rounded"
       class="flex justify-between items-center outline-none cursor-pointer p-2">
       <div class="flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -230,13 +260,15 @@
     <div class="p-1 bg-gray-500 rounded">
 
       <!-- Cierre de caja -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="cajas"
+      <li *appPermisos="['CIERRE_CAJA_ALL', 'CIERRE_CAJA_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="cajas"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Cierre de caja </a>
       </li>
 
       <!-- Listado de productos -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="listado-cajas"
+      <li *appPermisos="['LISTADO_CAJAS_ALL', 'LISTADO_CAJAS_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="listado-cajas"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Listado de cajas </a>
       </li>
@@ -245,7 +277,8 @@
     }
 
     <!-- Configuraciones -->
-    <li (click)="mostrarOcultarSeccion('configuraciones')" routerLinkActive="bg-secondaryColor rounded"
+    <li *ngIf="condicionShowConfiguraciones" (click)="mostrarOcultarSeccion('configuraciones')"
+      routerLinkActive="bg-secondaryColor rounded"
       class="flex justify-between items-center outline-none cursor-pointer p-2">
       <div class="flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -277,31 +310,36 @@
     <div class="p-1 bg-gray-500 rounded">
 
       <!-- Usuarios -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="usuarios"
+      <li *appPermisos="['USUARIOS_ALL', 'USUARIOS_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="usuarios"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Usuarios </a>
       </li>
 
       <!-- Unidades de medida -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="unidades-medida"
+      <li *appPermisos="['UNIDADES_MEDIDA_ALL', 'UNIDADES_MEDIDA_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="unidades-medida"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Unidades de medida </a>
       </li>
 
       <!-- Tipos de ingreso -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="tipos-ingresos"
+      <li *appPermisos="['TIPOS_INGRESOS_ALL', 'TIPOS_INGRESOS_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="tipos-ingresos"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Tipos de ingresos </a>
       </li>
 
       <!-- Tipos de gastos -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="tipos-gastos"
+      <li *appPermisos="['TIPOS_GASTOS_ALL', 'TIPOS_GASTOS_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="tipos-gastos"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Tipos de gastos </a>
       </li>
 
       <!-- Configuracion de balanza -->
-      <li routerLinkActive="bg-secondaryColor rounded" routerLink="config-balanza"
+      <li *appPermisos="['BALANZA_ALL', 'BALANZA_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="config-balanza"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Balanza </a>
       </li>

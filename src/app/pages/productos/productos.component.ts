@@ -15,6 +15,7 @@ import { FiltroProductosPipe } from '../../pipes/filtro-productos.pipe';
 import { UnidadesMedidaService } from '../../services/unidades-medida.service';
 import { MonedaPipe } from '../../pipes/moneda.pipe';
 import AbmProductoComponent from './abm-producto/abm-producto.component';
+import { PermisosDirective } from '../../directives/permisos.directive';
 
 @Component({
   standalone: true,
@@ -30,12 +31,16 @@ import AbmProductoComponent from './abm-producto/abm-producto.component';
     PastillaEstadoComponent,
     TarjetaListaComponent,
     FiltroProductosPipe,
-    AbmProductoComponent
+    AbmProductoComponent,
+    PermisosDirective
   ],
   templateUrl: './productos.component.html',
   styleUrls: []
 })
 export default class ProductosComponent implements OnInit {
+
+  // Permisos
+  public permiso_escritura: string[] = ['PRODUCTOS_ALL'];
 
   // Flags
   public alertaStock = false;

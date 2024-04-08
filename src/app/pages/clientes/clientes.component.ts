@@ -13,6 +13,7 @@ import { PastillaEstadoComponent } from '../../components/pastilla-estado/pastil
 import { TarjetaListaComponent } from '../../components/tarjeta-lista/tarjeta-lista.component';
 import { FiltroClientesPipe } from '../../pipes/filtro-clientes.pipe';
 import { AbmClienteComponent } from './abm-cliente/abm-cliente.component';
+import { PermisosDirective } from '../../directives/permisos.directive';
 
 @Component({
   standalone: true,
@@ -28,11 +29,15 @@ import { AbmClienteComponent } from './abm-cliente/abm-cliente.component';
     PastillaEstadoComponent,
     TarjetaListaComponent,
     FiltroClientesPipe,
-    AbmClienteComponent
+    AbmClienteComponent,
+    PermisosDirective
   ],
   styleUrls: []
 })
 export default class ClientesComponent implements OnInit {
+
+  // Permisos
+  public permiso_escritura: string[] = ['CLIENTES_ALL'];
 
   // Paginacion
   public paginaActual: number = 1;

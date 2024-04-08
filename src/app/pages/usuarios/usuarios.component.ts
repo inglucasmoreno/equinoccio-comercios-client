@@ -13,6 +13,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { BotonGenericoComponent } from '../../components/boton-generico/boton-generico.component';
 import { AuthService } from '../../services/auth.service';
 import { FormBuilder } from '@angular/forms';
+import { PermisosDirective } from '../../directives/permisos.directive';
 
 @Component({
   standalone: true,
@@ -25,7 +26,8 @@ import { FormBuilder } from '@angular/forms';
     PastillaEstadoComponent,
     FiltroUsuariosPipe,
     NgxPaginationModule,
-    BotonGenericoComponent
+    BotonGenericoComponent,
+    PermisosDirective
   ],
   templateUrl: './usuarios.component.html',
   styleUrls: []

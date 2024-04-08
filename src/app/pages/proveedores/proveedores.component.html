@@ -1,9 +1,4 @@
-
-
-<app-abm-proveedor
-  (insertEvent)="nuevoProveedor($event)"
-  (updateEvent)="actualizarProveedor($event)"
->
+<app-abm-proveedor (insertEvent)="nuevoProveedor($event)" (updateEvent)="actualizarProveedor($event)">
 </app-abm-proveedor>
 
 <!-- Listado de proveedores -->
@@ -19,7 +14,8 @@
             <p> Total de proveedores: {{ proveedoresService.proveedores.length }} </p>
           </div>
           <div>
-            <button title="Nuevo proveedor" (click)="proveedoresService.abrirAbm('crear')" class="boton-nuevo-header">
+            <button *appPermisos="permiso_escritura" title="Nuevo proveedor"
+              (click)="proveedoresService.abrirAbm('crear')" class="boton-nuevo-header">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -73,23 +69,22 @@
                 <tr class="border">
                   <th
                     class="px-5 py-2 border-b-2 border-gray-200 bg-gray-100 text-left text-sm font-semibold text-gray-900 tracking-wider">
-                    <div (click)="ordenarPorColumna('id')"
-                      class="cursor-pointer flex items-center focus:outline-none">
+                    <div (click)="ordenarPorColumna('id')" class="cursor-pointer flex items-center focus:outline-none">
                       <span> Icono </span>
                       <span class="ml-2 text-gray-600">
-                        <svg *ngIf="ordenar.columna == 'id' && ordenar.direccion == 'asc'" width="15"
-                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down">
+                        <svg *ngIf="ordenar.columna == 'id' && ordenar.direccion == 'asc'" width="15" height="15"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-chevron-down">
                           <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
-                        <svg *ngIf="ordenar.columna == 'id' && ordenar.direccion == 'desc'" width="15"
-                          height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                          stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up">
+                        <svg *ngIf="ordenar.columna == 'id' && ordenar.direccion == 'desc'" width="15" height="15"
+                          viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" class="feather feather-chevron-up">
                           <polyline points="18 15 12 9 6 15"></polyline>
                         </svg>
-                        <svg *ngIf="ordenar.columna != 'id'" width="15" height="15" viewBox="0 0 24 24"
-                          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                          stroke-linejoin="round" class="feather feather-minus">
+                        <svg *ngIf="ordenar.columna != 'id'" width="15" height="15" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                          class="feather feather-minus">
                           <line x1="5" y1="12" x2="19" y2="12"></line>
                         </svg>
                       </span>
@@ -193,7 +188,7 @@
                       </span>
                     </div>
                   </th>
-                  <th
+                  <th *appPermisos="permiso_escritura"
                     class="px-5 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-900 tracking-wider">
                     <div (click)="ordenarPorColumna('activo')"
                       class="cursor-pointer flex items-center focus:outline-none">
@@ -219,14 +214,15 @@
                       </span>
                     </div>
                   </th>
-                  <th
+                  <th *appPermisos="permiso_escritura"
                     class="px-5 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-900 tracking-wider">
                     Acción
                   </th>
                 </tr>
               </thead>
               <tbody *ngIf="proveedoresService.proveedores">
-                @for(proveedor of proveedoresService.proveedores | filtroProveedores:filtro.parametro:filtro.activo | paginate:
+                @for(proveedor of proveedoresService.proveedores | filtroProveedores:filtro.parametro:filtro.activo |
+                paginate:
                 {itemsPerPage:
                 cantidadItems, currentPage: paginaActual}; track proveedor.id){
                 <tr class="animate__animated animate__fadeIn">
@@ -253,11 +249,11 @@
                       {{ proveedor.createdAt | fecha }}
                     </p>
                   </td>
-                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                  <td *appPermisos="permiso_escritura" class="px-5 py-2 border-b border-gray-200 text-xs">
                     <app-pastilla-estado [activo]=proveedor.activo
                       (click)="actualizarEstado(proveedor)"></app-pastilla-estado>
                   </td>
-                  <td class="px-5 py-2 border-b border-gray-200 text-xs text-center">
+                  <td *appPermisos="permiso_escritura" class="px-5 py-2 border-b border-gray-200 text-xs text-center">
                     <span class="flex items-center justify-center text-gray-900 whitespace-no-wrap">
                       <button (click)="proveedoresService.abrirAbm('editar',proveedor)" title="Editar proveedor"
                         class="boton-editar ml-2">

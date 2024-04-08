@@ -12,6 +12,7 @@ import { AlertService } from '../../services/alert.service';
 import { DataService } from '../../services/data.service';
 import { TiposGastosService } from '../../services/tipos-gastos.service';
 import AbmTipoGastoComponent from './abm-tipo-gasto/abm-tipo-gasto.component';
+import { PermisosDirective } from '../../directives/permisos.directive';
 
 @Component({
   standalone: true,
@@ -27,11 +28,15 @@ import AbmTipoGastoComponent from './abm-tipo-gasto/abm-tipo-gasto.component';
     PastillaEstadoComponent,
     TarjetaListaComponent,
     FiltroTiposGastosPipe,
-    AbmTipoGastoComponent
+    AbmTipoGastoComponent,
+    PermisosDirective
   ],
   styleUrls: []
 })
 export default class TiposGastosComponent implements OnInit {
+
+  // Permisos
+  public permiso_escritura: string[] = ['TIPOS_GASTOS_ALL'];
 
   // Paginacion
   public paginaActual: number = 1;

@@ -86,7 +86,7 @@
       <div class="md:w-1/2 mt-4 md:mt-0 md:ml-2">
         <p class="font-semibold"> <span class="text-red-500"> * </span> Descripcion </p>
         <input (keyup.enter)="agregarIngresoGasto()" [(ngModel)]="dataIngresoGasto.descripcion" type="text"
-          placeholder="Moreno Lucas Omar" class="input-generico w-full mt-2">
+          placeholder="Ej. Descripcion obligatoria" class="input-generico w-full mt-2">
       </div>
     </div>
   </div>
@@ -127,7 +127,8 @@
                   d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
               </svg>
             </button>
-            <button title="Cerrar caja" (click)="abrirCierreCaja()" class="boton-crear ml-2">
+            <button *appPermisos="permiso_escritura" title="Cerrar caja" (click)="abrirCierreCaja()"
+              class="boton-crear ml-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
@@ -142,7 +143,7 @@
                 <h2 class="font-semibold mr-4"> Fecha de caja </h2>
                 <input [(ngModel)]="fechaCaja" type="date" class="input-generico text-center w-full mr-4 mt-2">
               </div>
-              <div class="w-1/2">
+              <div class="w-1/2 mr-1">
                 <h2 class="text-gray-900 text-center font-semibold"> Saldo inicial </h2>
                 <div *ngIf="!showEditarSaldoInicial"
                   class="bg-gray-100 ml-2 border text-center w-full mt-2 border-gray-400 p-2 rounded">
@@ -151,16 +152,17 @@
                 <input (keyup.enter)="editarSaldoInicial()" *ngIf="showEditarSaldoInicial" [(ngModel)]="saldoInicialTMP"
                   type="number" placeholder="Ej. 2000" class="input-generico text-center w-full mt-2 ml-2">
               </div>
-
               @if(!showEditarSaldoInicial){
-              <button (click)="abrirEditarSaldoInicial()" title="Editar saldo inicial"
-                class="ml-4 p-2 border border-gray-400 shadow mt-7 rounded bg-gray-50 hover:text-secondaryColor">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="w-5 h-5">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                </svg>
-              </button>
+              <div *appPermisos="permiso_escritura">
+                <button *ngIf="authService.usuario.role === 'ADMIN_ROLE'" (click)="abrirEditarSaldoInicial()" title="Editar saldo inicial"
+                  class="ml-4 p-2 border border-gray-400 shadow mt-7 rounded bg-gray-50 hover:text-secondaryColor">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                  </svg>
+                </button>
+              </div>
               }@else {
               <div class="flex items-center ml-2">
                 <button (click)="editarSaldoInicial()" title="Actualizar"
@@ -327,7 +329,8 @@
       <div class="md:w-1/2 md:ml-3 border w-full mt-3 md:mt-0 h-max border-gray-400">
         <div class="p-2 flex items-center justify-between bg-gray-800 text-white">
           <h2 class="text-lg"> Ingresos y gastos </h2>
-          <button (click)="abrirIngresoGasto()" title="Agregar elemento" class="boton-crear">
+          <button *appPermisos="permiso_escritura" (click)="abrirIngresoGasto()" title="Agregar elemento"
+            class="boton-crear">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

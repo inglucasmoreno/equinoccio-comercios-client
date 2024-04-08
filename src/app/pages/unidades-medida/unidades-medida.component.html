@@ -17,7 +17,7 @@
             <p> Total de unidades: {{ this.unidadesMedidaService.unidadesMedida?.length }} </p>
           </div>
           <div>
-            <button title="Nueva unidad" (click)="abrirAbm('crear')" class="boton-nuevo-header">
+            <button *appPermisos="permiso_escritura" title="Nueva unidad" (click)="abrirAbm('crear')" class="boton-nuevo-header">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -120,6 +120,7 @@
                     </div>
                   </th>
                   <th
+                    *appPermisos="permiso_escritura"
                     class="px-5 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-900 tracking-wider">
                     <div (click)="ordenarPorColumna('activo')"
                       class="cursor-pointer flex items-center focus:outline-none">
@@ -146,6 +147,7 @@
                     </div>
                   </th>
                   <th
+                    *appPermisos="permiso_escritura"
                     class="px-5 border-b-2 border-gray-200 bg-gray-100 text-center text-sm font-semibold text-gray-900 tracking-wider">
                     Acción
                   </th>
@@ -156,7 +158,7 @@
                 cantidadItems, currentPage: paginaActual}; track unidad.id){
                 <tr class="animate__animated animate__fadeIn">
                   <td class="px-5 py-2 border-b border-gray-200 text-xs">
-                    <p class="text-gray-900 w-max whitespace-no-wrap">
+                    <p class="text-gray-900 w-max whitespace-no-wrap p-2">
                       {{ unidad.descripcion }}
                     </p>
                   </td>
@@ -165,14 +167,16 @@
                       {{ unidad.createdAt | fecha }}
                     </p>
                   </td>
-                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
+                  <td
+                    *appPermisos="permiso_escritura"
+                    class="px-5 py-2 border-b border-gray-200 text-xs">
                     <app-pastilla-estado *ngIf="unidad.id !== 1 && unidad.id !== 2" [activo]=unidad.activo
                       (click)="unidad.id !== 1 && unidad.id !== 2 ? actualizarEstado(unidad) : null"></app-pastilla-estado>
                     <button class="px-2 py-1 cursor-not-allowed font-semibold bg-gray-100 border border-gray-200 rounded-full text-gray-400" *ngIf="unidad.id === 1 || unidad.id === 2">
                       Activo
                     </button>
                   </td>
-                  <td class="px-5 py-2 border-b border-gray-200 text-xs text-center">
+                  <td *appPermisos="permiso_escritura" class="px-5 py-2 border-b border-gray-200 text-xs text-center">
                     <span class="flex items-center justify-center text-gray-900 whitespace-no-wrap">
                       <button *ngIf="unidad.id !== 1 && unidad.id !== 2" (click)="unidad.id !== 1 && unidad.id !== 2 ? abrirAbm('editar', unidad) : null" title="Editar usuario" class="boton-editar">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

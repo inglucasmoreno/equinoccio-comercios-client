@@ -312,27 +312,31 @@
             class="w-max p-1 mt-1 rounded bg-green-100 text-black text-xs border-green-300"> Completado </p>
         </div>
       </div>
-      <button *ngIf="ingreso.estado === 'Pendiente' && productosCarrito.length > 0" (click)="completarIngreso()"
-        title="Completar ingreso"
-        class="p-2 bg-gray-100 mr-1 text-black hover:text-secondaryColor border-gray-300 rounded">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-          class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-        </svg>
-      </button>
+      <div *appPermisos="permiso_escritura">
+        <button *ngIf="ingreso.estado === 'Pendiente' && productosCarrito.length > 0" (click)="completarIngreso()"
+          title="Completar ingreso"
+          class="p-2 bg-gray-100 mr-1 text-black hover:text-secondaryColor border-gray-300 rounded">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+            class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+          </svg>
+        </button>
+      </div>
     </div>
     <div class="text-sm p-2 border border-gray-400 border-t-0">
       <div>
         <div class="bg-gray-100 p-2 flex items-center justify-between w-full border border-gray-400 mt-2">
           <h2> Datos generales </h2>
-          <button *ngIf="ingreso.estado === 'Pendiente'" (click)="abrirModalIngreso()" title="Editar datos"
-            class="boton-editar">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round"
-                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
-            </svg>
-          </button>
+          <div *appPermisos="permiso_escritura">
+            <button *ngIf="ingreso.estado === 'Pendiente'" (click)="abrirModalIngreso()" title="Editar datos"
+              class="boton-editar">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+              </svg>
+            </button>
+          </div>
         </div>
         <div class="mt-2 px-2 py-3 border border-gray-400 w-full flex items-center justify-between">
           <p class="mt-1"> <span class="font-semibold"> Nro de ingreso: </span> {{ ingreso?.id }} </p>
@@ -371,13 +375,15 @@
             <h2 class="text-lg"> Listado de productos </h2>
             <p class="mt-1 text-xs font-semibold"> Cantidad de producto: {{ productosCarrito.length }} </p>
           </div>
-          <button *ngIf="ingreso.estado === 'Pendiente'" (click)="abrirModalProductos('crear')" title="Agregar producto"
-            class="boton-crear">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="currentColor" class="w-5 h-5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-          </button>
+          <div *appPermisos="permiso_escritura">
+            <button *ngIf="ingreso.estado === 'Pendiente'" (click)="abrirModalProductos('crear')" title="Agregar producto"
+              class="boton-crear">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <input *ngIf="productosCarrito.length > 0" [(ngModel)]="filtros.productosCarrito" type="text"

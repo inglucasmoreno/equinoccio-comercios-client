@@ -99,6 +99,12 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/usuarios/editar-password/editar-password.component'),
       },
 
+      {
+        path: 'usuarios/permisos/:id',
+        title: 'Permisos de usuario',
+        loadComponent: () => import('./pages/usuarios/permisos/permisos.component'),
+      },
+
       // Unidades de medida
 
       {

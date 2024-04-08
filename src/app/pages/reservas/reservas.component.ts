@@ -12,6 +12,7 @@ import { DataService } from '../../services/data.service';
 import { debounceTime, distinctUntilChanged, fromEvent, map } from 'rxjs';
 import { AlertaReservaPipe } from '../../pipes/alerta-reserva.pipe';
 import { environments } from '../../../environments/environments';
+import { PermisosDirective } from '../../directives/permisos.directive';
 
 const baseUrl = environments.base_url;
 
@@ -25,13 +26,17 @@ const baseUrl = environments.base_url;
     NgxPaginationModule,
     RouterModule,
     TarjetaListaComponent,
-    AlertaReservaPipe
+    AlertaReservaPipe,
+    PermisosDirective
   ],
   selector: 'app-reservas',
   templateUrl: './reservas.component.html',
   styleUrls: []
 })
 export default class ReservasComponent implements OnInit, AfterViewInit {
+
+  // Permisos
+  public permiso_escritura: string[] = ['LISTADO_RESERVAS_ALL'];
 
   // Reservas
   public reservas: any = [];

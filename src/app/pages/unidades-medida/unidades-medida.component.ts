@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FiltroUnidadesMedidaPipe } from '../../pipes/filtro-unidades-medida.pipe';
 import AbmUnidadMedidaComponent from './abm-unidad-medida/abm-unidad-medida.component';
+import { PermisosDirective } from '../../directives/permisos.directive';
 
 @Component({
   standalone: true,
@@ -26,12 +27,16 @@ import AbmUnidadMedidaComponent from './abm-unidad-medida/abm-unidad-medida.comp
     PastillaEstadoComponent,
     TarjetaListaComponent,
     AbmUnidadMedidaComponent,
-    FiltroUnidadesMedidaPipe
+    FiltroUnidadesMedidaPipe,
+    PermisosDirective
   ],
   templateUrl: './unidades-medida.component.html',
   styleUrls: []
 })
 export default class UnidadesMedidaComponent implements OnInit {
+
+  // Permisos
+  public permiso_escritura: string[] = ['UNIDADES_MEDIDA_ALL'];
 
   // Paginacion
   public paginaActual: number = 1;

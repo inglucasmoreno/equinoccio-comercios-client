@@ -117,7 +117,7 @@
               *ngIf="formaPago?.descripcion === 'PedidosYa - Efectivo' || formaPago?.descripcion === 'PedidosYa - Online'"
               class="text-xs bg-purple-50 border border-purple-400 px-1 rounded ml-1"> Nro. {{ formaPago.nroComprobante
               }} </span> </p>
-          <button (click)="abrirActualizarFormaPago(formaPago)" title="Editar" class="hover:text-secondaryColor ml-2">
+          <button *appPermisos="permiso_escritura" (click)="abrirActualizarFormaPago(formaPago)" title="Editar" class="hover:text-secondaryColor ml-2">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="w-4 h-4">
               <path stroke-linecap="round" stroke-linejoin="round"

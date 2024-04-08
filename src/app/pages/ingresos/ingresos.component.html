@@ -167,7 +167,7 @@
   </div>
 </app-modal>
 
-<!-- Listado de marcas -->
+<!-- Listado de ingresos -->
 <div class="max-full mx-auto">
   <app-tarjeta-lista>
     <div class="container mx-auto">
@@ -180,7 +180,7 @@
             <p> Total de ingresos: {{ totalItems }} </p>
           </div>
           <div>
-            <button title="Nueva marca" (click)="abrirModal('crear')" class="boton-nuevo-header">
+            <button *appPermisos="permiso_escritura" title="Nuevo ingreso" (click)="abrirModal('crear')" class="boton-nuevo-header">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-5 h-5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -430,14 +430,16 @@
                   </td>
                   <td class="px-5 py-2 border-b border-gray-200 text-xs text-center">
                     <span class="flex items-center justify-center text-gray-900 whitespace-no-wrap">
-                      <button *ngIf="ingreso.estado === 'Pendiente'" (click)="abrirModal('editar', ingreso)"
-                        title="Editar" class="boton-editar ml-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                          stroke="currentColor" class="w-5 h-5">
-                          <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
-                        </svg>
-                      </button>
+                      <div *appPermisos="permiso_escritura">
+                        <button *ngIf="ingreso.estado === 'Pendiente'" (click)="abrirModal('editar', ingreso)"
+                          title="Editar" class="boton-editar ml-2">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-5 h-5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+                          </svg>
+                        </button>
+                      </div>
                       <button [routerLink]="['/dashboard/ingresos/detalles', ingreso.id]" title="Detalles"
                         class="bg-purple-500 p-2 hover:opacity-90 text-white rounded shadow ml-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

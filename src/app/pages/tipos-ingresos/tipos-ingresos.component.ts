@@ -8,11 +8,11 @@ import { RouterModule } from '@angular/router';
 import { PastillaEstadoComponent } from '../../components/pastilla-estado/pastilla-estado.component';
 import { TarjetaListaComponent } from '../../components/tarjeta-lista/tarjeta-lista.component';
 import { TiposIngresosService } from '../../services/tipos-ingresos.service';
-import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../services/alert.service';
 import { DataService } from '../../services/data.service';
 import { FiltroTiposIngresosPipe } from '../../pipes/filtro-tipos-ingresos.pipe';
 import AbmTipoIngresoComponent from './abm-tipo-ingreso/abm-tipo-ingreso.component';
+import { PermisosDirective } from '../../directives/permisos.directive';
 
 @Component({
   standalone: true,
@@ -28,11 +28,15 @@ import AbmTipoIngresoComponent from './abm-tipo-ingreso/abm-tipo-ingreso.compone
     PastillaEstadoComponent,
     TarjetaListaComponent,
     FiltroTiposIngresosPipe,
-    AbmTipoIngresoComponent
+    AbmTipoIngresoComponent,
+    PermisosDirective
   ],
   styleUrls: []
 })
 export default class TiposIngresosComponent implements OnInit {
+
+  // Permisos
+  public permiso_escritura: string[] = ['TIPOS_INGRESOS_ALL'];
 
   // Paginacion
   public paginaActual: number = 1;
