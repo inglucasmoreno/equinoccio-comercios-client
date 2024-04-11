@@ -141,7 +141,7 @@
             <div class="flex items-center justify-center w-full">
               <div class="text-center w-1/2">
                 <h2 class="font-semibold mr-4"> Fecha de caja </h2>
-                <input [(ngModel)]="fechaCaja" type="date" class="input-generico text-center w-full mr-4 mt-2">
+                <input [disabled]="!permisosAll" [(ngModel)]="fechaCaja" type="date" class="input-generico text-center w-full mr-4 mt-2">
               </div>
               <div class="w-1/2 mr-1">
                 <h2 class="text-gray-900 text-center font-semibold"> Saldo inicial </h2>
@@ -356,7 +356,7 @@
               </div>
             </div>
             <div *ngIf="showIngresos">
-              <div (click)="eliminarIngreso(ingreso.id)"
+              <div (click)="permisosAll && eliminarIngreso(ingreso.id)"
                 class="flex items-center hover:bg-purple-100 cursor-pointer border-b border-b-300 justify-between mt-2 p-2"
                 *ngFor="let ingreso of ingresos">
                 <div>
@@ -391,7 +391,7 @@
               </div>
             </div>
             <div *ngIf="showGastos">
-              <div (click)="eliminarGasto(gasto.id)"
+              <div (click)="permisosAll && eliminarGasto(gasto.id)"
                 class="flex items-center hover:bg-purple-100 cursor-pointer border-b border-b-300 justify-between mt-2 p-2"
                 *ngFor="let gasto of gastos">
                 <div>

@@ -39,6 +39,7 @@ export default class CierreCajaComponent implements OnInit {
 
   // Permisos
   public permiso_escritura: string[] = ['CIERRE_CAJA_ALL'];
+  public permisosAll: boolean = false;
 
   // Modals
   public showModalPostnet = false;
@@ -100,6 +101,8 @@ export default class CierreCajaComponent implements OnInit {
 
     this.alertService.loading();
 
+    this.verificacionPermisosTotales();
+
     this.cajasService.listarCajas({ activo: 'true' }).subscribe({
       next: ({ cajas }) => {
 
@@ -118,6 +121,11 @@ export default class CierreCajaComponent implements OnInit {
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
 
+  }
+
+  // Asignar permisos de usuario login
+  verificacionPermisosTotales(): void {
+    this.permisosAll = this.authService.usuario.permisos.includes('CIERRE_CAJA_ALL') || this.authService.usuario.role === 'ADMIN_ROLE';
   }
 
   getCaja(): void {

@@ -323,7 +323,7 @@
     <div class="md:flex md:items-center md:justify-between">
       <div class="px-2 py-2 text-center">
         <p class="font-semibold"> Fecha de reserva </p>
-        <input [disabled]="reserva?.estado !== 'Pendiente'" onkeydown="return false" [(ngModel)]="fechaReserva"
+        <input [disabled]="reserva?.estado !== 'Pendiente' || !permisosAll" onkeydown="return false" [(ngModel)]="fechaReserva"
           type="date" class="input-generico text-center mt-2 w-full" (change)="actualizarFechaReserva()">
       </div>
 
@@ -331,10 +331,10 @@
         <p class="font-semibold mb-2"> Fecha y hora de entrega </p>
         <div class="flex items-center mt-2 md:mt-0">
           <input onkeydown="return false" (change)="actualizarFechaAlerta()"
-            [disabled]="reserva?.estado !== 'Pendiente'" [(ngModel)]="fechaEntrega" type="date" class="input-generico">
+            [disabled]="reserva?.estado !== 'Pendiente' || !permisosAll" [(ngModel)]="fechaEntrega" type="date" class="input-generico text-center">
           <input onkeydown="return false" (change)="actualizarFechaAlerta()"
-            [disabled]="reserva?.estado !== 'Pendiente'" [(ngModel)]="horaEntrega" type="time"
-            class="input-generico ml-2">
+            [disabled]="reserva?.estado !== 'Pendiente' || !permisosAll" [(ngModel)]="horaEntrega" type="time"
+            class="input-generico ml-2 text-center">
           <button *appPermisos="permiso_escritura" title="Datos de alarma" [ngClass]="{'bg-orange-100': (reserva?.fechaAlerta | alertaReserva:reserva?.estado)}" (click)="abrirActualizarDatosAlerta()" class="p-2 border border-gray-400 rounded ml-2">
             <svg *ngIf="!(reserva?.fechaAlerta | alertaReserva:reserva?.estado)" viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none">

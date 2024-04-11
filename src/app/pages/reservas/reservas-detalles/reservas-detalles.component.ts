@@ -48,6 +48,7 @@ export default class ReservasDetallesComponent implements OnInit {
 
   // Permisos
   public permiso_escritura: string[] = ['LISTADO_RESERVAS_ALL'];
+  public permisosAll: boolean = false;
 
   // Flag
   public showActualizarHorasAntes: boolean = false;
@@ -113,10 +114,17 @@ export default class ReservasDetallesComponent implements OnInit {
   ngOnInit() {
     this.dataService.ubicacionActual = 'Dashboard - Detalles de reserva';
     this.alertService.loading();
+    this.verificacionPermisosTotales();
     this.activatedRoute.params.subscribe(({ id }) => {
       this.obtenerReserva(id);
     })
   }
+
+  // Asignar permisos de usuario login
+  verificacionPermisosTotales(): void {
+    this.permisosAll = this.authService.usuario.permisos.includes('LISTADO_RESERVAS_ALL') || this.authService.usuario.role === 'ADMIN_ROLE';
+  }
+
 
   obtenerReserva(id: any): void {
     this.reservasService.getReserva(id).subscribe({

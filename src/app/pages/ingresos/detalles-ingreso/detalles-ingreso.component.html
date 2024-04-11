@@ -393,7 +393,7 @@
           @for(relacion of productosCarrito | filtroIngresosProductos:filtros.productosCarrito:''; track
           relacion.productoId){
 
-          <div (click)="abrirModalProductos('editar', relacion)"
+          <div (click)="permisosAll && abrirModalProductos('editar', relacion)"
             class="border flex items-center justify-between border-gray-400 mt-2 p-2 hover:border-secondaryColor hover:bg-purple-50 cursor-pointer">
 
             <div class="flex items-center justify-center">

@@ -47,6 +47,7 @@ export default class DetallesIngresoComponent implements OnInit {
 
   // Permisos
   public permiso_escritura: string[] = ['INGRESOS_ALL'];
+  public permisosAll: boolean = false;
 
   // Modals
   public showModalIngreso: boolean = false;
@@ -117,6 +118,7 @@ export default class DetallesIngresoComponent implements OnInit {
     this.dataService.ubicacionActual = 'Dashboard - Detalles Ingreso';
     gsap.from('.gsap-contenido', { y: 100, opacity: 0, duration: .2 });
     this.alertService.loading();
+    this.verificacionPermisosTotales();
     this.activatedRoute.params.subscribe({
       next: ({ id }) => {
         this.ingresosService.getIngreso(id).subscribe({
@@ -130,6 +132,11 @@ export default class DetallesIngresoComponent implements OnInit {
         })
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
+  }
+
+  // Asignar permisos de usuario login
+  verificacionPermisosTotales(): void {
+    this.permisosAll = this.authService.usuario.permisos.includes('INGRESOS_ALL') || this.authService.usuario.role === 'ADMIN_ROLE';
   }
 
   abrirModalIngreso(): void {
