@@ -41,6 +41,11 @@ const baseUrl = environments.base_url;
 export default class VentasBusquedaComponent implements OnInit {
 
   // Flags
+  public showFormaPago = false;
+  public showProductos = false;
+  public showFacturacion = false;
+
+  // Flags
   public inicioPagina = true;
 
   // Constantes

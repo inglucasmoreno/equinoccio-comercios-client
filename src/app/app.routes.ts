@@ -243,6 +243,15 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/configBalanza/configBalanza.component'),
       },
 
+      // Configuración de AFIP
+      {
+        path: 'config-afip',
+        // data: { permisos: ['BALANZA_ALL', 'BALANZA_READ'] },
+        canActivate: [NavigationGuard],
+        title: 'Configuración de AFIP',
+        loadComponent: () => import('./pages/configAfip/configAfip.component'),
+      },
+
       // Reservas
       {
         path: 'nueva-reserva',

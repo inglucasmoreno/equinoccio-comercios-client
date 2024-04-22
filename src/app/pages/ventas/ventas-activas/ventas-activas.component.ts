@@ -17,6 +17,7 @@ import { VentasFormasPagoService } from '../../../services/ventas-formas-pago.se
 import { tiposVenta } from '../../../constants/tiposVenta';
 import { environments } from '../../../../environments/environments';
 import { PermisosDirective } from '../../../directives/permisos.directive';
+import { AuthService } from '../../../services/auth.service';
 
 const baseUrl = environments.base_url;
 
@@ -40,6 +41,11 @@ const baseUrl = environments.base_url;
   styleUrls: []
 })
 export default class VentasActivasComponent implements OnInit {
+
+  // Flags
+  public showFormaPago = false;
+  public showProductos = false;
+  public showFacturacion = false;
 
   // Permisos
   public permiso_escritura: string[] = ['VENTAS_ACTIVAS_ALL'];
@@ -89,6 +95,7 @@ export default class VentasActivasComponent implements OnInit {
   }
 
   constructor(
+    public authService: AuthService,
     private ventasService: VentasService,
     private alertService: AlertService,
     private ventasFormasPagoService: VentasFormasPagoService,
@@ -97,12 +104,12 @@ export default class VentasActivasComponent implements OnInit {
 
   ngOnInit(): void {
     this.dataService.ubicacionActual = 'Dashboard - Ventas activas';
+    this.alertService.loading();
     this.listarVentas();
   }
 
   // Listar ventas
   listarVentas(): void {
-    this.alertService.loading();
     const parametros: any = {
       direccion: this.ordenar.direccion,
       columna: this.ordenar.columna,
@@ -118,7 +125,6 @@ export default class VentasActivasComponent implements OnInit {
         this.totalItems = totalItems;
         this.ventas = ventas;
         this.totales = totales;
-        console.log(ventas);
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
@@ -128,6 +134,9 @@ export default class VentasActivasComponent implements OnInit {
     this.ventaSeleccionada = venta;
     this.actualizandoFormaPago = false;
     this.formaPagoSeleccionada = null;
+    this.showFormaPago = false;
+    this.showProductos = false;
+    this.showFacturacion = false;
     this.showModalVenta = true;
   }
 
@@ -165,6 +174,24 @@ export default class VentasActivasComponent implements OnInit {
     });
   }
 
+  actualizarFacturacion(): void {
+    this.alertService.question({ msg: 'Generando facturacion', buttonText: 'Facturar' })
+    .then(({ isConfirmed }) => {
+      if (isConfirmed) {
+        this.alertService.loading();
+        this.ventasService.actualizarVentaFacturacionB(this.ventaSeleccionada.id, {
+          creatorUserId: this.authService.usuario.userId,
+          sena: false
+        }).subscribe({
+          next: () => {
+            this.showModalVenta = false;
+            this.listarVentas();
+          }, error: ({ error }) => this.alertService.errorApi(error.message)
+        });
+      }
+    });
+  }
+
   // Generar comprobate - Venta
   generarComprobanteVenta(idVenta: string): void {
     window.open(`${baseUrl}/ventas/generar/comprobante/${idVenta}`, '_blank');
@@ -179,13 +206,14 @@ export default class VentasActivasComponent implements OnInit {
   ordenarPorColumna(columna: string) {
     this.ordenar.columna = columna;
     this.ordenar.direccion = this.ordenar.direccion == 'asc' ? 'desc' : 'asc';
+    this.alertService.loading();
     this.listarVentas();
   }
 
   // Paginacion - Cambiar pagina
   cambiarPagina(nroPagina): void {
     this.paginaActual = nroPagina;
-    // this.desde = (this.paginaActual - 1) * this.cantidadItems;
+    this.alertService.loading();
     this.listarVentas();
   }
 

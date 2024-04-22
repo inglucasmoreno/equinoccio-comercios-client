@@ -139,9 +139,25 @@
               <p class="text-red-600"> -${{ caja?.totalMercadoPago | moneda }} </p>
             </div>
           </div>
-          <div class="p-2 flex items-center mt-1 justify-between bg-gray-100 border border-gray-400">
+          <div class="p-2 flex items-center mt-2 justify-between bg-gray-100 border border-gray-400">
             <p> Total efectivo en caja (Sistema) </p>
             <p class="font-semibold"> ${{ caja?.totalEfectivoEnCaja | moneda }} </p>
+          </div>
+          <div class="p-2 flex items-center mt-2 justify-between bg-gray-100 border border-gray-400">
+            <p> Total efectivo en caja (Real) </p>
+            <p class="font-semibold"> ${{ caja?.totalEfectivoEnCajaReal | moneda }} </p>
+          </div>
+          <div class="p-2 flex items-center mt-2 justify-between bg-gray-100 border border-gray-400">
+            <p> Diferencia en caja </p>
+            <p [ngClass]="{'text-red-600':caja?.diferencia < 0}" class="font-semibold"> ${{ caja?.diferencia | moneda }} </p>
+          </div>
+          <div class="p-2 flex items-center mt-2 justify-between bg-gray-100 border border-gray-400">
+            <p> Monto tesoreria </p>
+            <p [ngClass]="{'text-red-600':caja?.tesoreria < 0}" class="font-semibold"> ${{ caja?.tesoreria | moneda }} </p>
+          </div>
+          <div class="p-2 flex items-center mt-2 justify-between bg-gray-100 border border-gray-400">
+            <p> Saldo inicial proxima caja </p>
+            <p [ngClass]="{'text-red-600':caja?.saldoProximaCaja < 0}" class="font-semibold"> ${{ caja?.saldoProximaCaja | moneda }} </p>
           </div>
         </div>
       </div>

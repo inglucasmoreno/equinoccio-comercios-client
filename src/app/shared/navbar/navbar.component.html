@@ -212,8 +212,7 @@
     <div class="p-1 bg-gray-500 rounded">
 
       <!-- Generar reserva -->
-      <li *appPermisos="['NUEVA_RESERVA_ALL']" routerLinkActive="bg-secondaryColor rounded"
-        routerLink="nueva-reserva"
+      <li *appPermisos="['NUEVA_RESERVA_ALL']" routerLinkActive="bg-secondaryColor rounded" routerLink="nueva-reserva"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Nueva reserva </a>
       </li>
@@ -229,8 +228,7 @@
     }
 
     <!-- Cajas -->
-    <li *ngIf="condicionShowCajas" (click)="mostrarOcultarSeccion('cajas')"
-      routerLinkActive="bg-secondaryColor rounded"
+    <li *ngIf="condicionShowCajas" (click)="mostrarOcultarSeccion('cajas')" routerLinkActive="bg-secondaryColor rounded"
       class="flex justify-between items-center outline-none cursor-pointer p-2">
       <div class="flex items-center">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
@@ -342,6 +340,13 @@
         routerLink="config-balanza"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Balanza </a>
+      </li>
+
+      <!-- Configuracion de AFIP -->
+      <li *ngIf="authService.usuario.role === 'ADMIN_ROLE'" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="config-afip"
+        class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
+        <a class="ml-2 mt-1"> AFIP </a>
       </li>
 
       <!-- Marcas -->

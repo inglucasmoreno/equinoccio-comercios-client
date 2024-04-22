@@ -29,6 +29,12 @@ export class VentasService {
     })
   }
 
+  proximoNumeroFactura(tipoFactura: string = 'B'): Observable<any> {
+    return this.http.get(`${urlApi}/afip/proximo-numero-factura/${tipoFactura}`, {
+      headers: this.getToken
+    })
+  }
+
   listarVentas({
     activo = '',
     direccion = 'desc',
@@ -64,8 +70,20 @@ export class VentasService {
     })
   }
 
+  nuevaVentaFacturacionB(data: any): Observable<any> {
+    return this.http.post(`${urlApi}/facturacion-b`, data, {
+      headers: this.getToken
+    })
+  }
+
   actualizarVenta(id: string, data: any): Observable<any> {
     return this.http.patch(`${urlApi}/${id}`, data, {
+      headers: this.getToken
+    })
+  }
+
+  actualizarVentaFacturacionB(id: string, data: any): Observable<any> {
+    return this.http.patch(`${urlApi}/facturacion-b/${id}`, data, {
       headers: this.getToken
     })
   }

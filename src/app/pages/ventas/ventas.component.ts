@@ -103,6 +103,9 @@ export default class VentasComponent implements OnInit {
     productos: ''
   }
 
+  // AFIP
+  public proximoNumeroFactura = null;
+
   // Arreglo - Formas de pago
   public formasPagoArray: any[] = formasPagoArray
 
@@ -151,7 +154,7 @@ export default class VentasComponent implements OnInit {
 
     let precioTotal = 0;
 
-    if(precio === 0) precioTotal = producto.precioVenta * cantidad;
+    if (precio === 0) precioTotal = producto.precioVenta * cantidad;
     else precioTotal = precio;
 
     // Ultimo producto cargado
@@ -395,6 +398,7 @@ export default class VentasComponent implements OnInit {
         cantidad: producto.cantidad,
         precioUnitario: producto.precioUnitario,
         precioTotal: producto.precioTotal,
+        alicuota: producto.producto.alicuota,
         creatorUserId: this.authService.usuario.userId
       });
     });
@@ -414,38 +418,54 @@ export default class VentasComponent implements OnInit {
       }]
     }
 
-    // Datos de facturacion
-
-    const facturacion = {
-      puntoVenta: 0,
-      tipoComprobante: 0,
-      nroComprobante: 0,
-    }
-
     const data = {
       dataVenta: venta,
-      dataFacturacion: facturacion,
       dataFormasPago: formasPago,
       dataProductos: productos,
       dataOtros: {
         imprimirTicket: this.imprimirTicket
-      }
+      },
+      sena: false
     }
 
     this.alertService.question({ msg: '¿Quieres completar la venta?', buttonText: 'Completar' })
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();
-          this.ventasService.nuevaVenta(data).subscribe({
-            next: ({ venta }) => {
-              this.reiniciarVenta();
-              this.alertService.close();
-              if(this.imprimirTicket) window.open(`${baseUrl}/ventas/generar/comprobante/${venta.id}`, '_blank');
-            }, error: ({ error }) => this.alertService.errorApi(error.message)
-          })
+
+          if (this.comprobante === 'Normal') {
+            this.ventasService.nuevaVenta(data).subscribe({
+              next: ({ venta }) => {
+                this.reiniciarVenta();
+                this.alertService.close();
+                if (this.imprimirTicket) window.open(`${baseUrl}/ventas/generar/comprobante/${venta.id}`, '_blank');
+              }, error: ({ error }) => this.alertService.errorApi(error.message)
+            })
+          } else if (this.comprobante === 'Fiscal') {
+            this.ventasService.nuevaVentaFacturacionB(data).subscribe({
+              next: ({ venta }) => {
+                console.log(venta);
+                this.reiniciarVenta();
+                this.alertService.close();
+                // if (this.imprimirTicket) window.open(`${baseUrl}/ventas/generar/comprobante/${venta.id}`, '_blank');
+              }, error: ({ error }) => this.alertService.errorApi(error.message)
+            })
+          }
+
+
         }
       });
 
+  }
+
+  obtenerProximoNumeroFactura(): void {
+    this.alertService.loading();
+    this.ventasService.proximoNumeroFactura('B').subscribe({
+      next: ({ proximoNumeroFactura }) => {
+        this.proximoNumeroFactura = proximoNumeroFactura;
+        this.alertService.close();
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    })
   }
 
   reiniciarVenta(): void {
@@ -476,6 +496,11 @@ export default class VentasComponent implements OnInit {
     this.formasPago = [];
     this.formasPagoArray = formasPagoArray
     this.filtro = { productos: '' }
+    this.proximoNumeroFactura = null;
+    this.almacenarEnLocalStorage();
+  }
+
+  cambioComprobante(): void {
     this.almacenarEnLocalStorage();
   }
 

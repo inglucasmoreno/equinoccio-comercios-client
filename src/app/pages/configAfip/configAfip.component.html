@@ -1,0 +1,150 @@
+<app-modal [showModal]="showModalConfiguraciones">
+  <div>
+    <div class="flex items-center justify-between bg-gray-800 rounded-t p-2">
+      <h1 class=" text-white px-2 py-1 rounded-t text-lg"> Creando configuraciones </h1>
+      <svg (click)="showModalConfiguraciones = false" width="20" height="20" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+        class="cursor-pointer feather feather-x text-white mr-2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </div>
+    <div class="p-2 text-sm">
+      <div class="flex items-center">
+        <div class="w-1/2">
+          <p class="font-semibold"> <span class="text-red-600"> * </span> CUIT </p>
+          <input [(ngModel)]="configuracionesForm.cuit" placeholder="Ej. 24340603989"
+            class="input-generico w-full mt-2 text-center">
+        </div>
+        <div class="w-1/2 ml-2">
+          <p class="font-semibold"> <span class="text-red-600"> * </span> Punto de venta </p>
+          <input [(ngModel)]="configuracionesForm.puntoVenta" placeholder="Ej. 4"
+            class="input-generico w-full mt-2 text-center">
+        </div>
+      </div>
+      <div class="mt-3">
+        <p class="font-semibold"> <span class="text-red-600"> * </span> Cert </p>
+        <textarea [(ngModel)]="configuracionesForm.cert" placeholder="Ingresar CERT"
+          class="p-2 border rounded border-gray-400 mt-2 w-full"></textarea>
+      </div>
+      <div class="mt-2">
+        <p class="font-semibold"> <span class="text-red-600"> * </span> Key </p>
+        <textarea [(ngModel)]="configuracionesForm.key" placeholder="Ingresar KEY"
+          class="p-2 border rounded border-gray-400 mt-2 w-full"></textarea>
+      </div>
+      <button (click)="agregarConfiguraciones()" class="boton-crear w-full mt-3">
+        Agregar configuraciones
+      </button>
+    </div>
+  </div>
+</app-modal>
+
+<div class="gsap-contenido">
+
+  @if(!configuraciones){
+  <div class="flex items-center justify-center h-screen">
+    <div class="text-center">
+      <img src="assets/img/afip.png" class="w-1/2 mx-auto" alt="afip.png">
+      <h1 class="text-xl md:text-4xl text-gray-500 mt-5"> No se encontraron configuraciones </h1>
+      <button (click)="abrirAgregarConfiguraciones()"
+        class="bg-secondaryColor hover:opacity-90 p-3 rounded w-max text-white mt-7">
+        Crear configuraciones
+      </button>
+    </div>
+  </div>
+  }@else{
+  <div class="mt-5">
+    <h1
+      class="font-semibold text-md md:text-xl text-center bg-gray-100 p-2 w-11/12 md:w-1/2 mx-auto border border-gray-400">
+      Configuraciones - AFIP </h1>
+    <div class="text-sm mt-4 text-center">
+
+      <div (click)="showSeccionDatosFacturacion = !showSeccionDatosFacturacion"
+        class="bg-gray-100 w-11/12 md:w-1/2 flex items-center justify-between cursor-pointer text-left mt-4 mx-auto p-2 border border-gray-400">
+        <h2 class="font-semibold"> Datos de facturacion </h2>
+        <div>
+          <svg *ngIf="showSeccionDatosFacturacion" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+          </svg>
+          <svg *ngIf="!showSeccionDatosFacturacion" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+          </svg>
+        </div>
+      </div>
+
+      <div *ngIf="showSeccionDatosFacturacion">
+        <div class="flex w-11/12 md:w-1/2 mt-2 mx-auto items-center">
+          <div class="w-1/2">
+            <p class="font-semibold"> Razon Social </p>
+            <input placeholder="Ej. Equinoccio Technology" class="input-generico w-full mt-2 text-center">
+          </div>
+          <div class="w-1/2 ml-2">
+            <p class="font-semibold"> IIBB </p>
+            <input placeholder="Ej. 4" class="input-generico w-full mt-2 text-center">
+          </div>
+        </div>
+
+        <div class="flex w-11/12 mt-4 md:w-1/2 mx-auto items-center">
+          <div class="w-1/2">
+            <p class="font-semibold"> Domicilio </p>
+            <input placeholder="Ej. 9 de Julio 811" class="input-generico w-full mt-2 text-center">
+          </div>
+          <div class="w-1/2 ml-2">
+            <p class="font-semibold"> Inicio de actividad </p>
+            <input type="date" class="input-generico w-full mt-2 text-center">
+          </div>
+        </div>
+
+        <div class="flex w-11/12 md:w-1/2 mt-4 mx-auto items-center">
+          <div class="w-1/2">
+            <p class="font-semibold"> CUIT </p>
+            <input [(ngModel)]="configuraciones.cuit" placeholder="Ej. 24340603989"
+              class="input-generico w-full mt-2 text-center">
+          </div>
+          <div class="w-1/2 ml-2">
+            <p class="font-semibold"> Punto de venta </p>
+            <input [(ngModel)]="configuraciones.puntoVenta" placeholder="Ej. 4"
+              class="input-generico w-full mt-2 text-center">
+          </div>
+        </div>
+      </div>
+
+      <div (click)="showSeccionConfiguraciones = !showSeccionConfiguraciones"
+        class="bg-gray-100 w-11/12 md:w-1/2 flex items-center justify-between cursor-pointer text-left mt-4 mx-auto p-2 border border-gray-400">
+        <h2 class="font-semibold"> Listado de certificados </h2>
+        <div>
+          <svg *ngIf="showSeccionConfiguraciones" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+          </svg>
+          <svg *ngIf="!showSeccionConfiguraciones" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+          </svg>
+        </div>
+      </div>
+
+      <div *ngIf="showSeccionConfiguraciones">
+        <div class="mt-4">
+          <p class="font-semibold bg-yellow-500 p-2 w-11/12 md:w-1/2 rounded mx-auto"> Cert </p>
+          <textarea [(ngModel)]="configuraciones.cert"
+            class="border border-gray-400 w-11/12 md:w-1/2 mt-2 h-40">{{ configuraciones.cert }}</textarea>
+        </div>
+        <div class="mt-4">
+          <p class="font-semibold bg-green-500 p-2 w-11/12 md:w-1/2 rounded mx-auto"> Key </p>
+          <textarea [(ngModel)]="configuraciones.key"
+            class="border border-gray-400 w-11/12 md:w-1/2 h-40 mt-2 ml-2">{{ configuraciones.key }}</textarea>
+        </div>
+      </div>
+
+    </div>
+    <button (click)="actualizarConfiguraciones()"
+      class="boton-editar w-11/12 mb-4 md:w-1/2 mx-auto text-center mt-4 flex items-center justify-center">
+      Actualizar configuraciones
+    </button>
+  </div>
+  }
+
+</div>
