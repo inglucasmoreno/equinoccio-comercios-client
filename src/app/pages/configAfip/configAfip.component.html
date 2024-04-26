@@ -78,34 +78,34 @@
         <div class="flex w-11/12 md:w-1/2 mt-2 mx-auto items-center">
           <div class="w-1/2">
             <p class="font-semibold"> Razon Social </p>
-            <input placeholder="Ej. Equinoccio Technology" class="input-generico w-full mt-2 text-center">
+            <input (keyup.enter)="actualizarConfiguraciones()" [(ngModel)]="configuraciones.razonSocial" placeholder="Ej. Equinoccio Technology" class="input-generico w-full mt-2 text-center">
           </div>
           <div class="w-1/2 ml-2">
             <p class="font-semibold"> IIBB </p>
-            <input placeholder="Ej. 4" class="input-generico w-full mt-2 text-center">
+            <input (keyup.enter)="actualizarConfiguraciones()" [(ngModel)]="configuraciones.iibb" placeholder="Ej. 4" class="input-generico w-full mt-2 text-center">
           </div>
         </div>
 
         <div class="flex w-11/12 mt-4 md:w-1/2 mx-auto items-center">
           <div class="w-1/2">
             <p class="font-semibold"> Domicilio </p>
-            <input placeholder="Ej. 9 de Julio 811" class="input-generico w-full mt-2 text-center">
+            <input (keyup.enter)="actualizarConfiguraciones()" [(ngModel)]="configuraciones.domicilio" placeholder="Ej. 9 de Julio 811" class="input-generico w-full mt-2 text-center">
           </div>
           <div class="w-1/2 ml-2">
             <p class="font-semibold"> Inicio de actividad </p>
-            <input type="date" class="input-generico w-full mt-2 text-center">
+            <input (keyup.enter)="actualizarConfiguraciones()" [(ngModel)]="configuraciones.inicioActividad" type="date" class="input-generico w-full mt-2 text-center">
           </div>
         </div>
 
         <div class="flex w-11/12 md:w-1/2 mt-4 mx-auto items-center">
           <div class="w-1/2">
-            <p class="font-semibold"> CUIT </p>
-            <input [(ngModel)]="configuraciones.cuit" placeholder="Ej. 24340603989"
+            <p class="font-semibold"> <span class="text-red-700"> * </span> CUIT </p>
+            <input (keyup.enter)="actualizarConfiguraciones()" [(ngModel)]="configuraciones.cuit" placeholder="Ej. 24340603989"
               class="input-generico w-full mt-2 text-center">
           </div>
           <div class="w-1/2 ml-2">
-            <p class="font-semibold"> Punto de venta </p>
-            <input [(ngModel)]="configuraciones.puntoVenta" placeholder="Ej. 4"
+            <p class="font-semibold"> <span class="text-red-700"> * </span> Punto de venta </p>
+            <input (keyup.enter)="actualizarConfiguraciones()" [(ngModel)]="configuraciones.puntoVenta" placeholder="Ej. 4"
               class="input-generico w-full mt-2 text-center">
           </div>
         </div>

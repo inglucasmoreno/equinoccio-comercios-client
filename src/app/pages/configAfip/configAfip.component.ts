@@ -8,6 +8,7 @@ import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
 import { ConfigAfipService } from '../../services/config-afip.service';
 import gsap from 'gsap';
+import { format } from 'date-fns';
 
 @Component({
   standalone: true,
@@ -27,7 +28,17 @@ export default class ConfigAfipComponent implements OnInit {
   public showSeccionConfiguraciones = false;
   public showSeccionDatosFacturacion = false;
   public configuracionesForm = { cert: '', key: '', cuit: '', puntoVenta: '' };
-  public configuraciones = { id: '', cert: '', key: '',  cuit: '', puntoVenta: '' };
+  public configuraciones = {
+    id: '',
+    cert: '',
+    key: '',
+    cuit: '',
+    puntoVenta: '',
+    razonSocial: '',
+    iibb: '',
+    domicilio: '',
+    inicioActividad: '',
+  };
 
   constructor(
     private authService: AuthService,
@@ -52,6 +63,10 @@ export default class ConfigAfipComponent implements OnInit {
           this.configuraciones.key = decodeURIComponent(configuraciones.key);
           this.configuraciones.cuit = configuraciones.cuit;
           this.configuraciones.puntoVenta = configuraciones.puntoVenta;
+          this.configuraciones.razonSocial = configuraciones.razonSocial;
+          this.configuraciones.iibb = configuraciones.iibb;
+          this.configuraciones.domicilio = configuraciones.domicilio;
+          this.configuraciones.inicioActividad = format(configuraciones.inicioActividad, 'yyyy-MM-dd');
         }
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
@@ -66,7 +81,7 @@ export default class ConfigAfipComponent implements OnInit {
   agregarConfiguraciones(): void {
 
     if (!this.configuracionesForm.cert || !this.configuracionesForm.key || !this.configuracionesForm.cuit || !this.configuracionesForm.puntoVenta) {
-      return this.alertService.info('Debe completar todos los campos');
+      return this.alertService.info('Debe completar todos los campos obligatorios');
     }
 
     this.alertService.loading();
@@ -93,7 +108,7 @@ export default class ConfigAfipComponent implements OnInit {
   actualizarConfiguraciones(): void {
 
     if (!this.configuraciones.cert || !this.configuraciones.key || !this.configuraciones.cuit || !this.configuraciones.puntoVenta) {
-      return this.alertService.info('Debe completar todos los campos');
+      return this.alertService.info('Debe completar todos los campos obligatorios');
     }
 
     this.alertService.question({ msg: 'Actualizando configuraciones', buttonText: 'Actualizar' })
@@ -104,6 +119,10 @@ export default class ConfigAfipComponent implements OnInit {
             cert: encodeURIComponent(this.configuraciones.cert),
             key: encodeURIComponent(this.configuraciones.key),
             cuit: this.configuraciones.cuit,
+            razonSocial: this.configuraciones.razonSocial,
+            iibb: this.configuraciones.iibb,
+            domicilio: this.configuraciones.domicilio,
+            inicioActividad: this.configuraciones.inicioActividad,
             puntoVenta: this.configuraciones.puntoVenta,
             creatorUserId: this.authService.usuario.userId
           };
@@ -113,6 +132,10 @@ export default class ConfigAfipComponent implements OnInit {
               this.configuraciones.key = decodeURIComponent(configuraciones.key);
               this.configuraciones.cuit = configuraciones.cuit;
               this.configuraciones.puntoVenta = configuraciones.puntoVenta;
+              this.configuraciones.razonSocial = configuraciones.razonSocial
+              this.configuraciones.iibb = configuraciones.iibb;
+              this.configuraciones.domicilio = configuraciones.domicilio;
+              this.configuraciones.inicioActividad = format(configuraciones.inicioActividad, 'yyyy-MM-dd');
               this.alertService.success('Configuraciones actualizadas correctamente!');
             }, error: ({ error }) => this.alertService.errorApi(error.message)
           });
