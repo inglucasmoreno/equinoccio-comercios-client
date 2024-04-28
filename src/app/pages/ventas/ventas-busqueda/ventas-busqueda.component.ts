@@ -196,9 +196,15 @@ export default class VentasBusquedaComponent implements OnInit {
     this.buscarVentas();
   }
 
-  // Generar comprobate - Venta
+  // Generar comprobate - Venta Normal
   generarComprobanteVenta(idVenta: string): void {
     window.open(`${baseUrl}/ventas/generar/comprobante/${idVenta}`, '_blank');
+  }
+
+  // Generar comprobate - Fiscal
+  generarComprobanteVentaFiscal(idVenta: string): void {
+    console.log('Fiscal');
+    window.open(`${baseUrl}/ventas/generar/comprobante/fiscal/${idVenta}`, '_blank');
   }
 
   // Generar comprobate - Reserva

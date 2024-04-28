@@ -252,6 +252,15 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/configAfip/configAfip.component'),
       },
 
+      // Configuración de sucursal
+      {
+        path: 'config-sucursal',
+        // data: { permisos: ['BALANZA_ALL', 'BALANZA_READ'] },
+        canActivate: [NavigationGuard],
+        title: 'Configuración de sucursal',
+        loadComponent: () => import('./pages/configSucursal/configSucursal.component'),
+      },
+
       // Reservas
       {
         path: 'nueva-reserva',

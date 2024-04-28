@@ -307,18 +307,25 @@
     @if(showSeccion.configuraciones){
     <div class="p-1 bg-gray-500 rounded">
 
-      <!-- Usuarios -->
-      <li *appPermisos="['USUARIOS_ALL', 'USUARIOS_READ']" routerLinkActive="bg-secondaryColor rounded"
-        routerLink="usuarios"
+      <!-- Configuracion de AFIP -->
+      <li *ngIf="authService.usuario.role === 'ADMIN_ROLE'" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="config-afip"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
-        <a class="ml-2 mt-1"> Usuarios </a>
+        <a class="ml-2 mt-1"> AFIP </a>
       </li>
 
-      <!-- Unidades de medida -->
-      <li *appPermisos="['UNIDADES_MEDIDA_ALL', 'UNIDADES_MEDIDA_READ']" routerLinkActive="bg-secondaryColor rounded"
-        routerLink="unidades-medida"
+      <!-- Configuracion de balanza -->
+      <li *appPermisos="['BALANZA_ALL', 'BALANZA_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="config-balanza"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
-        <a class="ml-2 mt-1"> Unidades de medida </a>
+        <a class="ml-2 mt-1"> Balanza </a>
+      </li>
+
+      <!-- Configuracion de Sucursal -->
+      <li *ngIf="authService.usuario.role === 'ADMIN_ROLE'" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="config-sucursal"
+        class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
+        <a class="ml-2 mt-1"> Sucursal </a>
       </li>
 
       <!-- Tipos de ingreso -->
@@ -335,18 +342,18 @@
         <a class="ml-2 mt-1"> Tipos de gastos </a>
       </li>
 
-      <!-- Configuracion de balanza -->
-      <li *appPermisos="['BALANZA_ALL', 'BALANZA_READ']" routerLinkActive="bg-secondaryColor rounded"
-        routerLink="config-balanza"
+      <!-- Unidades de medida -->
+      <li *appPermisos="['UNIDADES_MEDIDA_ALL', 'UNIDADES_MEDIDA_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="unidades-medida"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
-        <a class="ml-2 mt-1"> Balanza </a>
+        <a class="ml-2 mt-1"> Unidades de medida </a>
       </li>
 
-      <!-- Configuracion de AFIP -->
-      <li *ngIf="authService.usuario.role === 'ADMIN_ROLE'" routerLinkActive="bg-secondaryColor rounded"
-        routerLink="config-afip"
+      <!-- Usuarios -->
+      <li *appPermisos="['USUARIOS_ALL', 'USUARIOS_READ']" routerLinkActive="bg-secondaryColor rounded"
+        routerLink="usuarios"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
-        <a class="ml-2 mt-1"> AFIP </a>
+        <a class="ml-2 mt-1"> Usuarios </a>
       </li>
 
       <!-- Marcas -->

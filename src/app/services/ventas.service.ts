@@ -29,6 +29,12 @@ export class VentasService {
     })
   }
 
+  generarComprobanteFiscal(id: string): Observable<any> {
+    return this.http.get(`${urlApi}/generar/comprobante/fiscal/${id}`, {
+      headers: this.getToken
+    })
+  }
+
   proximoNumeroFactura(tipoFactura: string = 'B'): Observable<any> {
     return this.http.get(`${urlApi}/afip/proximo-numero-factura/${tipoFactura}`, {
       headers: this.getToken

@@ -1,14 +1,15 @@
 <div class="gsap-contenido flex flex-col items-center mt-5 justify-center">
 
   <div>
-    <img class="w-36 md:w-48 mx-auto" src="assets/img/Icono.png" alt="Equinoccio.png">
-    <h1 class="font-semibold text-2xl md:text-4xl"> Equinoccio - Comercios </h1>
-    <h2 class="md:text-xl italic text-gray-500 text-center mt-2"> Version 1.0.0 </h2>
+    <img class="w-36 md:w-64 mx-auto" [src]="dataService.urlLogoEmpresa" alt="LogoEmpresa.png">
+    <h1 class="font-semibold text-xl md:text-4xl mt-4"> {{ configGeneral.nombreEmpresa }} </h1>
+    <h1 class="font-semibold text-center text-md md:text-xl text-secondaryColor mt-2"> Equinoccio - Comercios </h1>
+    <h2 class="bg-gray-100 p-2 border font-semibold border-gray-400 text-sm md:text-md text-center mt-4"> {{ configGeneral.nombreSucursal }} </h2>
   </div>
 
-  <div class="mt-7 md:flex md:items-center pb-10">
+  <div class="mt-7 md:flex text-center md:items-center pb-10">
     <button *appPermisos="['GENERAR_VENTA_ALL', 'GENERAR_VENTA_READ']" routerLink="/dashboard/ventas"
-      class="p-2 w-full md:w-44 md:h-32 duration-500 hover:bg-purple-100 transform hover:translate-y-4 border bg-gray-100 rounded border-gray-400 text-center">
+      class="p-2 w-11/12 md:w-44 md:h-32 duration-500 hover:bg-purple-100 transform hover:translate-y-4 border bg-gray-100 rounded border-gray-400 text-center">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
         class="w-14 h-14 mx-auto">
         <path stroke-linecap="round" stroke-linejoin="round"
@@ -17,7 +18,7 @@
       <h2 class="mt-1"> Nueva venta </h2>
     </button>
     <button *appPermisos="['LISTADO_PRODUCTOS_ALL', 'LISTADO_PRODUCTOS_READ']" routerLink="/dashboard/productos"
-      class="p-2 w-full md:w-44 md:h-32 duration-500 md:ml-4 mt-2 md:mt-0 hover:bg-purple-100 transform hover:translate-y-4 border bg-gray-100 rounded border-gray-400 text-center">
+      class="p-2 w-11/12 md:w-44 md:h-32 duration-500 md:ml-4 mt-2 md:mt-0 hover:bg-purple-100 transform hover:translate-y-4 border bg-gray-100 rounded border-gray-400 text-center">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
         class="w-14 h-14 mx-auto">
         <path stroke-linecap="round" stroke-linejoin="round"
@@ -26,14 +27,14 @@
       <h2 class="mt-1"> Productos </h2>
     </button>
     <button *appPermisos="['LISTADO_RESERVAS_ALL', 'LISTADO_RESERVAS_READ']" routerLink="/dashboard/reservas"
-      class="p-2 md:w-44 md:h-32 mt-2 md:mt-0 duration-500 w-full md:ml-4 hover:bg-purple-100 transform hover:translate-y-4 border bg-gray-100 rounded border-gray-400 text-center">
+      class="p-2 md:w-44 md:h-32 mt-2 md:mt-0 duration-500 w-11/12 md:ml-4 hover:bg-purple-100 transform hover:translate-y-4 border bg-gray-100 rounded border-gray-400 text-center">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-14 h-14 mx-auto">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
       </svg>
       <h2 class="mt-1"> Reservas </h2>
     </button>
     <button *appPermisos="['CIERRE_CAJA_ALL', 'CIERRE_CAJA_READ']" routerLink="/dashboard/cajas"
-      class="p-2 md:w-44 md:h-32 mt-2 md:mt-0 duration-500 w-full md:ml-4 hover:bg-purple-100 transform hover:translate-y-4 border bg-gray-100 rounded border-gray-400 text-center">
+      class="p-2 md:w-44 md:h-32 mt-2 md:mt-0 duration-500 w-11/12 md:ml-4 hover:bg-purple-100 transform hover:translate-y-4 border bg-gray-100 rounded border-gray-400 text-center">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
         class="w-14 h-14 mx-auto">
         <path stroke-linecap="round" stroke-linejoin="round"

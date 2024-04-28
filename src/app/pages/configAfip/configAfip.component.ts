@@ -24,10 +24,8 @@ import { format } from 'date-fns';
 })
 export default class ConfigAfipComponent implements OnInit {
 
-  public showModalConfiguraciones = false;
   public showSeccionConfiguraciones = false;
   public showSeccionDatosFacturacion = false;
-  public configuracionesForm = { cert: '', key: '', cuit: '', puntoVenta: '' };
   public configuraciones = {
     id: '',
     cert: '',
@@ -74,42 +72,38 @@ export default class ConfigAfipComponent implements OnInit {
 
   }
 
-  abrirAgregarConfiguraciones(): void {
-    this.showModalConfiguraciones = true;
-  }
+  inicializarConfiguraciones(): void {
 
-  agregarConfiguraciones(): void {
+    this.alertService.question({ msg: 'Inicializando configuraciones', buttonText: 'Inicializar' })
+    .then(({ isConfirmed }) => {
+      if (isConfirmed) {
+        this.alertService.loading();
 
-    if (!this.configuracionesForm.cert || !this.configuracionesForm.key || !this.configuracionesForm.cuit || !this.configuracionesForm.puntoVenta) {
-      return this.alertService.info('Debe completar todos los campos obligatorios');
-    }
+        const dataConfiguraciones = {
+          cert: '',
+          key: '',
+          cuit: '',
+          puntoVenta: '',
+          creatorUserId: this.authService.usuario.userId
+        };
 
-    this.alertService.loading();
-
-    const dataConfiguraciones = {
-      cert: encodeURIComponent(this.configuracionesForm.cert),
-      key: encodeURIComponent(this.configuracionesForm.key),
-      cuit: this.configuracionesForm.cuit,
-      puntoVenta: this.configuracionesForm.puntoVenta,
-      creatorUserId: this.authService.usuario.userId
-    };
-
-    this.configAfipService.crearConfiguraciones(dataConfiguraciones).subscribe({
-      next: ({ configuraciones }) => {
-        this.configuraciones = configuraciones;
-        this.configuraciones.cert = this.configuracionesForm.cert.trim();
-        this.configuraciones.key = this.configuracionesForm.key.trim();
-        this.alertService.success('Configuraciones creadas correctamente!');
-        this.showModalConfiguraciones = false;
-      }, error: ({ error }) => this.alertService.errorApi(error.message)
+        this.configAfipService.crearConfiguraciones(dataConfiguraciones).subscribe({
+          next: ({ configuraciones }) => {
+            this.configuraciones = configuraciones;
+            this.configuraciones.cert = configuraciones.cert.trim();
+            this.configuraciones.key = configuraciones.key.trim();
+            this.alertService.success('Inicializacion completada');
+          }, error: ({ error }) => this.alertService.errorApi(error.message)
+        });
+      }
     });
   }
 
   actualizarConfiguraciones(): void {
 
-    if (!this.configuraciones.cert || !this.configuraciones.key || !this.configuraciones.cuit || !this.configuraciones.puntoVenta) {
-      return this.alertService.info('Debe completar todos los campos obligatorios');
-    }
+    // if (!this.configuraciones.cert || !this.configuraciones.key || !this.configuraciones.cuit || !this.configuraciones.puntoVenta) {
+    //   return this.alertService.info('Debe completar todos los campos obligatorios');
+    // }
 
     this.alertService.question({ msg: 'Actualizando configuraciones', buttonText: 'Actualizar' })
     .then(({ isConfirmed }) => {

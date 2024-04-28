@@ -2,14 +2,17 @@ import { Injectable } from '@angular/core';
 import { AlertService } from './alert.service';
 import { ConfigGeneralesService } from './config-generales.service';
 import { ReservasService } from './reservas.service';
+import { environments } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  public ubicacionActual: string = 'Dashboard';   // Statebar - Direccion actual
-  public showMenu: Boolean = true;               // Header - Controla la visualizacion de la barra de navegacion
+  public ubicacionActual: string = 'Dashboard';           // Statebar - Direccion actual
+  public showMenu: Boolean = true;                        // Header - Controla la visualizacion de la barra de navegacion
+
+  public urlLogoEmpresa = environments.base_url_files + '/img/Logo.png'; // Logo de la empresa
 
   // Formato de balanza
   public formatoBalanza: string = '';

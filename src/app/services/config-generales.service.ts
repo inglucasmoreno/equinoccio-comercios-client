@@ -22,13 +22,19 @@ export class ConfigGeneralesService {
     })
   }
 
+  actualizarLogoEmpresa(formData: any): Observable<any> {
+    return this.http.post(`${urlApi}/logoEmpresa`, formData, {
+      headers: { 'Authorization': localStorage.getItem('token') }
+    });
+  }
+
+
   listarConfigGenerales({ direccion = 'desc', columna = 'id' }): Observable<any> {
     return this.http.get(urlApi, {
       params: {
         direccion: String(direccion),
         columna
       },
-      headers: this.getToken
     })
   }
 

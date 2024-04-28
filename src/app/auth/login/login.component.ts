@@ -5,6 +5,7 @@ import { AlertService } from '../../services/alert.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import gsap from 'gsap';
+import { ConfigGeneralesService } from '../../services/config-generales.service';
 
 @Component({
   standalone: true,
@@ -17,6 +18,11 @@ import gsap from 'gsap';
   styleUrls: []
 })
 export default class LoginComponent implements OnInit {
+
+  public configGeneral = {
+    nombreEmpresa: '',
+    nombreSucursal: '',
+  }
 
   get username() {
     return this.loginForm.get('username');
@@ -35,11 +41,23 @@ export default class LoginComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private alertService: AlertService,
+    private configGeneralesService: ConfigGeneralesService,
     private fb: FormBuilder
   ) { }
 
   ngOnInit() {
     gsap.from('.gsap-contenido', { y:100, opacity: 0, duration: .2 });
+    this.cargaInicial();
+  }
+
+  cargaInicial(): void {
+    this.alertService.loading();
+    this.configGeneralesService.listarConfigGenerales({}).subscribe({
+      next: ({ configGeneral }) => {
+        if(configGeneral.length > 0) this.configGeneral = configGeneral[0];
+        this.alertService.close();
+      }, error: (error) => this.alertService.errorApi(error.message)
+    })
   }
 
   login(): void {

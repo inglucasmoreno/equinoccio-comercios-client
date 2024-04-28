@@ -176,25 +176,31 @@ export default class VentasActivasComponent implements OnInit {
 
   actualizarFacturacion(): void {
     this.alertService.question({ msg: 'Generando facturacion', buttonText: 'Facturar' })
-    .then(({ isConfirmed }) => {
-      if (isConfirmed) {
-        this.alertService.loading();
-        this.ventasService.actualizarVentaFacturacionB(this.ventaSeleccionada.id, {
-          creatorUserId: this.authService.usuario.userId,
-          sena: false
-        }).subscribe({
-          next: () => {
-            this.showModalVenta = false;
-            this.listarVentas();
-          }, error: ({ error }) => this.alertService.errorApi(error.message)
-        });
-      }
-    });
+      .then(({ isConfirmed }) => {
+        if (isConfirmed) {
+          this.alertService.loading();
+          this.ventasService.actualizarVentaFacturacionB(this.ventaSeleccionada.id, {
+            creatorUserId: this.authService.usuario.userId,
+            sena: false
+          }).subscribe({
+            next: () => {
+              this.showModalVenta = false;
+              this.listarVentas();
+            }, error: ({ error }) => this.alertService.errorApi(error.message)
+          });
+        }
+      });
   }
 
-  // Generar comprobate - Venta
+  // Generar comprobate - Venta Normal
   generarComprobanteVenta(idVenta: string): void {
     window.open(`${baseUrl}/ventas/generar/comprobante/${idVenta}`, '_blank');
+  }
+
+  // Generar comprobate - Fiscal
+  generarComprobanteVentaFiscal(idVenta: string): void {
+    console.log('Fiscal');
+    window.open(`${baseUrl}/ventas/generar/comprobante/fiscal/${idVenta}`, '_blank');
   }
 
   // Generar comprobate - Reserva

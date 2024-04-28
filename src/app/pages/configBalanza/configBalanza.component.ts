@@ -8,8 +8,8 @@ import { ModalComponent } from '../../components/modal/modal.component';
 import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
 import { ConfigGeneralesService } from '../../services/config-generales.service';
-import gsap from 'gsap';
 import { PermisosDirective } from '../../directives/permisos.directive';
+import gsap from 'gsap';
 
 @Component({
   standalone: true,

@@ -1,8 +1,13 @@
 <div class="flex gsap-contenido min-h-full flex-col justify-center px-6 py-12 lg:px-8">
   <div class="sm:mx-auto sm:w-full sm:max-w-sm">
     <img class="mx-auto h-16 w-auto" src="assets/img/Icono.png" alt="Equinoccio Technology">
-    <h2 class="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900"> Ingreso al sistema </h2>
-    <p class="text-center text-sm text-gray-500"> Version 1.0.0 </p>
+    <h2 *ngIf="configGeneral.nombreEmpresa.trim() === ''" class="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900"> Ingreso al sistema </h2>
+    <h2 *ngIf="configGeneral.nombreEmpresa.trim() !== ''" class="mt-2 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900"> {{ configGeneral.nombreEmpresa }} </h2>
+    <h3 class="font-semibold text-center text-xs text-secondaryColor"> EQUINOCCIO COMERCIOS </h3>
+    <!-- <p class="text-center text-sm text-gray-500"> Version 1.0.0 </p> -->
+
+    <p *ngIf="configGeneral.nombreSucursal.trim() !== ''" class="text-center font-semibold mt-3 border text-sm md:text-md border-gray-300 bg-gray-100 p-2"> {{ configGeneral.nombreSucursal }} </p>
+
   </div>
 
   <div class="mt-4 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -10,7 +15,7 @@
       <div>
         <label for="username" class="block text-sm font-medium leading-6 text-gray-900"> Usuario </label>
         <div class="mt-2">
-          <input id="username" type="text" placeholder="Ingrese su usuario" formControlName="username" class="block w-full rounded-md border-0 p-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-secondaryColor sm:text-sm sm:leading-6">
+          <input id="username" type="text" placeholder="Ingrese su usuario" formControlName="username" class="block w-full rounded-md border-0 p-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-secondaryColor sm:text-sm sm:leading-6">
         </div>
         <p *ngIf="username.touched && username?.errors?.['required']" class="text-error mt-2"> El usuario es obligatorio </p>
         <p *ngIf="username.touched && username?.errors?.['minlength']" class="text-error text-xs mt-2"> Debe tener {{ username?.errors?.['minlength'].requiredLength }} caracteres como minimo </p>
@@ -21,7 +26,7 @@
           <label for="password" class="block text-sm font-medium leading-6 text-gray-900"> Contraseña </label>
         </div>
         <div class="mt-2">
-          <input id="password" autocomplete="false" placeholder="Ingrese su contraseña" type="password" formControlName="password" class="block w-full rounded-md border-0 p-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-secondaryColor sm:text-sm sm:leading-6">
+          <input id="password" autocomplete="false" placeholder="Ingrese su contraseña" type="password" formControlName="password" class="block w-full rounded-md border-0 p-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-secondaryColor sm:text-sm sm:leading-6">
           <p *ngIf="password.touched && password?.errors?.['required']" class="text-error mt-2"> La contraseña es obligatoria </p>
           <p *ngIf="password.touched && password?.errors?.['minlength']" class="text-error text-xs mt-2"> Debe tener {{ password?.errors?.['minlength'].requiredLength }} caracteres como minimo </p>
         </div>
