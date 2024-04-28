@@ -2,14 +2,49 @@
 <app-modal [showModal]="showModalVenta">
   <div class="flex items-center justify-between bg-gray-800 rounded-t p-2">
     <h1 class=" text-white px-2 py-1 rounded-t"> Detalles de venta - Nro {{ ventaSeleccionada?.id }} </h1>
-    <svg (click)="showModalVenta = false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-      stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-      class="cursor-pointer feather feather-x text-white mr-2">
-      <line x1="18" y1="6" x2="6" y2="18"></line>
-      <line x1="6" y1="6" x2="18" y2="18"></line>
-    </svg>
+    <div class="flex items-center">
+      <!-- Comprobante Normal -->
+      <button
+        *ngIf="ventaSeleccionada?.ventasReservas[0]?.tipo !== 'Adelanto' && ventaSeleccionada?.comprobante === 'Normal'"
+        class="bg-white mr-2 ml-2 p-2 rounded hover:text-secondaryColor"
+        (click)="generarComprobanteVenta(ventaSeleccionada.id)" title="Imprimir comprobante">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z" />
+        </svg>
+      </button>
+      <!-- Comprobante Fiscal -->
+      <button
+        *ngIf="ventaSeleccionada?.ventasReservas[0]?.tipo !== 'Adelanto' && ventaSeleccionada?.comprobante === 'Fiscal'"
+        class="bg-white mr-2 ml-2 p-2 rounded hover:text-secondaryColor"
+        (click)="generarComprobanteVentaFiscal(ventaSeleccionada.id)" title="Imprimir comprobante">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z" />
+        </svg>
+      </button>
+      <!-- Comprobante Reserva -->
+      <button *ngIf="ventaSeleccionada?.ventasReservas[0]?.tipo === 'Adelanto'"
+        class="bg-white mr-2 ml-2 p-2 rounded hover:text-secondaryColor"
+        (click)="generarComprobanteReserva(ventaSeleccionada.id)" title="Imprimir comprobante">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z" />
+        </svg>
+      </button>
+      <button (click)="showModalVenta = false" title="Cerrar" class="bg-white p-2 rounded hover:text-red-700">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" class="feather feather-x">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
   </div>
-  <div class="p-2 text-xs md:text-sm ">
+  <div class="p-2 max-h-96 overflow-y-auto text-xs md:text-sm ">
     <div class="flex items-center">
       <div class="p-2 md:flex md:items-center md:justify-between w-full">
         <p>
@@ -27,7 +62,7 @@
         <span class="font-semibold"> Comprobante: </span>
         <span *ngIf="ventaSeleccionada?.comprobante === 'Normal'"
           class="p-1 bg-gray-100 border border-gray-400 ml-1 rounded"> Normal </span>
-        <span *ngIf="ventaSeleccionada?.comprobante === 'Facturacion'"
+        <span *ngIf="ventaSeleccionada?.comprobante === 'Fiscal'"
           class="p-1 bg-purple-50 border border-purple-400 ml-1 rounded"> Guia de despacho </span>
       </p>
       <p [routerLink]="ventaSeleccionada?.activo ? '/dashboard/cajas' : ['/dashboard/cajas-detalles',ventaSeleccionada?.cajaId]"
@@ -35,38 +70,165 @@
         <span> Caja </span>
         <span> Nro. {{ ventaSeleccionada?.cajaId }} </span>
       </p>
+      <p *ngIf="ventaSeleccionada?.ventasReservas[0]?.tipo === 'Adelanto'" title="Ir a la reserva"
+        [routerLink]="['/dashboard/detalles-reserva',ventaSeleccionada?.ventasReservas[0].reservaId]"
+        class="w-max text-sm cursor-pointer p-2 mt-3 bg-yellow-100 border rounded border-yellow-400 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-5 h-5 text-yellow-700">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <span class="ml-1">
+          Pago de seña - Reserva Nro. {{ ventaSeleccionada?.ventasReservas[0]?.reservaId }}
+        </span>
+      </p>
+      <p *ngIf="ventaSeleccionada?.ventasReservas[0]?.tipo === 'Completada'" title="Ir a la reserva"
+        [routerLink]="['/dashboard/detalles-reserva',ventaSeleccionada?.ventasReservas[0].reservaId]"
+        class="w-max text-sm cursor-pointer p-2 mt-3 bg-green-100 border rounded border-green-400 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-5 h-5 text-green-700">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+        <span class="ml-1">
+          Reserva completada - Reserva Nro. {{ ventaSeleccionada?.ventasReservas[0]?.reservaId }}
+        </span>
+      </p>
+    </div>
+
+    <!-- Formas de pago -->
+    <!-- Datos de facturacion -->
+    <div *ngIf="ventaSeleccionada?.ventasFacturacion?.length > 0" class="px-2 mt-4">
+      <div (click)="showFacturacion = !showFacturacion"
+        class="p-2 mb-2 flex items-center justify-between cursor-pointer bg-gray-100 border border-gray-400">
+        <h2> Datos de facturacion </h2>
+        <div>
+          <svg *ngIf="showFacturacion" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+          </svg>
+          <svg *ngIf="!showFacturacion" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+          </svg>
+        </div>
+      </div>
+      <div *ngIf="showFacturacion">
+        <div class="border flex items-center justify-between border-gray-400">
+          <span class="font-semibold w-1/2 ml-2"> Tipo de comprobante </span>
+          <span class="border-l p-2 text-right mr-2 border-gray-400 w-1/2">
+            {{ ventaSeleccionada.ventasFacturacion[0]?.tipoComprobante }}
+          </span>
+        </div>
+        <div class="border border-t-0 flex items-center justify-between border-gray-400">
+          <span class="font-semibold w-1/2 ml-2"> Número de factura </span>
+          <span class="border-l p-2 text-right mr-2 border-gray-400 w-1/2">
+            {{ ventaSeleccionada.ventasFacturacion[0]?.nroFormatComprobante }}
+          </span>
+        </div>
+        <div class="border border-t-0 flex items-center justify-between border-gray-400">
+          <span class="font-semibold w-1/2 ml-2"> CAE </span>
+          <span class="border-l p-2 text-right mr-2 border-gray-400 w-1/2">
+            {{ ventaSeleccionada.ventasFacturacion[0]?.cae }}
+          </span>
+        </div>
+      </div>
     </div>
 
 
-    <!-- Formas de pago -->
-
     <div class="px-2 mt-4">
-      <h2 class="p-2 bg-gray-100 border mb-2 border-gray-400"> Montos y formas de pago </h2>
 
-      @for(formaPago of ventaSeleccionada?.ventasFormasPago; track formaPago.descripcion){
-
-      <div class="flex items-center justify-between border-b border-gray-400 p-2">
-        <div *ngIf="!formaPagoSeleccionada || formaPagoSeleccionada?.id !== formaPago.id" class="flex items-center">
-          <p> <span> {{ formaPago.descripcion }} </span> <span
-              *ngIf="formaPago?.descripcion === 'PedidosYa - Efectivo' || formaPago?.descripcion === 'PedidosYa - Online'"
-              class="text-xs bg-purple-50 border border-purple-400 px-1 rounded ml-1"> Nro. {{ formaPago.nroComprobante
-              }} </span> </p>
+      <div (click)="showFormaPago = !showFormaPago"
+        class="p-2 mb-2 flex items-center justify-between cursor-pointer bg-gray-100 border border-gray-400">
+        <h2> Montos y formas de pago </h2>
+        <div>
+          <svg *ngIf="showFormaPago" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+          </svg>
+          <svg *ngIf="!showFormaPago" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+          </svg>
         </div>
-        <p> ${{ formaPago.valor | moneda }} </p>
       </div>
 
-      }
-      <div class="flex p-2 bg-purple-100 border border-purple-400 border-t-0 items-center justify-between">
-        <p class="font-semibold"> Monto total </p>
-        <p> ${{ ventaSeleccionada?.precioTotal | moneda }} </p>
+      <div *ngIf="showFormaPago">
+        @for(formaPago of ventaSeleccionada?.ventasFormasPago; track formaPago.descripcion){
+
+        <div class="flex items-center justify-between border-b border-gray-400 p-2">
+
+          <div *ngIf="formaPagoSeleccionada?.id === formaPago.id" class="flex items-center">
+            <select [(ngModel)]="nuevaFormaPago" class="p-1 border rounded bg-white outline-none border-gray-400">
+              <option *ngFor="let formaPago of formasPago" [value]="formaPago.valor"> {{ formaPago.descripcion }}
+              </option>
+            </select>
+            <input [(ngModel)]="comprobantePedidosYa"
+              *ngIf="nuevaFormaPago === 'PedidosYa - Efectivo' || nuevaFormaPago === 'PedidosYa - Online'"
+              placeholder="Nro comprobante" type="text" class="p-1 text-sm border w-32 ml-2 border-gray-400 rounded">
+            <button
+              *ngIf="formaPagoSeleccionada?.descripcion !== nuevaFormaPago || nuevaFormaPago === 'PedidosYa - Efectivo' || nuevaFormaPago === 'PedidosYa - Online'"
+               class="text-white hover:opacity-90 bg-green-700 ml-2 p-1 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+              </svg>
+            </button>
+            <button
+              class="text-white hover:opacity-90 bg-red-700 ml-2 p-1 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <div *ngIf="!formaPagoSeleccionada || formaPagoSeleccionada?.id !== formaPago.id" class="flex items-center">
+            <p> <span> {{ formaPago.descripcion }} </span> <span
+                *ngIf="formaPago?.descripcion === 'PedidosYa - Efectivo' || formaPago?.descripcion === 'PedidosYa - Online'"
+                class="text-xs bg-purple-50 border border-purple-400 px-1 rounded ml-1"> Nro. {{
+                formaPago.nroComprobante
+                }} </span> </p>
+            <!-- <button (click)="abrirActualizarFormaPago(formaPago)" title="Editar" class="hover:text-secondaryColor ml-2">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+              </svg>
+            </button> -->
+          </div>
+
+          <p> ${{ formaPago.valor | moneda }} </p>
+
+        </div>
+
+        }
+        <div class="flex p-2 bg-purple-100 border border-purple-400 border-t-0 items-center justify-between">
+          <p class="font-semibold"> Monto total </p>
+          <p> ${{ ventaSeleccionada?.precioTotal | moneda }} </p>
+        </div>
       </div>
+
     </div>
 
 
     <!-- Listado de productos -->
-    <div class="px-2 mt-4">
-      <h2 class="p-2 bg-gray-100 border mb-2 border-gray-400"> Listado de productos </h2>
-      <div class="max-h-64 overflow-y-auto">
+    <div *ngIf="ventaSeleccionada?.ventasReservas[0]?.tipo !== 'Adelanto'" class="px-2 mt-4">
+
+      <div (click)="showProductos = !showProductos"
+        class="p-2 mb-2 flex items-center justify-between cursor-pointer bg-gray-100 border border-gray-400">
+        <h2> Listado de productos </h2>
+        <div>
+          <svg *ngIf="showProductos" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+          </svg>
+          <svg *ngIf="!showProductos" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+          </svg>
+        </div>
+      </div>
+
+      <div *ngIf="showProductos" class="max-h-64 overflow-y-auto">
         @for(relacion of ventaSeleccionada?.ventasProductos; track relacion.producto.id){
         <div class="border border-gray-400 p-2 mb-2 flex items-center justify-between">
           <div class="flex items-center">
@@ -354,11 +516,27 @@
                       }
                     </div>
                   </td>
-                  <td class="px-5 py-2 border-b border-gray-200 text-xs">
-                    <p [ngClass]="{'bg-gray-100 border-gray-400':venta.comprobante === 'Normal', 'bg-purple-50 border-purple-400':venta.comprobante === 'Facturacion'}"
+                  <td class="px-5 py-4 border-b flex items-center border-gray-200 text-xs">
+                    <p [ngClass]="{'bg-gray-100 border-gray-400':venta.comprobante === 'Normal', 'bg-purple-50 border-purple-400':venta.comprobante === 'Fiscal'}"
                       class="text-gray-900 p-1 rounded w-max border whitespace-no-wrap">
                       {{ venta.comprobante === 'Normal' ? 'Normal' : 'Guia de despacho' }}
                     </p>
+                    <span title="Reserva - Adelanto" *ngIf="venta?.ventasReservas[0]?.tipo === 'Adelanto'"
+                      class="p-1 rounded-full ml-2 bg-yellow-100 border border-yellow-400 text-yellow-600">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                      </svg>
+                    </span>
+                    <span title="Reserva - Completada" *ngIf="venta?.ventasReservas[0]?.tipo === 'Completada'"
+                      class="p-1 rounded-full ml-2 bg-green-100 border border-green-400 text-green-600">
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                      </svg>
+                    </span>
                   </td>
                   <td class="px-5 py-2 border-b border-gray-200 text-xs">
                     <p class="text-gray-900 w-max whitespace-no-wrap">
@@ -377,7 +555,10 @@
                             d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         </svg>
                       </button>
-                      <button (click)="generarComprobante(venta.id)" title="Imprimir comprobante"
+
+                      <!-- Comprobante de venta normal -->
+                      <button *ngIf="venta?.ventasReservas[0]?.tipo !== 'Adelanto' && venta?.comprobante === 'Normal'"
+                        (click)="generarComprobanteVenta(venta.id)" title="Imprimir comprobante"
                         class="p-2 rounded shadow focus:outline-none bg-blue-600 hover:opacity-90 text-white ml-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                           stroke="currentColor" class="w-5 h-5">
@@ -385,6 +566,29 @@
                             d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z" />
                         </svg>
                       </button>
+
+                      <!-- Comprobante fiscal -->
+                      <button *ngIf="venta?.ventasReservas[0]?.tipo !== 'Adelanto' && venta?.comprobante === 'Fiscal'"
+                        (click)="generarComprobanteVentaFiscal(venta.id)" title="Imprimir comprobante"
+                        class="p-2 rounded shadow focus:outline-none bg-blue-600 hover:opacity-90 text-white ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                          stroke="currentColor" class="w-5 h-5">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z" />
+                        </svg>
+                      </button>
+
+                      <!-- Comprobante adelanto -->
+                      <button *ngIf="venta?.ventasReservas[0]?.tipo === 'Adelanto'"
+                        (click)="generarComprobanteReserva(venta.id)" title="Imprimir comprobante"
+                        class="p-2 rounded shadow focus:outline-none bg-blue-600 hover:opacity-90 text-white ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                          stroke="currentColor" class="w-5 h-5">
+                          <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z" />
+                        </svg>
+                      </button>
+
                     </p>
                   </td>
                 </tr>

@@ -322,7 +322,7 @@
       </li>
 
       <!-- Configuracion de Sucursal -->
-      <li *ngIf="authService.usuario.role === 'ADMIN_ROLE'" routerLinkActive="bg-secondaryColor rounded"
+      <li *appPermisos="['SUCURSAL_ALL', 'SUCURSAL_READ']" routerLinkActive="bg-secondaryColor rounded"
         routerLink="config-sucursal"
         class="flex transform hover:translate-x-2 duration-500 items-center outline-none cursor-pointer p-2">
         <a class="ml-2 mt-1"> Sucursal </a>

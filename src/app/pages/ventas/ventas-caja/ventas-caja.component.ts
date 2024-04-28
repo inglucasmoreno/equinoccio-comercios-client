@@ -37,6 +37,11 @@ const baseUrl = environments.base_url;
 })
 export default class VentasCajasComponent implements OnInit {
 
+  // Flags
+  public showFormaPago = false;
+  public showProductos = false;
+  public showFacturacion = false;
+
   // Caja
   public idCaja: any[] = [];
 
@@ -134,6 +139,22 @@ export default class VentasCajasComponent implements OnInit {
   // Generar comprobate
   generarComprobante(idVenta: string): void {
     window.open(`${baseUrl}/ventas/generar/comprobante/${idVenta}`, '_blank');
+  }
+
+  // Generar comprobate - Venta Normal
+  generarComprobanteVenta(idVenta: string): void {
+    window.open(`${baseUrl}/ventas/generar/comprobante/${idVenta}`, '_blank');
+  }
+
+  // Generar comprobate - Fiscal
+  generarComprobanteVentaFiscal(idVenta: string): void {
+    console.log('Fiscal');
+    window.open(`${baseUrl}/ventas/generar/comprobante/fiscal/${idVenta}`, '_blank');
+  }
+
+  // Generar comprobate - Reserva
+  generarComprobanteReserva(idReserva: string): void {
+    window.open(`${baseUrl}/reservas/generar/comprobante/${idReserva}`, '_blank');
   }
 
   // Ordenar por columna

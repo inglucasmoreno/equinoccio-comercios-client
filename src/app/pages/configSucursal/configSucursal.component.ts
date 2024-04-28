@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import gsap from 'gsap';
 import { DomSanitizer } from '@angular/platform-browser';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   standalone: true,
@@ -18,6 +19,9 @@ import { DomSanitizer } from '@angular/platform-browser';
   styleUrls: []
 })
 export default class ConfigSucursalComponent implements OnInit {
+
+  // Permisos
+  public permiso_escritura = false;
 
   configGeneral: any = {};
 
@@ -34,6 +38,7 @@ export default class ConfigSucursalComponent implements OnInit {
   public file;
 
   constructor(
+    private authService: AuthService,
     public dataService: DataService,
     private alertService: AlertService,
     private configGeneralesService: ConfigGeneralesService,
@@ -43,6 +48,7 @@ export default class ConfigSucursalComponent implements OnInit {
   ngOnInit() {
     gsap.from('.gsap-contenido', { y: 100, opacity: 0, duration: .2 });
     this.dataService.ubicacionActual = 'Dashboard - Configuración de sucursal';
+    this.calcularPermiso();
     this.alertService.loading();
     this.configGeneralesService.listarConfigGenerales({}).subscribe({
       next: ({ configGeneral }) => {
@@ -54,6 +60,11 @@ export default class ConfigSucursalComponent implements OnInit {
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
+  }
+
+  calcularPermiso(): void {
+    this.authService.usuario.permisos.includes('SUCURSAL_ALL') || this.authService.usuario.role === 'ADMIN_ROLE'
+      ? this.permiso_escritura = true : this.permiso_escritura = false;
   }
 
   actualizarConfiguraciones(): void {
@@ -84,7 +95,7 @@ export default class ConfigSucursalComponent implements OnInit {
         this.configGeneralForm.domicilioSucursal = configGeneral.domicilioSucursal;
         this.configGeneralForm.telefonoSucursal = configGeneral.telefonoSucursal;
 
-        if(this.imagenParaSubir){
+        if (this.imagenParaSubir) {
           this.alertService.loading();
           const formData = new FormData();
           formData.append('file', this.imagenParaSubir);
@@ -94,7 +105,7 @@ export default class ConfigSucursalComponent implements OnInit {
               this.alertService.success('Configuraciones actualizadas correctamente');
             }, error: ({ error }) => this.alertService.errorApi(error.message)
           });
-        }else{
+        } else {
           this.alertService.success('Configuraciones actualizadas correctamente');
         }
 

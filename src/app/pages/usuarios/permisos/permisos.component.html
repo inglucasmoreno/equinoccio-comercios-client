@@ -52,14 +52,16 @@
         <div *ngIf="showVentas" class="border border-gray-400 border-t-0">
           <div class="border-b flex items-center justify-between border-gray-300 p-2">
             <p class="font-semibold"> Generar ventas </p>
-            <select (change)="actualizarPermiso('GENERAR_VENTA')" [(ngModel)]="permisos.GENERAR_VENTA" class="input-generico">
+            <select (change)="actualizarPermiso('GENERAR_VENTA')" [(ngModel)]="permisos.GENERAR_VENTA"
+              class="input-generico">
               <option value="GENERAR_VENTA_NONE"> Sin permisos </option>
               <option value="GENERAR_VENTA_ALL"> Permisos totales </option>
             </select>
           </div>
           <div class="border-b flex items-center justify-between border-gray-300 p-2">
             <p class="font-semibold"> Ventas activas </p>
-            <select (change)="actualizarPermiso('VENTAS_ACTIVAS')" [(ngModel)]="permisos.VENTAS_ACTIVAS" class="input-generico">
+            <select (change)="actualizarPermiso('VENTAS_ACTIVAS')" [(ngModel)]="permisos.VENTAS_ACTIVAS"
+              class="input-generico">
               <option value="VENTAS_ACTIVAS_NONE"> Sin permisos </option>
               <option value="VENTAS_ACTIVAS_READ"> Solo lectura </option>
               <option value="VENTAS_ACTIVAS_ALL"> Permisos totales </option>
@@ -67,7 +69,8 @@
           </div>
           <div class="border-b flex items-center justify-between border-gray-300 p-2">
             <p class="font-semibold"> Busqueda ventas </p>
-            <select (change)="actualizarPermiso('BUSQUEDA_VENTAS')" [(ngModel)]="permisos.BUSQUEDA_VENTAS" class="input-generico">
+            <select (change)="actualizarPermiso('BUSQUEDA_VENTAS')" [(ngModel)]="permisos.BUSQUEDA_VENTAS"
+              class="input-generico">
               <option value="BUSQUEDA_VENTAS_NONE"> Sin permisos </option>
               <option value="BUSQUEDA_VENTAS_ALL"> Permisos totales </option>
             </select>
@@ -114,7 +117,8 @@
         <div *ngIf="showProductos" class="border border-gray-400 border-t-0">
           <div class="border-b flex items-center justify-between border-gray-300 p-2">
             <p class="font-semibold"> Listado de productos </p>
-            <select (change)="actualizarPermiso('LISTADO_PRODUCTOS')" [(ngModel)]="permisos.LISTADO_PRODUCTOS" class="input-generico">
+            <select (change)="actualizarPermiso('LISTADO_PRODUCTOS')" [(ngModel)]="permisos.LISTADO_PRODUCTOS"
+              class="input-generico">
               <option value="LISTADO_PRODUCTOS_NONE"> Sin permisos </option>
               <option value="LISTADO_PRODUCTOS_READ"> Solo lectura </option>
               <option value="LISTADO_PRODUCTOS_ALL"> Permisos totales </option>
@@ -130,7 +134,8 @@
           </div>
           <div class="border-b flex items-center justify-between border-gray-300 p-2">
             <p class="font-semibold"> Proveedores </p>
-            <select (change)="actualizarPermiso('PROVEEDORES')" [(ngModel)]="permisos.PROVEEDORES" class="input-generico">
+            <select (change)="actualizarPermiso('PROVEEDORES')" [(ngModel)]="permisos.PROVEEDORES"
+              class="input-generico">
               <option value="PROVEEDORES_NONE"> Sin permisos </option>
               <option value="PROVEEDORES_READ"> Solo lectura </option>
               <option value="PROVEEDORES_ALL"> Permisos totales </option>
@@ -170,14 +175,16 @@
         <div *ngIf="showReservas" class="border border-gray-400 border-t-0">
           <div class="border-b flex items-center justify-between border-gray-300 p-2">
             <p class="font-semibold"> Nueva reserva </p>
-            <select (change)="actualizarPermiso('NUEVA_RESERVA')" [(ngModel)]="permisos.NUEVA_RESERVA" class="input-generico">
+            <select (change)="actualizarPermiso('NUEVA_RESERVA')" [(ngModel)]="permisos.NUEVA_RESERVA"
+              class="input-generico">
               <option value="NUEVA_RESERVA_NONE"> Sin permisos </option>
               <option value="NUEVA_RESERVA_ALL"> Permisos totales </option>
             </select>
           </div>
           <div class="border-b flex items-center justify-between border-gray-300 p-2">
             <p class="font-semibold"> Listado de reservas </p>
-            <select (change)="actualizarPermiso('LISTADO_RESERVAS')" [(ngModel)]="permisos.LISTADO_RESERVAS" class="input-generico">
+            <select (change)="actualizarPermiso('LISTADO_RESERVAS')" [(ngModel)]="permisos.LISTADO_RESERVAS"
+              class="input-generico">
               <option value="LISTADO_RESERVAS_NONE"> Sin permisos </option>
               <option value="LISTADO_RESERVAS_READ"> Solo lectura </option>
               <option value="LISTADO_RESERVAS_ALL"> Permisos totales </option>
@@ -217,7 +224,8 @@
         <div *ngIf="showCajas" class="border border-gray-400 border-t-0">
           <div class="border-b flex items-center justify-between border-gray-300 p-2">
             <p class="font-semibold"> Cierre de cajas </p>
-            <select (change)="actualizarPermiso('CIERRE_CAJA')" [(ngModel)]="permisos.CIERRE_CAJA" class="input-generico">
+            <select (change)="actualizarPermiso('CIERRE_CAJA')" [(ngModel)]="permisos.CIERRE_CAJA"
+              class="input-generico">
               <option value="CIERRE_CAJA_NONE"> Sin permisos </option>
               <option value="CIERRE_CAJA_READ"> Solo lectura </option>
               <option value="CIERRE_CAJA_ALL"> Permisos totales </option>
@@ -225,7 +233,8 @@
           </div>
           <div class="border-b flex items-center justify-between border-gray-300 p-2">
             <p class="font-semibold"> Listado de cajas </p>
-            <select (change)="actualizarPermiso('LISTADO_CAJAS')" [(ngModel)]="permisos.LISTADO_CAJAS" class="input-generico">
+            <select (change)="actualizarPermiso('LISTADO_CAJAS')" [(ngModel)]="permisos.LISTADO_CAJAS"
+              class="input-generico">
               <option value="LISTADO_CAJAS_NONE"> Sin permisos </option>
               <option value="LISTADO_CAJAS_ALL"> Permisos totales </option>
             </select>
@@ -241,8 +250,10 @@
           class="border cursor-pointer p-2 flex items-center justify-between border-gray-400 bg-gray-50 w-full">
           <div class="flex items-center">
             <div class="bg-secondaryColor text-white rounded-full p-2">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
               </svg>
             </div>
@@ -262,38 +273,6 @@
 
         <div *ngIf="showConfiguraciones" class="border border-gray-400 border-t-0">
           <div class="border-b flex items-center justify-between border-gray-300 p-2">
-            <p class="font-semibold"> Usuarios </p>
-            <select (change)="actualizarPermiso('USUARIOS')" [(ngModel)]="permisos.USUARIOS" class="input-generico">
-              <option value="USUARIOS_NONE"> Sin permisos </option>
-              <option value="USUARIOS_READ"> Solo lectura </option>
-              <option value="USUARIOS_ALL"> Permisos totales </option>
-            </select>
-          </div>
-          <div class="border-b flex items-center justify-between border-gray-300 p-2">
-            <p class="font-semibold"> Unidades de medida </p>
-            <select (change)="actualizarPermiso('UNIDADES_MEDIDA')" [(ngModel)]="permisos.UNIDADES_MEDIDA" class="input-generico">
-              <option value="UNIDADES_MEDIDA_NONE"> Sin permisos </option>
-              <option value="UNIDADES_MEDIDA_READ"> Solo lectura </option>
-              <option value="UNIDADES_MEDIDA_ALL"> Permisos totales </option>
-            </select>
-          </div>
-          <div class="border-b flex items-center justify-between border-gray-300 p-2">
-            <p class="font-semibold"> Tipos de ingresos </p>
-            <select (change)="actualizarPermiso('TIPOS_INGRESOS')" [(ngModel)]="permisos.TIPOS_INGRESOS" class="input-generico">
-              <option value="TIPOS_INGRESOS_NONE"> Sin permisos </option>
-              <option value="TIPOS_INGRESOS_READ"> Solo lectura </option>
-              <option value="TIPOS_INGRESOS_ALL"> Permisos totales </option>
-            </select>
-          </div>
-          <div class="border-b flex items-center justify-between border-gray-300 p-2">
-            <p class="font-semibold"> Tipos de gastos </p>
-            <select (change)="actualizarPermiso('TIPOS_GASTOS')" [(ngModel)]="permisos.TIPOS_GASTOS" class="input-generico">
-              <option value="TIPOS_GASTOS_NONE"> Sin permisos </option>
-              <option value="TIPOS_GASTOS_READ"> Solo lectura </option>
-              <option value="TIPOS_GASTOS_ALL"> Permisos totales </option>
-            </select>
-          </div>
-          <div class="border-b flex items-center justify-between border-gray-300 p-2">
             <p class="font-semibold"> Balanza </p>
             <select (change)="actualizarPermiso('BALANZA')" [(ngModel)]="permisos.BALANZA" class="input-generico">
               <option value="BALANZA_NONE"> Sin permisos </option>
@@ -301,9 +280,51 @@
               <option value="BALANZA_ALL"> Permisos totales </option>
             </select>
           </div>
+          <div class="border-b flex items-center justify-between border-gray-300 p-2">
+            <p class="font-semibold"> Sucursal </p>
+            <select (change)="actualizarPermiso('SUCURSAL')" [(ngModel)]="permisos.SUCURSAL"
+              class="input-generico">
+              <option value="SUCURSAL_NONE"> Sin permisos </option>
+              <option value="SUCURSAL_READ"> Solo lectura </option>
+              <option value="SUCURSAL_ALL"> Permisos totales </option>
+            </select>
+          </div>
+          <div class="border-b flex items-center justify-between border-gray-300 p-2">
+            <p class="font-semibold"> Tipos de ingresos </p>
+            <select (change)="actualizarPermiso('TIPOS_INGRESOS')" [(ngModel)]="permisos.TIPOS_INGRESOS"
+              class="input-generico">
+              <option value="TIPOS_INGRESOS_NONE"> Sin permisos </option>
+              <option value="TIPOS_INGRESOS_READ"> Solo lectura </option>
+              <option value="TIPOS_INGRESOS_ALL"> Permisos totales </option>
+            </select>
+          </div>
+          <div class="border-b flex items-center justify-between border-gray-300 p-2">
+            <p class="font-semibold"> Tipos de gastos </p>
+            <select (change)="actualizarPermiso('TIPOS_GASTOS')" [(ngModel)]="permisos.TIPOS_GASTOS"
+              class="input-generico">
+              <option value="TIPOS_GASTOS_NONE"> Sin permisos </option>
+              <option value="TIPOS_GASTOS_READ"> Solo lectura </option>
+              <option value="TIPOS_GASTOS_ALL"> Permisos totales </option>
+            </select>
+          </div>
+          <div class="border-b flex items-center justify-between border-gray-300 p-2">
+            <p class="font-semibold"> Unidades de medida </p>
+            <select (change)="actualizarPermiso('UNIDADES_MEDIDA')" [(ngModel)]="permisos.UNIDADES_MEDIDA"
+              class="input-generico">
+              <option value="UNIDADES_MEDIDA_NONE"> Sin permisos </option>
+              <option value="UNIDADES_MEDIDA_READ"> Solo lectura </option>
+              <option value="UNIDADES_MEDIDA_ALL"> Permisos totales </option>
+            </select>
+          </div>
+          <div class="border-b flex items-center justify-between border-gray-300 p-2">
+            <p class="font-semibold"> Usuarios </p>
+            <select (change)="actualizarPermiso('USUARIOS')" [(ngModel)]="permisos.USUARIOS" class="input-generico">
+              <option value="USUARIOS_NONE"> Sin permisos </option>
+              <option value="USUARIOS_READ"> Solo lectura </option>
+              <option value="USUARIOS_ALL"> Permisos totales </option>
+            </select>
+          </div>
         </div>
-
       </div>
-
     </div>
   </div>

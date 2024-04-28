@@ -50,6 +50,7 @@ export default class PermisosComponent implements OnInit {
     TIPOS_INGRESOS: 'TIPOS_INGRESOS_NONE',
     TIPOS_GASTOS: 'TIPOS_GASTOS_NONE',
     BALANZA: 'BALANZA_NONE',
+    SUCURSAL: 'SUCURSAL_NONE',
 
   }
 
@@ -113,8 +114,6 @@ export default class PermisosComponent implements OnInit {
 
     // Se busca el id del permiso en usuariosPermisos
     const permisoSeleccionado = this.usuario.usuariosPermisos.find(item => item.seccion === seccion);
-
-    console.log(permisoSeleccionado);
 
     if(permisoSeleccionado){ // El permiso existe
       this.usuariosPermisosService.actualizarPermiso(permisoSeleccionado.id, { permiso: this.permisos[seccion] }).subscribe({

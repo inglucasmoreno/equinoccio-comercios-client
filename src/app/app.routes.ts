@@ -255,7 +255,7 @@ export const routes: Routes = [
       // Configuración de sucursal
       {
         path: 'config-sucursal',
-        // data: { permisos: ['BALANZA_ALL', 'BALANZA_READ'] },
+        data: { permisos: ['SUCURSAL_ALL', 'SUCURSAL_READ'] },
         canActivate: [NavigationGuard],
         title: 'Configuración de sucursal',
         loadComponent: () => import('./pages/configSucursal/configSucursal.component'),

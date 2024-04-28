@@ -7,22 +7,22 @@
       <div class="mt-2">
         <div>
           <p class="font-semibold"> <span class="text-red-500"> * </span> Empresa </p>
-          <input (keyup.enter)="actualizarConfiguraciones()" [(ngModel)]="configGeneralForm.nombreEmpresa" type="text"
+          <input [disabled]="!permiso_escritura" (keyup.enter)="actualizarConfiguraciones()" [(ngModel)]="configGeneralForm.nombreEmpresa" type="text"
             placeholder="Ej. Equinoccio Technology" class="input-generico w-full mt-2">
         </div>
         <div class="mt-2">
           <p class="font-semibold"> <span class="text-red-500"> * </span> Sucursal </p>
-          <input (keyup.enter)="actualizarConfiguraciones()" [(ngModel)]="configGeneralForm.nombreSucursal" type="text"
+          <input [disabled]="!permiso_escritura" (keyup.enter)="actualizarConfiguraciones()" [(ngModel)]="configGeneralForm.nombreSucursal" type="text"
             placeholder="Ej. Sucursal principal" class="input-generico w-full mt-2">
         </div>
         <div class="mt-2">
           <p class="font-semibold"> Domicilio </p>
-          <input (keyup.enter)="actualizarConfiguraciones()" [(ngModel)]="configGeneralForm.domicilioSucursal"
+          <input [disabled]="!permiso_escritura" (keyup.enter)="actualizarConfiguraciones()" [(ngModel)]="configGeneralForm.domicilioSucursal"
             type="text" placeholder="Ej. 9 de Julio 911" class="input-generico w-full mt-2">
         </div>
         <div class="mt-2">
           <p class="font-semibold"> Telefono </p>
-          <input (keyup.enter)="actualizarConfiguraciones()" [(ngModel)]="configGeneralForm.telefonoSucursal"
+          <input [disabled]="!permiso_escritura" (keyup.enter)="actualizarConfiguraciones()" [(ngModel)]="configGeneralForm.telefonoSucursal"
             type="text" placeholder="Ej. 2664869642" class="input-generico w-full mt-2">
         </div>
         <div class="mt-2">
@@ -32,7 +32,7 @@
               alt="LogoEmpresa.png">
           </div>
           <input (change)="capturarImagen($event)" [(ngModel)]="file" type="file"
-            placeholder="Ej. Equinoccio Technology" [ngClass]="{'hidden':file}" class="w-full mt-2">
+            placeholder="Ej. Equinoccio Technology" [ngClass]="{'hidden':(file || !permiso_escritura)}" class="w-full mt-2">
           <button *ngIf="file" (click)="eliminarImagen()" class="boton-eliminar mt-2 px-2 py-1 flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
               stroke="currentColor" class="w-5 h-5">
@@ -43,7 +43,7 @@
             </span>
           </button>
         </div>
-        <button (click)="actualizarConfiguraciones()" class="boton-editar w-full mt-4">
+        <button *ngIf="permiso_escritura" (click)="actualizarConfiguraciones()" class="boton-editar w-full mt-4">
           Actualizar sucursal
         </button>
       </div>

@@ -66,6 +66,8 @@ export class NavbarComponent implements OnInit {
   this.authService.usuario.permisos.includes('TIPOS_GASTOS_READ') ||
   this.authService.usuario.permisos.includes('BALANZA_ALL') ||
   this.authService.usuario.permisos.includes('BALANZA_READ') ||
+  this.authService.usuario.permisos.includes('SUCURSAL_ALL') ||
+  this.authService.usuario.permisos.includes('SUCURSAL_READ') ||
   this.authService.usuario.role === 'ADMIN_ROLE'
 
   constructor(
