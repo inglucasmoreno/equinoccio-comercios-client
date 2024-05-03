@@ -246,7 +246,7 @@ export const routes: Routes = [
       // Configuración de AFIP
       {
         path: 'config-afip',
-        // data: { permisos: ['BALANZA_ALL', 'BALANZA_READ'] },
+        data: { permisos: [] },
         canActivate: [NavigationGuard],
         title: 'Configuración de AFIP',
         loadComponent: () => import('./pages/configAfip/configAfip.component'),

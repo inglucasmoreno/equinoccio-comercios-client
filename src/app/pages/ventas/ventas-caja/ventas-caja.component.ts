@@ -15,6 +15,7 @@ import { AlertService } from '../../../services/alert.service';
 import { DataService } from '../../../services/data.service';
 import { VentasFormasPagoService } from '../../../services/ventas-formas-pago.service';
 import { environments } from '../../../../environments/environments';
+import { Location } from '@angular/common';
 
 const baseUrl = environments.base_url;
 
@@ -94,7 +95,8 @@ export default class VentasCajasComponent implements OnInit {
     private alertService: AlertService,
     private ventasFormasPagoService: VentasFormasPagoService,
     private dataService: DataService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private location: Location
   ) { }
 
   ngOnInit(): void {
@@ -157,6 +159,11 @@ export default class VentasCajasComponent implements OnInit {
     window.open(`${baseUrl}/reservas/generar/comprobante/${idReserva}`, '_blank');
   }
 
+  // Generar comprobate - Fiscal - Tipo A
+  generarComprobanteVentaFiscalTipoA(idVenta: string): void {
+    window.open(`${baseUrl}/ventas/generar/comprobante/fiscal-tipo-a/${idVenta}`, '_blank');
+  }
+
   // Ordenar por columna
   ordenarPorColumna(columna: string) {
     this.ordenar.columna = columna;
@@ -169,6 +176,10 @@ export default class VentasCajasComponent implements OnInit {
     this.paginaActual = nroPagina;
     // this.desde = (this.paginaActual - 1) * this.cantidadItems;
     this.listarVentas();
+  }
+
+  regresar(): void {
+    this.location.back();
   }
 
 }

@@ -13,13 +13,21 @@
             </button>
             <h1 class="text-white ml-2 text-lg rounded-t"> Cierre de caja - Nro {{ caja?.id }} </h1>
           </div>
+          <div>
+            <button [routerLink]="['/dashboard/ventas-caja',caja.id]" title="Listado de ventas" class="p-2 bg-gray-100 rounded border hover:text-secondaryColor">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+              </svg>
+            </button>
+          </div>
         </div>
         <div class="p-2">
           <div>
             <div class="flex items-center justify-center">
               <div class="w-1/2">
                 <h2 class="text-gray-900 text-center font-semibold"> Fecha de cierre </h2>
-                <input (change)="actualizarCaja()" onkeydown="return false" [(ngModel)]="fechaCaja" type="date" class="input-generico w-full mt-2 text-center">
+                <input (change)="actualizarCaja()" onkeydown="return false" [(ngModel)]="fechaCaja" type="date"
+                  class="input-generico w-full mt-2 text-center">
               </div>
               <div class="w-1/2 ml-2">
                 <h2 class="text-gray-900 text-center font-semibold"> Saldo inicial </h2>
@@ -68,6 +76,17 @@
               class="flex bg-purple-50 text-sm border mt-2 border-purple-400 p-2 items-center justify-between">
               <p> Guia de despacho </p>
               <p class="font-semibold text-purple-800"> ${{ caja?.totalFacturado | moneda }} </p>
+            </div>
+            <div *ngIf="showTotalFacturado"
+              class="flex bg-orange-50 text-sm border mt-2 border-orange-400 p-2 items-center justify-between">
+              <p> Factura A </p>
+              <p class="font-semibold text-orange-800"> ${{ caja?.totalFacturadoTipoA | moneda }} </p>
+            </div>
+            <div *ngIf="showTotalFacturado"
+              class="flex bg-green-50 text-sm border mt-2 border-green-400 p-2 items-center justify-between">
+              <p> Total </p>
+              <p class="font-semibold text-green-800"> ${{ (caja?.totalFacturadoTipoA + caja?.totalFacturado) |
+                moneda }} </p>
             </div>
           </div>
           <div class="flex items-center p-2 mt-1 justify-between">
@@ -149,15 +168,18 @@
           </div>
           <div class="p-2 flex items-center mt-2 justify-between bg-gray-100 border border-gray-400">
             <p> Diferencia en caja </p>
-            <p [ngClass]="{'text-red-600':caja?.diferencia < 0}" class="font-semibold"> ${{ caja?.diferencia | moneda }} </p>
+            <p [ngClass]="{'text-red-600':caja?.diferencia < 0}" class="font-semibold"> ${{ caja?.diferencia | moneda }}
+            </p>
           </div>
           <div class="p-2 flex items-center mt-2 justify-between bg-gray-100 border border-gray-400">
             <p> Monto tesoreria </p>
-            <p [ngClass]="{'text-red-600':caja?.tesoreria < 0}" class="font-semibold"> ${{ caja?.tesoreria | moneda }} </p>
+            <p [ngClass]="{'text-red-600':caja?.tesoreria < 0}" class="font-semibold"> ${{ caja?.tesoreria | moneda }}
+            </p>
           </div>
           <div class="p-2 flex items-center mt-2 justify-between bg-gray-100 border border-gray-400">
             <p> Saldo inicial proxima caja </p>
-            <p [ngClass]="{'text-red-600':caja?.saldoProximaCaja < 0}" class="font-semibold"> ${{ caja?.saldoProximaCaja | moneda }} </p>
+            <p [ngClass]="{'text-red-600':caja?.saldoProximaCaja < 0}" class="font-semibold"> ${{ caja?.saldoProximaCaja
+              | moneda }} </p>
           </div>
         </div>
       </div>

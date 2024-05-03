@@ -35,8 +35,20 @@ export class VentasService {
     })
   }
 
+  generarComprobanteFiscalTipoA(id: string): Observable<any> {
+    return this.http.get(`${urlApi}/generar/comprobante/fiscal-tipo-a/${id}`, {
+      headers: this.getToken
+    })
+  }
+
   proximoNumeroFactura(tipoFactura: string = 'B'): Observable<any> {
     return this.http.get(`${urlApi}/afip/proximo-numero-factura/${tipoFactura}`, {
+      headers: this.getToken
+    })
+  }
+
+  datosContribuyente(CUIT: string): Observable<any> {
+    return this.http.get(`${urlApi}/afip/datos-contribuyente/${CUIT}`, {
       headers: this.getToken
     })
   }
@@ -76,8 +88,8 @@ export class VentasService {
     })
   }
 
-  nuevaVentaFacturacionB(data: any): Observable<any> {
-    return this.http.post(`${urlApi}/facturacion-b`, data, {
+  nuevaVentaFacturacion(data: any): Observable<any> {
+    return this.http.post(`${urlApi}/facturacion`, data, {
       headers: this.getToken
     })
   }

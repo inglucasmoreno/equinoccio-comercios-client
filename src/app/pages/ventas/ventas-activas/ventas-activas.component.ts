@@ -73,6 +73,7 @@ export default class VentasActivasComponent implements OnInit {
   public totales = {
     totalVentas: 0,
     totalVentasFacturadas: 0,
+    totalVentasFacturadasTipoA: 0,
     totalVentasPedidosYa: 0,
   }
 
@@ -201,6 +202,11 @@ export default class VentasActivasComponent implements OnInit {
   generarComprobanteVentaFiscal(idVenta: string): void {
     console.log('Fiscal');
     window.open(`${baseUrl}/ventas/generar/comprobante/fiscal/${idVenta}`, '_blank');
+  }
+
+  // Generar comprobate - Fiscal - Tipo A
+  generarComprobanteVentaFiscalTipoA(idVenta: string): void {
+    window.open(`${baseUrl}/ventas/generar/comprobante/fiscal-tipo-a/${idVenta}`, '_blank');
   }
 
   // Generar comprobate - Reserva

@@ -141,7 +141,8 @@
             <div class="flex items-center justify-center w-full">
               <div class="text-center w-1/2">
                 <h2 class="font-semibold mr-4"> Fecha de caja </h2>
-                <input [disabled]="!permisosAll" [(ngModel)]="fechaCaja" type="date" class="input-generico text-center w-full mr-4 mt-2">
+                <input [disabled]="!permisosAll" [(ngModel)]="fechaCaja" type="date"
+                  class="input-generico text-center w-full mr-4 mt-2">
               </div>
               <div class="w-1/2 mr-1">
                 <h2 class="text-gray-900 text-center font-semibold"> Saldo inicial </h2>
@@ -154,7 +155,8 @@
               </div>
               @if(!showEditarSaldoInicial){
               <div *appPermisos="permiso_escritura">
-                <button *ngIf="authService.usuario.role === 'ADMIN_ROLE'" (click)="abrirEditarSaldoInicial()" title="Editar saldo inicial"
+                <button *ngIf="authService.usuario.role === 'ADMIN_ROLE'" (click)="abrirEditarSaldoInicial()"
+                  title="Editar saldo inicial"
                   class="ml-4 p-2 border border-gray-400 shadow mt-7 rounded bg-gray-50 hover:text-secondaryColor">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-5 h-5">
@@ -247,6 +249,16 @@
               class="flex bg-purple-50 text-sm border mt-2 border-purple-400 p-2 items-center justify-between">
               <p> Guia de despacho </p>
               <p class="font-semibold text-purple-800"> ${{ totales?.totalFacturado | moneda }} </p>
+            </div>
+            <div *ngIf="showTotalFacturado"
+              class="flex bg-orange-50 text-sm border mt-2 border-orange-400 p-2 items-center justify-between">
+              <p> Factura A </p>
+              <p class="font-semibold text-orange-800"> ${{ totales?.totalFacturadoTipoA | moneda }} </p>
+            </div>
+            <div *ngIf="showTotalFacturado"
+              class="flex bg-green-50 text-sm border mt-2 border-green-400 p-2 items-center justify-between">
+              <p> Total </p>
+              <p class="font-semibold text-green-800"> ${{ (totales?.totalFacturadoTipoA + totales?.totalFacturado) | moneda }} </p>
             </div>
           </div>
           <div class="flex items-center p-2 mt-1 justify-between">

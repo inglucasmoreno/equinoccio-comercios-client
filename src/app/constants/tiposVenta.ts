@@ -6,7 +6,11 @@ export const tiposVenta: any[] = [
         descripcion: 'Normal'
     },
     {
-        valor: 'Facturacion',
+        valor: 'Fiscal',
         descripcion: 'Guia de despacho'
     },
+    {
+      valor: 'FacturaA',
+      descripcion: 'Factura A'
+  },
 ]

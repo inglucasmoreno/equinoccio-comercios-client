@@ -72,6 +72,7 @@ export default class VentasBusquedaComponent implements OnInit {
   public totales = {
     totalVentas: 0,
     totalVentasFacturadas: 0,
+    totalVentasFacturadasTipoA: 0,
     totalVentasPedidosYa: 0,
   }
 
@@ -210,6 +211,12 @@ export default class VentasBusquedaComponent implements OnInit {
   // Generar comprobate - Reserva
   generarComprobanteReserva(idReserva: string): void {
     window.open(`${baseUrl}/reservas/generar/comprobante/${idReserva}`, '_blank');
+  }
+
+  // Generar comprobate - Fiscal - Tipo A
+  generarComprobanteVentaFiscalTipoA(idVenta: string): void {
+    console.log('Fiscal');
+    window.open(`${baseUrl}/ventas/generar/comprobante/fiscal-tipo-a/${idVenta}`, '_blank');
   }
 
 }

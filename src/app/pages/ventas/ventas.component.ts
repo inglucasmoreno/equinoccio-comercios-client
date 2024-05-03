@@ -19,6 +19,7 @@ import { generales } from '../../constants/generales';
 import { VentasService } from '../../services/ventas.service';
 import gsap from 'gsap';
 import { environments } from '../../../environments/environments';
+import { tiposDocumentos } from '../../constants/tiposDocumentos';
 
 interface ProductoMuestra {
   descripcion: string;
@@ -104,6 +105,10 @@ export default class VentasComponent implements OnInit {
   }
 
   // AFIP
+  public tiposDocumentos = tiposDocumentos;
+  public tipoDocumento = 'CUIT';
+  public contribuyenteSeleccionado: any = null;
+  public docContribuyente = '';
   public proximoNumeroFactura = null;
 
   // Arreglo - Formas de pago
@@ -360,7 +365,6 @@ export default class VentasComponent implements OnInit {
 
   completarVenta(): void {
 
-
     // Si la forma de pago es pedidosYa y el nroComprobante esta vacio se debe colocar el nroComprobante
     if ((this.formaPago === 'PedidosYa - Efectivo' || this.formaPago === 'PedidosYa - Online') && !this.multiplesFormasPago) {
       if (this.pedidosYaComprobante === '') {
@@ -375,12 +379,16 @@ export default class VentasComponent implements OnInit {
       return;
     }
 
+    if (this.comprobante === 'FacturaA' && !this.contribuyenteSeleccionado) {
+      this.alertService.info('Debe buscar un contribuyente');
+      return;
+    }
+
     // Constantes
     const condicionPedidosYa = (this.formaPago === 'PedidosYa - Efectivo' || this.formaPago === 'PedidosYa - Online') && !this.multiplesFormasPago;
 
     // Datos de venta
-
-    const venta: any = {
+    const dataVenta: any = {
       comprobante: this.comprobante,
       precioTotal: this.precioTotalVenta,
       totalBalanza: this.totalBalanza,
@@ -418,10 +426,27 @@ export default class VentasComponent implements OnInit {
       }]
     }
 
-    const data = {
-      dataVenta: venta,
+    const dataVentaNormal = {
+      dataVenta: dataVenta,
       dataFormasPago: formasPago,
       dataProductos: productos,
+      dataOtros: {
+        imprimirTicket: this.imprimirTicket
+      },
+      sena: false
+    }
+
+    const dataVentaFacturacion = {
+      dataVenta: dataVenta,
+      dataFormasPago: formasPago,
+      dataProductos: productos,
+      dataFacturacion: {
+        comprobante: this.comprobante,
+        razonSocial: this.comprobante === 'FacturaA' ? this.contribuyenteSeleccionado?.razonSocial : '',
+        tipoFactura: this.comprobante === 'Normal' ? '' : this.comprobante === 'FacturaA' ? 'A' : 'B',
+        tipoDocContribuyente: this.comprobante === 'Normal' ? '' : this.tipoDocumento,
+        docContribuyente: this.docContribuyente,
+      },
       dataOtros: {
         imprimirTicket: this.imprimirTicket
       },
@@ -432,40 +457,66 @@ export default class VentasComponent implements OnInit {
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();
-
           if (this.comprobante === 'Normal') {
-            this.ventasService.nuevaVenta(data).subscribe({
+            this.ventasService.nuevaVenta(dataVentaNormal).subscribe({
               next: ({ venta }) => {
                 this.reiniciarVenta();
                 this.alertService.close();
                 if (this.imprimirTicket) window.open(`${baseUrl}/ventas/generar/comprobante/${venta.id}`, '_blank');
               }, error: ({ error }) => this.alertService.errorApi(error.message)
             })
-          } else if (this.comprobante === 'Fiscal') {
-            this.ventasService.nuevaVentaFacturacionB(data).subscribe({
+          } else if (this.comprobante !== 'Normal') {
+            this.ventasService.nuevaVentaFacturacion(dataVentaFacturacion).subscribe({
               next: ({ venta }) => {
-                console.log(venta);
                 this.reiniciarVenta();
                 this.alertService.close();
                 // if (this.imprimirTicket) window.open(`${baseUrl}/ventas/generar/comprobante/${venta.id}`, '_blank');
               }, error: ({ error }) => this.alertService.errorApi(error.message)
             })
           }
-
-
         }
       });
-
   }
 
-  obtenerProximoNumeroFactura(): void {
+  obtenerProximoNumeroFactura(tipoComprobante = 'B'): void {
     this.alertService.loading();
-    this.ventasService.proximoNumeroFactura('B').subscribe({
+    this.ventasService.proximoNumeroFactura(tipoComprobante).subscribe({
       next: ({ proximoNumeroFactura }) => {
         this.proximoNumeroFactura = proximoNumeroFactura;
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })
+  }
+
+  buscarDatosContribuyente(): void {
+
+    // Verificar que el cuit/cuil sea valido
+    if (this.docContribuyente.length !== 11) {
+      this.alertService.info('El CUIT debe tener 11 digitos');
+      return;
+    }
+
+    this.alertService.loading();
+    this.ventasService.datosContribuyente(this.docContribuyente).subscribe({
+      next: ({ contribuyente }) => {
+        console.log(contribuyente);
+        this.contribuyenteSeleccionado = {
+          razonSocial: contribuyente.datosGenerales.razonSocial,
+          tipoIdentificacion: contribuyente.datosGenerales.tipoClave,
+          identificacion: contribuyente.datosGenerales.idPersona,
+          tipoPersona: contribuyente.datosGenerales.tipoPersona,
+          domicilio: contribuyente.datosGenerales.domicilioFiscal.direccion
+        }
+        console.log(this.contribuyenteSeleccionado);
+        this.alertService.close();
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    })
+
+  }
+
+  cancelarContribuyente(): void {
+    this.docContribuyente = '';
+    this.contribuyenteSeleccionado = null;
   }
 
   reiniciarVenta(): void {
@@ -501,6 +552,9 @@ export default class VentasComponent implements OnInit {
   }
 
   cambioComprobante(): void {
+    this.contribuyenteSeleccionado = null;
+    this.docContribuyente = '';
+    this.proximoNumeroFactura = '';
     this.almacenarEnLocalStorage();
   }
 
@@ -510,22 +564,22 @@ export default class VentasComponent implements OnInit {
 
     this.carritoProductos ? localStorage.setItem('venta-carritoProductos', JSON.stringify(this.carritoProductos)) : null;
     this.comprobante ? localStorage.setItem('venta-comprobante', this.comprobante) : null;
-    this.totalBalanza ? localStorage.setItem('venta-totalBalanza', this.totalBalanza.toString()) : null;
-    this.totalNoBalanza ? localStorage.setItem('venta-totalNoBalanza', this.totalNoBalanza.toString()) : null;
-    this.adicionalCredito ? localStorage.setItem('venta-adicionalCredito', this.adicionalCredito.toString()) : null;
+    localStorage.setItem('venta-totalBalanza', this.totalBalanza.toString());
+    localStorage.setItem('venta-totalNoBalanza', this.totalNoBalanza.toString());
+    localStorage.setItem('venta-adicionalCredito', this.adicionalCredito.toString());
     this.valorFormaPago ? localStorage.setItem('venta-valorFormaPago', this.valorFormaPago.toString()) : null;
     this.formaPago ? localStorage.setItem('venta-formaPago', this.formaPago) : null;
     this.porcentajePorCredito ? localStorage.setItem('venta-porcentajePorCredito', this.porcentajePorCredito.toString()) : null;
-    this.precioTotalVenta ? localStorage.setItem('venta-precioTotalVenta', this.precioTotalVenta.toString()) : null;
-    this.precioTotalLimpio ? localStorage.setItem('venta-precioTotalLimpio', this.precioTotalLimpio.toString()) : null;
+    localStorage.setItem('venta-precioTotalVenta', this.precioTotalVenta.toString());
+    localStorage.setItem('venta-precioTotalLimpio', this.precioTotalLimpio.toString());
     localStorage.setItem('venta-imprimirTicket', this.imprimirTicket.toString());
     this.productos ? localStorage.setItem('venta-productos', JSON.stringify(this.productos)) : null;
-    this.totalPagado ? localStorage.setItem('venta-totalPagado', this.totalPagado.toString()) : null;
+    localStorage.setItem('venta-totalPagado', this.totalPagado.toString());
     localStorage.setItem('venta-faltaPagar', this.faltaPagar.toString());
     localStorage.setItem('venta-multiplesFormasPago', this.multiplesFormasPago.toString());
     this.formasPago ? localStorage.setItem('venta-formasPago', JSON.stringify(this.formasPago)) : null;
     this.formasPagoArray ? localStorage.setItem('venta-formasPagoArray', JSON.stringify(this.formasPagoArray)) : null;
-    this.valorFormaPago !== null ? localStorage.setItem('venta-valorFormaPago', this.valorFormaPago.toString()) : null;
+    localStorage.setItem('venta-valorFormaPago', this.valorFormaPago.toString());
   }
 
   recuperarDeLocalStorage(): void {
