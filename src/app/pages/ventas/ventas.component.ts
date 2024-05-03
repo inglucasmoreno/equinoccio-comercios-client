@@ -20,6 +20,7 @@ import { VentasService } from '../../services/ventas.service';
 import gsap from 'gsap';
 import { environments } from '../../../environments/environments';
 import { tiposDocumentos } from '../../constants/tiposDocumentos';
+import { ContribuyenteAfip } from '../../interfaces/AfipContribuyente';
 
 interface ProductoMuestra {
   descripcion: string;
@@ -446,6 +447,9 @@ export default class VentasComponent implements OnInit {
         tipoFactura: this.comprobante === 'Normal' ? '' : this.comprobante === 'FacturaA' ? 'A' : 'B',
         tipoDocContribuyente: this.comprobante === 'Normal' ? '' : this.tipoDocumento,
         docContribuyente: this.docContribuyente,
+        domicilio: this.comprobante === 'FacturaA' ? this.contribuyenteSeleccionado?.domicilio : '',
+        tipoDomicilio: this.comprobante === 'FacturaA' ? this.contribuyenteSeleccionado?.tipoDomicilio : '',
+        tipoPersona: this.comprobante === 'FacturaA' ? this.contribuyenteSeleccionado?.tipoPersona : '',
       },
       dataOtros: {
         imprimirTicket: this.imprimirTicket
@@ -498,14 +502,14 @@ export default class VentasComponent implements OnInit {
 
     this.alertService.loading();
     this.ventasService.datosContribuyente(this.docContribuyente).subscribe({
-      next: ({ contribuyente }) => {
-        console.log(contribuyente);
+      next: (dataContribuyente: ContribuyenteAfip) => {
         this.contribuyenteSeleccionado = {
-          razonSocial: contribuyente.datosGenerales.razonSocial,
-          tipoIdentificacion: contribuyente.datosGenerales.tipoClave,
-          identificacion: contribuyente.datosGenerales.idPersona,
-          tipoPersona: contribuyente.datosGenerales.tipoPersona,
-          domicilio: contribuyente.datosGenerales.domicilioFiscal.direccion
+          razonSocial: dataContribuyente.contribuyente.datosGenerales.razonSocial,
+          tipoIdentificacion: dataContribuyente.contribuyente.datosGenerales.tipoClave,
+          identificacion: dataContribuyente.contribuyente.datosGenerales.idPersona,
+          tipoPersona: dataContribuyente.contribuyente.datosGenerales.tipoPersona,
+          domicilio: dataContribuyente.contribuyente.datosGenerales.domicilioFiscal.direccion,
+          tipoDomicilio: dataContribuyente.contribuyente.datosGenerales.domicilioFiscal.tipoDomicilio,
         }
         console.log(this.contribuyenteSeleccionado);
         this.alertService.close();
@@ -579,11 +583,12 @@ export default class VentasComponent implements OnInit {
     localStorage.setItem('venta-multiplesFormasPago', this.multiplesFormasPago.toString());
     this.formasPago ? localStorage.setItem('venta-formasPago', JSON.stringify(this.formasPago)) : null;
     this.formasPagoArray ? localStorage.setItem('venta-formasPagoArray', JSON.stringify(this.formasPagoArray)) : null;
-    localStorage.setItem('venta-valorFormaPago', this.valorFormaPago.toString());
   }
 
   recuperarDeLocalStorage(): void {
+
     // Recuperar valores de localstorage si no tiene nada colocar el valor incial
+
     this.carritoProductos = JSON.parse(localStorage.getItem('venta-carritoProductos')) || [];
     this.comprobante = localStorage.getItem('venta-comprobante') || 'Normal';
     this.totalBalanza = parseFloat(localStorage.getItem('venta-totalBalanza')) || 0;

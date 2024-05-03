@@ -39,7 +39,7 @@
       <!-- Comprobante Reserva -->
       <button *ngIf="ventaSeleccionada?.ventasReservas[0]?.tipo === 'Adelanto'"
         class="bg-white mr-2 ml-2 p-2 rounded hover:text-secondaryColor"
-        (click)="generarComprobanteReserva(ventaSeleccionada.id)" title="Imprimir comprobante">
+        (click)="generarComprobanteReserva(ventaSeleccionada?.ventasReservas[0]?.reservaId)" title="Imprimir comprobante">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
           class="w-5 h-5">
           <path stroke-linecap="round" stroke-linejoin="round"
@@ -626,7 +626,7 @@
 
                       <!-- Comprobante adelanto -->
                       <button *ngIf="venta?.ventasReservas[0]?.tipo === 'Adelanto'"
-                        (click)="generarComprobanteReserva(venta.id)" title="Imprimir comprobante"
+                        (click)="generarComprobanteReserva(venta?.ventasReservas[0]?.reservaId)" title="Imprimir comprobante"
                         class="p-2 rounded shadow focus:outline-none bg-blue-600 hover:opacity-90 text-white ml-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                           stroke="currentColor" class="w-5 h-5">
