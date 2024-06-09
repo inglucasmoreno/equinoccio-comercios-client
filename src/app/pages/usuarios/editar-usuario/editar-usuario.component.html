@@ -9,7 +9,7 @@
       </button>
       <h1 class="ml-1 text-xl text-white"> Actualizando usuario </h1>
     </div>
-    <form [formGroup]="usuarioForm" class="px-5 pt-2 text-sm pb-4">
+    <form [formGroup]="usuarioForm" (keydown.enter)="$event.preventDefault()" class="px-5 pt-2 text-sm pb-4">
       <div class="flex flex-col lg:flex-row">
         <div class="w-full mx-2 flex-1 svelte-1l8159u">
           <div class="font-semibold mt-3 text-gray-600 text-sm">

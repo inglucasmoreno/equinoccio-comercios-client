@@ -3,7 +3,7 @@
   <div class="w-full lg:w-1/2 bg-white mr-2 shadow rounded border border-gray-400">
 
     <!-- Cuerpo de formulario -->
-    <form [formGroup]="usuarioForm" class="pb-2">
+    <form [formGroup]="usuarioForm" (keydown.enter)="$event.preventDefault()" class="pb-2">
       <div class="flex items-center p-2 bg-gray-800 border border-gray-800 rounded-t">
         <button routerLink="/dashboard/usuarios" class="p-2 text-white hover:text-secondaryColor">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
