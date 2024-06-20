@@ -554,6 +554,7 @@ export default class VentasComponent implements OnInit {
     this.formasPagoArray = formasPagoArray
     this.filtro = { productos: '' }
     this.proximoNumeroFactura = null;
+    this.contribuyenteSeleccionado = null;
     this.almacenarEnLocalStorage();
   }
 
