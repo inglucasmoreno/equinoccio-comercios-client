@@ -472,9 +472,12 @@ export default class VentasComponent implements OnInit {
           } else if (this.comprobante !== 'Normal') {
             this.ventasService.nuevaVentaFacturacion(dataVentaFacturacion).subscribe({
               next: ({ venta }) => {
-                this.reiniciarVenta();
                 this.alertService.close();
-                // if (this.imprimirTicket) window.open(`${baseUrl}/ventas/generar/comprobante/${venta.id}`, '_blank');
+                if (this.imprimirTicket){
+                  if(this.comprobante === 'Fiscal') window.open(`${baseUrl}/ventas/generar/comprobante/fiscal/${venta.id}`, '_blank');
+                  if(this.comprobante === 'FacturaA') window.open(`${baseUrl}/ventas/generar/comprobante/fiscal-tipo-a/${venta.id}`, '_blank');
+                }
+                this.reiniciarVenta();
               }, error: ({ error }) => this.alertService.errorApi(error.message)
             })
           }
@@ -502,16 +505,15 @@ export default class VentasComponent implements OnInit {
 
     this.alertService.loading();
     this.ventasService.datosContribuyente(this.docContribuyente).subscribe({
-      next: (dataContribuyente: ContribuyenteAfip) => {
+      next: (dataContribuyente: any) => {
         this.contribuyenteSeleccionado = {
-          razonSocial: dataContribuyente.contribuyente.datosGenerales.razonSocial,
-          tipoIdentificacion: dataContribuyente.contribuyente.datosGenerales.tipoClave,
-          identificacion: dataContribuyente.contribuyente.datosGenerales.idPersona,
-          tipoPersona: dataContribuyente.contribuyente.datosGenerales.tipoPersona,
-          domicilio: dataContribuyente.contribuyente.datosGenerales.domicilioFiscal.direccion,
-          tipoDomicilio: dataContribuyente.contribuyente.datosGenerales.domicilioFiscal.tipoDomicilio,
+          razonSocial: dataContribuyente.contribuyente.tipoPersona === 'JURIDICA' ? dataContribuyente.contribuyente.razonSocial : ( dataContribuyente.contribuyente.apellido + ' ' + dataContribuyente.contribuyente.nombre),
+          tipoIdentificacion: dataContribuyente.contribuyente.tipoClave,
+          identificacion: dataContribuyente.contribuyente.idPersona,
+          tipoPersona: dataContribuyente.contribuyente.tipoPersona,
+          domicilio: dataContribuyente.contribuyente.domicilio[0].direccion,
+          tipoDomicilio: dataContribuyente.contribuyente.domicilio[0].tipoDomicilio,
         }
-        console.log(this.contribuyenteSeleccionado);
         this.alertService.close();
       }, error: ({ error }) => this.alertService.errorApi(error.message)
     })

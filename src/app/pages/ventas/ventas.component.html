@@ -63,12 +63,12 @@
 
       <!-- Facturacion tipo A -->
       <div *ngIf="comprobante === 'FacturaA'" class="mt-2 text-sm pb-3 border-gray-300 px-2">
-        <p class="font-semibold border bg-gray-100 border-gray-400 p-1"> Factura A </p>
+        <p class="font-semibold border bg-gray-100 border-gray-400 p-2"> Buscar contribuyente </p>
         <div *ngIf="!contribuyenteSeleccionado" class="flex items-center mt-2 py-2">
-          <select [(ngModel)]="tipoDocumento" class="input-generico">
+          <!-- <select [(ngModel)]="tipoDocumento" class="input-generico">
             <option *ngFor="let tipoDocumento of tiposDocumentos" [value]="tipoDocumento.descripcion"> {{ tipoDocumento.descripcion }} </option>
-          </select>
-          <input (keyup.enter)="buscarDatosContribuyente()" [(ngModel)]="docContribuyente" placeholder="Ej. 24340603989" type="text" class="input-generico ml-2">
+          </select> -->
+          <input (keyup.enter)="buscarDatosContribuyente()" [(ngModel)]="docContribuyente" placeholder="Ej. 24340603989" type="text" class="input-generico">
           <button (click)="buscarDatosContribuyente()" title="Buscar cliente" class="p-2 border ml-2 border-gray-400 rounded hover:text-secondaryColor">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
               <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -79,11 +79,20 @@
 
       <!-- Datos de contribuyente -->
       <div class="text-sm px-2 pb-2 border-gray-300" *ngIf="contribuyenteSeleccionado">
-        <p> <span class="font-semibold"> Razon social: </span> <span> {{ contribuyenteSeleccionado?.razonSocial }}</span> </p>
-        <p class="mt-2"> <span class="font-semibold"> {{ contribuyenteSeleccionado?.tipoIdentificacion }}: </span> <span> {{ contribuyenteSeleccionado?.identificacion }}</span> </p>
-        <p class="mt-2"> <span class="font-semibold"> Domicilio: </span> <span> {{ contribuyenteSeleccionado?.domicilio }}</span> </p>
-        <div class="flex items-center mt-2 mb-2">
-          <button (click)="cancelarContribuyente()" class="boton-eliminar px-2"> Cancelar </button>
+
+        <div class="flex items-center">
+          <img class="w-20" src="assets/svg/cliente.svg" alt="cliente.svg">
+          <div class="text-xs space-y-2">
+            <p> <span class="font-semibold"> Tipo de persona: </span> <span> {{ contribuyenteSeleccionado?.tipoPersona }}</span> </p>
+            <p>
+              <span class="font-semibold"> {{ contribuyenteSeleccionado?.tipoPersona === 'JURIDICA' ? 'Razon social:' : 'Apellido y Nombre' }} </span>
+              <span> {{ contribuyenteSeleccionado?.razonSocial }} </span> </p>
+            <p> <span class="font-semibold"> {{ contribuyenteSeleccionado?.tipoIdentificacion }}: </span> <span> {{ contribuyenteSeleccionado?.identificacion }}</span> </p>
+            <p> <span class="font-semibold"> Domicilio: </span> <span> {{ contribuyenteSeleccionado?.domicilio }}</span> </p>
+          </div>
+        </div>
+        <div class="flex items-center mt-3 mb-2 text-xs">
+          <button (click)="cancelarContribuyente()" class="boton-eliminar px-2 w-full"> Buscar otro contribuyente </button>
           <!-- <button class="boton-crear px-2 ml-2"> Agregar a clientes </button> -->
         </div>
       </div>
