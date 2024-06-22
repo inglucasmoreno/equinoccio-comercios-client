@@ -23,6 +23,7 @@ import { VentasService } from '../../../services/ventas.service';
 import { ReservasService } from '../../../services/reservas.service';
 import { VentasReservasService } from '../../../services/ventas-reservas.service';
 import { environments } from '../../../../environments/environments';
+import { tiposDocumentos } from '../../../constants/tiposDocumentos';
 
 const baseUrl = environments.base_url;
 
@@ -105,8 +106,14 @@ export default class ReservasNuevaComponent implements OnInit {
   public precioTotalLimpio: number = 0;
   public vuelto: number = null;
   public pagaCon: number = null;
-
   public formasPagoArray: any[] = formasPagoArray;
+
+  // AFIP
+  public tiposDocumentos = tiposDocumentos;
+  public tipoDocumento = 'CUIT';
+  public contribuyenteSeleccionado: any = null;
+  public docContribuyente = '';
+  public proximoNumeroFactura = null;
 
   // Clientes
   public clienteSeleccionado: any = null;
@@ -379,12 +386,17 @@ export default class ReservasNuevaComponent implements OnInit {
       return;
     }
 
+    // Verificacion de contribuyente seleccionado
+    if (this.comprobante === 'FacturaA' && !this.contribuyenteSeleccionado) {
+      this.alertService.info('Debe buscar un contribuyente');
+      return;
+    }
+
     // Constantes
     const condicionPedidosYa = (this.formaPago === 'PedidosYa - Efectivo' || this.formaPago === 'PedidosYa - Online') && !this.multiplesFormasPago;
 
     // Datos de venta
-
-    const venta: any = {
+    const dataVenta: any = {
       comprobante: this.comprobante,
       precioTotal: this.precioTotalVenta,
       totalAdelantoReserva: this.precioTotalVenta,
@@ -396,20 +408,7 @@ export default class ReservasNuevaComponent implements OnInit {
       creatorUserId: this.authService.usuario.userId
     }
 
-    // Datos de productos
-    let productos: any[] = [];
-    this.carritoProductos.map((producto: any) => {
-      productos.push({
-        productoId: producto.producto.id,
-        cantidad: producto.cantidad,
-        precioUnitario: producto.precioUnitario,
-        precioTotal: producto.precioTotal,
-        creatorUserId: this.authService.usuario.userId
-      });
-    });
-
     // Datos de formas de pago
-
     let formasPago: FormaPago[] = []
 
     if (this.multiplesFormasPago) {     // Multiples formas de pago
@@ -423,24 +422,35 @@ export default class ReservasNuevaComponent implements OnInit {
       }]
     }
 
-    // Datos de facturacion
-
-    const facturacion = {
-      puntoVenta: 0,
-      tipoComprobante: 0,
-      nroComprobante: 0,
-    }
-
-    const dataVenta = {
-      dataVenta: venta,
-      dataFacturacion: facturacion,
+    const dataVentaNormal = {
+      dataVenta: dataVenta,
       dataFormasPago: formasPago,
       dataProductos: [],
-      dataOtros: {
-        imprimirTicket: this.imprimirTicket
-      }
+      dataOtros: { imprimirTicket: false },
+      sena: true
     }
 
+    const dataVentaFacturacion = {
+      dataVenta: dataVenta,
+      dataFormasPago: formasPago,
+      dataProductos: [],
+      dataFacturacion: {
+        comprobante: this.comprobante,
+        razonSocial: this.comprobante === 'FacturaA' ? this.contribuyenteSeleccionado?.razonSocial : '',
+        tipoFactura: this.comprobante === 'Normal' ? '' : this.comprobante === 'FacturaA' ? 'A' : 'B',
+        tipoDocContribuyente: this.comprobante === 'Normal' ? '' : this.tipoDocumento,
+        docContribuyente: this.docContribuyente,
+        domicilio: this.comprobante === 'FacturaA' ? this.contribuyenteSeleccionado?.domicilio : '',
+        tipoDomicilio: this.comprobante === 'FacturaA' ? this.contribuyenteSeleccionado?.tipoDomicilio : '',
+        tipoPersona: this.comprobante === 'FacturaA' ? this.contribuyenteSeleccionado?.tipoPersona : '',
+      },
+      dataOtros: {
+        imprimirTicket: this.imprimirTicket
+      },
+      sena: true
+    }
+
+    // Completar reserva
     this.alertService.question({ msg: '¿Quieres completar la reserva?', buttonText: 'Completar' })
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
@@ -484,34 +494,113 @@ export default class ReservasNuevaComponent implements OnInit {
             tortaDetalles: this.dataReserva.tipoObservacion === 'Torta' ? this.dataReserva.tortaDetalles : '',
             creatorUserId: this.authService.usuario.userId
           }
+
           // Se crea la reserva
           this.reservasService.nuevaReserva(dataReserva).subscribe({
             next: ({ reserva }) => {
+
               // Se crea la venta
-              this.ventasService.nuevaVenta(dataVenta).subscribe({
-                next: ({ venta }) => {
-                  const dataVentaReserva = {
-                    ventaId: venta.id,
-                    reservaId: reserva.id,
-                    tipo: 'Adelanto',
-                    creatorUserId: this.authService.usuario.userId
-                  }
-                  // Se crea la relacion -> Venta - Reserva
-                  this.ventasReservasService.nuevaVentaReserva(dataVentaReserva).subscribe({
-                    next: () => {
-                      this.router.navigateByUrl('/dashboard/reservas');
-                      this.dataService.alertaReservas();
-                      window.open(`${baseUrl}/reservas/generar/comprobante/${reserva.id}`, '_blank');
-                      this.alertService.close();
-                    }, error: ({ error }) => this.alertService.errorApi(error.message)
-                  })
-                }, error: ({ error }) => this.alertService.errorApi(error.message)
-              })
+
+              if (this.comprobante === 'Normal') {
+                this.ventasService.nuevaVenta(dataVentaNormal).subscribe({
+                  next: ({ venta }) => {
+
+                    const dataVentaReserva = {
+                      ventaId: venta.id,
+                      reservaId: reserva.id,
+                      tipo: 'Adelanto',
+                      creatorUserId: this.authService.usuario.userId
+                    }
+
+                    // Se crea la relacion -> Venta - Reserva
+                    this.ventasReservasService.nuevaVentaReserva(dataVentaReserva).subscribe({
+                      next: () => {
+                        this.router.navigateByUrl('/dashboard/reservas');
+                        this.dataService.alertaReservas();
+                        window.open(`${baseUrl}/reservas/generar/comprobante/${reserva.id}`, '_blank');
+                        this.alertService.close();
+                      }, error: ({ error }) => this.alertService.errorApi(error.message)
+                    })
+
+                  }, error: ({ error }) => this.alertService.errorApi(error.message)
+                })
+              } else if (this.comprobante !== 'Normal') {
+                this.ventasService.nuevaVentaFacturacion(dataVentaFacturacion).subscribe({
+                  next: ({ venta }) => {
+
+                    const dataVentaReserva = {
+                      ventaId: venta.id,
+                      reservaId: reserva.id,
+                      tipo: 'Adelanto',
+                      creatorUserId: this.authService.usuario.userId
+                    }
+
+                    // Se crea la relacion -> Venta - Reserva
+                    this.ventasReservasService.nuevaVentaReserva(dataVentaReserva).subscribe({
+                      next: () => {
+                        this.router.navigateByUrl('/dashboard/reservas');
+                        this.dataService.alertaReservas();
+                        window.open(`${baseUrl}/reservas/generar/comprobante/${reserva.id}`, '_blank');
+                        this.alertService.close();
+                      }, error: ({ error }) => this.alertService.errorApi(error.message)
+                    })
+
+                  }, error: ({ error }) => this.alertService.errorApi(error.message)
+                })
+              }
+
             }, error: ({ error }) => this.alertService.errorApi(error.message)
           })
         }
       });
 
   }
+
+  obtenerProximoNumeroFactura(tipoComprobante = 'B'): void {
+    this.alertService.loading();
+    this.ventasService.proximoNumeroFactura(tipoComprobante).subscribe({
+      next: ({ proximoNumeroFactura }) => {
+        this.proximoNumeroFactura = proximoNumeroFactura;
+        this.alertService.close();
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    })
+  }
+
+  cambioComprobante(): void {
+    this.contribuyenteSeleccionado = null;
+    this.docContribuyente = '';
+    this.proximoNumeroFactura = '';
+  }
+
+  buscarDatosContribuyente(): void {
+
+    // Verificar que el cuit/cuil sea valido
+    if (this.docContribuyente.length !== 11) {
+      this.alertService.info('El CUIT debe tener 11 digitos');
+      return;
+    }
+
+    this.alertService.loading();
+    this.ventasService.datosContribuyente(this.docContribuyente).subscribe({
+      next: (dataContribuyente: any) => {
+        this.contribuyenteSeleccionado = {
+          razonSocial: dataContribuyente.contribuyente.tipoPersona === 'JURIDICA' ? dataContribuyente.contribuyente.razonSocial : (dataContribuyente.contribuyente.apellido + ' ' + dataContribuyente.contribuyente.nombre),
+          tipoIdentificacion: dataContribuyente.contribuyente.tipoClave,
+          identificacion: dataContribuyente.contribuyente.idPersona,
+          tipoPersona: dataContribuyente.contribuyente.tipoPersona,
+          domicilio: dataContribuyente.contribuyente.domicilio[0].direccion,
+          tipoDomicilio: dataContribuyente.contribuyente.domicilio[0].tipoDomicilio,
+        }
+        this.alertService.close();
+      }, error: ({ error }) => this.alertService.errorApi(error.message)
+    })
+
+  }
+
+  cancelarContribuyente(): void {
+    this.docContribuyente = '';
+    this.contribuyenteSeleccionado = null;
+  }
+
 
 }

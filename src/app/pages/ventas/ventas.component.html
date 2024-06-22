@@ -20,7 +20,7 @@
       <div class="p-2">
         <p class="font-semibold"> Tipo de venta </p>
         <div class="flex items-center w-full">
-          <select (change)="cambioComprobante()" [(ngModel)]="comprobante" class="input-generico w-full mt-2">
+          <select (change)="cambioComprobante()" [(ngModel)]="comprobante" class="input-generico w-1/2 mt-2">
             <option value="Normal"> Normal </option>
             <option value="Fiscal"> Guia de despacho </option>
             <option value="FacturaA"> Factura A </option>
@@ -78,7 +78,7 @@
       </div>
 
       <!-- Datos de contribuyente -->
-      <div class="text-sm px-2 pb-2 border-gray-300" *ngIf="contribuyenteSeleccionado">
+      <div class="text-sm px-2 border-gray-300" *ngIf="contribuyenteSeleccionado">
 
         <div class="flex items-center">
           <img class="w-20" src="assets/svg/cliente.svg" alt="cliente.svg">

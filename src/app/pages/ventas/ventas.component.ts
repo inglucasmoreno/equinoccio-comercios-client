@@ -380,6 +380,7 @@ export default class VentasComponent implements OnInit {
       return;
     }
 
+    // Verificacion de contribuyente seleccionado
     if (this.comprobante === 'FacturaA' && !this.contribuyenteSeleccionado) {
       this.alertService.info('Debe buscar un contribuyente');
       return;
@@ -461,6 +462,7 @@ export default class VentasComponent implements OnInit {
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();
+
           if (this.comprobante === 'Normal') {
             this.ventasService.nuevaVenta(dataVentaNormal).subscribe({
               next: ({ venta }) => {
