@@ -9,13 +9,13 @@
 
 ```bash
 # Instalacion de librerias
-$ npm install
+$ pnpm install
 
 # Iniciar proyecto
-$ npm start
+$ pnpm start
 
 # Generar archivo de produccion
-$ npm run build
+$ pnpm run build
 ```
 
 ## Desarrollado por
