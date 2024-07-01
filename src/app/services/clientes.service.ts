@@ -64,7 +64,7 @@ export class ClientesService {
     })
   }
 
-  abrirAbm(estado: 'crear' | 'editar', cliente: any = null): void {
+  abrirAbm(estado: 'crear' | 'editar', cliente: any = null, initData = null): void {
     this.estadoAbm = estado;
     this.clienteSeleccionado = cliente;
     this.showModalAbm = true;
@@ -78,11 +78,11 @@ export class ClientesService {
       }
     } else {
       this.abmForm = {
-        descripcion: '',
-        tipo_identificacion: 'DNI',
-        identificacion: '',
-        telefono: '',
-        domicilio: '',
+        descripcion: initData?.descripcion || '',
+        tipo_identificacion: initData?.tipo_identificacion || 'DNI',
+        identificacion: initData?.identificacion || '',
+        telefono: initData?.telefono || '',
+        domicilio: initData?.domicilio || '',
       }
     }
   }

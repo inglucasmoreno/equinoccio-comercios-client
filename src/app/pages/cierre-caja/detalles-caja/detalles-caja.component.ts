@@ -55,7 +55,7 @@ export default class DetallesCajaComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.dataService.ubicacionActual = 'Dashboard - Detalles de caja';
+    this.dataService.ubicacionActual = 'Equinoccio - Detalles de caja';
     this.alertService.loading();
     this.activatedRoute.params.subscribe({
       next: ({ id }) => {

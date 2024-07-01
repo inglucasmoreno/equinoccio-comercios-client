@@ -72,7 +72,7 @@ export default class ProductosComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Productos';
+    this.dataService.ubicacionActual = 'Equinoccio - Productos';
     this.alertService.loading();
     this.listarProductos();
   }
@@ -110,7 +110,7 @@ export default class ProductosComponent implements OnInit {
 
     const { id, activo } = producto;
 
-    this.alertService.question({ msg: '¿Quieres actualizar el estado?', buttonText: 'Actualizar' })
+    this.alertService.question({ msg: producto.activo ? 'Baja de elemento' : 'Alta de elemento', buttonText: producto.activo ? 'Dar de baja' : 'Dar de alta' })
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();

@@ -43,7 +43,7 @@ export default class ConfigBalanzaComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.dataService.ubicacionActual = 'Dashboard - Condifuración de balanza';
+    this.dataService.ubicacionActual = 'Equinoccio - Configuración de balanza';
     gsap.from('.gsap-contenido', { y: 100, opacity: 0, duration: .2 });
     this.obtenerCodigo();
   }
@@ -91,11 +91,13 @@ export default class ConfigBalanzaComponent implements OnInit {
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();
+          console.log(this.nuevoFormato);
           this.configGeneralesService.actualizarConfigGeneral(this.formatoActual.id, { formatoBalanza: this.nuevoFormato }).subscribe({
-            next: ({ configBalanza }) => {
+            next: ({ configGeneral }) => {
+              console.log(configGeneral);
               this.nuevoFormato = '';
-              this.formatoActual = configBalanza;
-              this.generacionFormato(configBalanza.formato);
+              this.formatoActual.formatoBalanza = configGeneral.formatoBalanza;
+              this.generacionFormato(configGeneral.formatoBalanza);
               this.dataService.obtenerConfigGenerales();
               this.alertService.close();
             }, error: ({ error }) => this.alertService.errorApi(error.message)

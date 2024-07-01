@@ -55,7 +55,7 @@ export default class EditarPasswordComponent implements OnInit {
 
   ngOnInit(): void {
     gsap.from('.gsap-contenido', { y: 100, opacity: 0, duration: .2 });
-    this.dataService.ubicacionActual = 'Dashboard - Actualizando password'
+    this.dataService.ubicacionActual = 'Equinoccio - Actualizando password'
     this.alertService.loading();
     this.activatedRoute.params.subscribe({
       next: ({ id }) => {

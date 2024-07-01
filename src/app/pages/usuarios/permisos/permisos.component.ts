@@ -70,7 +70,7 @@ export default class PermisosComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.dataService.ubicacionActual = 'Permisos de usuario';
+    this.dataService.ubicacionActual = 'Equinoccio - Permisos de usuario';
     gsap.from('.gsap-contenido', { y:100, opacity: 0, duration: .2 });
     this.activatedRoute.params.subscribe(({ id }) => {
       this.getUsuario(id);

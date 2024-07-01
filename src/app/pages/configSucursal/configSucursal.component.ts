@@ -47,7 +47,7 @@ export default class ConfigSucursalComponent implements OnInit {
 
   ngOnInit() {
     gsap.from('.gsap-contenido', { y: 100, opacity: 0, duration: .2 });
-    this.dataService.ubicacionActual = 'Dashboard - Configuración de sucursal';
+    this.dataService.ubicacionActual = 'Equinoccio - Configuración de sucursal';
     this.calcularPermiso();
     this.alertService.loading();
     this.configGeneralesService.listarConfigGenerales({}).subscribe({

@@ -109,7 +109,7 @@ export default class IngresosComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Ingresos';
+    this.dataService.ubicacionActual = 'Equinoccio - Ingresos';
     this.alertService.loading();
     this.listarIngresos();
   }

@@ -61,7 +61,7 @@ export default class TiposGastosComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Tipos de gastos';
+    this.dataService.ubicacionActual = 'Equinoccio - Tipos de gastos';
     this.alertService.loading();
     this.listarTipos();
   }
@@ -101,7 +101,7 @@ export default class TiposGastosComponent implements OnInit {
 
     const { id, activo } = tipo;
 
-    this.alertService.question({ msg: '¿Quieres actualizar el estado?', buttonText: 'Actualizar' })
+    this.alertService.question({ msg: tipo.activo ? 'Baja de elemento' : 'Alta de elemento', buttonText: tipo.activo ? 'Dar de baja' : 'Dar de alta' })
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();

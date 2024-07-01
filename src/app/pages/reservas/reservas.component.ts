@@ -89,7 +89,7 @@ export default class ReservasComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Reservas';
+    this.dataService.ubicacionActual = 'Equinoccio - Reservas';
     this.alertService.loading();
     this.listarReservas();
   }

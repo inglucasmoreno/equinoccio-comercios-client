@@ -23,13 +23,13 @@
 }
 
 .boton-crear {
-  @apply p-2 bg-emerald-600 hover:opacity-90 text-sm text-white rounded shadow
+  @apply p-2 bg-emerald-500 hover:opacity-90 text-sm text-white rounded shadow
 }
 
 .boton-editar {
-  @apply p-2 bg-orange-700 hover:opacity-90 text-sm text-white rounded shadow
+  @apply p-2 bg-orange-500 hover:opacity-90 text-sm text-white rounded shadow
 }
 
 .boton-eliminar {
-  @apply p-2 bg-red-600 hover:opacity-90 text-sm text-white rounded shadow
+  @apply p-2 bg-red-500 hover:opacity-90 text-sm text-white rounded shadow
 }

@@ -100,7 +100,7 @@ export default class VentasCajasComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Ventas en caja';
+    this.dataService.ubicacionActual = 'Equinoccio - Ventas en caja';
     this.activatedRoute.params.subscribe({
       next: ({ idCaja }) => {
         this.idCaja = idCaja;

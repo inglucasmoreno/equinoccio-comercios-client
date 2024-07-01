@@ -137,7 +137,7 @@ export default class ReservasNuevaComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.dataService.ubicacionActual = 'Dashboard - Nueva reserva';
+    this.dataService.ubicacionActual = 'Equinoccio - Nueva reserva';
     gsap.from('.gsap-contenido', { y: 100, opacity: 0, duration: .2 });
   }
 
@@ -176,7 +176,7 @@ export default class ReservasNuevaComponent implements OnInit {
   // TODO: Clientes
 
   abrirAbmCliente(): void {
-    this.clientesService.abrirAbm('crear');
+    this.clientesService.abrirAbm('crear', null, { identificacion: this.identificacionCliente });
   }
 
   buscarCliente(): void {

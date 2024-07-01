@@ -104,7 +104,7 @@ export default class VentasActivasComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Ventas activas';
+    this.dataService.ubicacionActual = 'Equinoccio - Ventas activas';
     this.alertService.loading();
     this.listarVentas();
   }

@@ -65,7 +65,7 @@ export default class UsuariosComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Usuarios'
+    this.dataService.ubicacionActual = 'Equinoccio - Usuarios'
     this.alertService.loading();
     this.listarUsuarios();
   }
@@ -88,7 +88,7 @@ export default class UsuariosComponent implements OnInit {
   // Actualizar estado Activo/Inactivo
   actualizarEstado(usuario: Usuarios): void {
     const { id, activo } = usuario;
-    this.alertService.question({ msg: '¿Quieres actualizar el estado?', buttonText: 'Actualizar' })
+    this.alertService.question({ msg: usuario.activo ? 'Baja de elemento' : 'Alta de elemento', buttonText: usuario.activo ? 'Dar de baja' : 'Dar de alta' })
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();

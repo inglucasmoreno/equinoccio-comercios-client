@@ -93,7 +93,7 @@ export default class CierreCajaComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.dataService.ubicacionActual = " Dashboard - Cierre de caja";
+    this.dataService.ubicacionActual = "Equinoccio - Cierre de caja";
     this.cargaInicial();
   }
 

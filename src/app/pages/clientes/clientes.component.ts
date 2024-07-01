@@ -62,7 +62,7 @@ export default class ClientesComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Clientes';
+    this.dataService.ubicacionActual = 'Equinoccio - Clientes';
     this.alertService.loading();
     this.listarClientes();
   }
@@ -99,7 +99,7 @@ export default class ClientesComponent implements OnInit {
 
     const { id, activo } = cliente;
 
-    this.alertService.question({ msg: '¿Quieres actualizar el estado?', buttonText: 'Actualizar' })
+    this.alertService.question({ msg: cliente.activo ? 'Baja de elemento' : 'Alta de elemento', buttonText: cliente.activo ? 'Dar de baja' : 'Dar de alta' })
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();

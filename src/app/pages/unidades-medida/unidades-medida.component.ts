@@ -61,7 +61,7 @@ export default class UnidadesMedidaComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Unidades de medida';
+    this.dataService.ubicacionActual = 'Equinoccio - Unidades de medida';
     this.alertService.loading();
     this.listarUnidades();
   }
@@ -101,7 +101,7 @@ export default class UnidadesMedidaComponent implements OnInit {
 
     const { id, activo } = unidad;
 
-    this.alertService.question({ msg: '¿Quieres actualizar el estado?', buttonText: 'Actualizar' })
+    this.alertService.question({ msg: unidad.activo ? 'Baja de elemento' : 'Alta de elemento', buttonText: unidad.activo ? 'Dar de baja' : 'Dar de alta' })
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();

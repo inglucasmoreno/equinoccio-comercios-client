@@ -61,7 +61,7 @@ export default class ProveedoresComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Proveedores';
+    this.dataService.ubicacionActual = 'Equinoccio - Proveedores';
     this.alertService.loading();
     this.listarProveedores();
   }
@@ -99,7 +99,7 @@ export default class ProveedoresComponent implements OnInit {
 
     const { id, activo } = proveedor;
 
-    this.alertService.question({ msg: '¿Quieres actualizar el estado?', buttonText: 'Actualizar' })
+    this.alertService.question({ msg: proveedor.activo ? 'Baja de elemento' : 'Alta de elemento', buttonText: proveedor.activo ? 'Dar de baja' : 'Dar de alta' })
       .then(({ isConfirmed }) => {
         if (isConfirmed) {
           this.alertService.loading();

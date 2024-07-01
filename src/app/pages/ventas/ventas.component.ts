@@ -124,7 +124,7 @@ export default class VentasComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.dataService.ubicacionActual = 'Dashboard - Generando venta';
+    this.dataService.ubicacionActual = 'Equinoccio - Generando venta';
     gsap.from('.gsap-contenido', { y: 100, opacity: 0, duration: .2 });
     this.recuperarDeLocalStorage();
   }

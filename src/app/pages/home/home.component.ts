@@ -27,7 +27,7 @@ export default class HomeComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.dataService.ubicacionActual = 'Dashboard - Inicio';
+    this.dataService.ubicacionActual = 'Equinoccio - Inicio';
     gsap.from('.gsap-contenido', { y:100, opacity: 0, duration: .2 });
     this.configGeneralesService.listarConfigGenerales({}).subscribe({
       next: ({ configGeneral }) => {

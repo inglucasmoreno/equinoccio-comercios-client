@@ -68,7 +68,7 @@ export default class MarcasComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Marcas';
+    this.dataService.ubicacionActual = 'Equinoccio - Marcas';
     this.alertService.loading();
     this.listarMarcas();
   }

@@ -46,7 +46,7 @@ export default class ConfigAfipComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.dataService.ubicacionActual = 'Dashboard - Configuraciones AFIP';
+    this.dataService.ubicacionActual = 'Equinoccio - Configuraciones AFIP';
     gsap.from('.gsap-contenido', { y:100, opacity: 0, duration: .2 });
     this.alertService.loading();
     this.obtenerConfiguraciones();

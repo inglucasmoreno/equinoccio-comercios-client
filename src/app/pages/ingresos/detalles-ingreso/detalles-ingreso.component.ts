@@ -276,6 +276,13 @@ export default class DetallesIngresoComponent implements OnInit {
   }
 
   actualizarIngreso(): void {
+
+    // Validar que le fecha no este vacia
+    if (!this.ingresoForm.fechaIngreso) return this.alertService.info('Debe ingresar una fecha');
+
+    // Validar proveedor
+    if (!this.proveedorSeleccionado) return this.alertService.info('Debe seleccionar un proveedor');
+
     this.alertService.loading();
     const data = {
       fechaIngreso: this.ingresoForm.fechaIngreso,

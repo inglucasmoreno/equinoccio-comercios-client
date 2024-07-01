@@ -70,7 +70,7 @@ export default class EditarUsuarioComponent implements OnInit {
 
     // Animaciones y Datos de ruta
     gsap.from('.gsap-contenido', { y: 100, opacity: 0, duration: .2 });
-    this.dataService.ubicacionActual = 'Dashboard - Editando usuario';
+    this.dataService.ubicacionActual = 'Equinoccio - Editando usuario';
 
     // Formulario reactivo
     this.usuarioForm = this.fb.group({

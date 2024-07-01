@@ -119,7 +119,7 @@ export default class ReservasDetallesComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.dataService.ubicacionActual = 'Dashboard - Detalles de reserva';
+    this.dataService.ubicacionActual = 'Equinoccio - Detalles de reserva';
     this.alertService.loading();
     this.verificacionPermisosTotales();
     this.activatedRoute.params.subscribe(({ id }) => {

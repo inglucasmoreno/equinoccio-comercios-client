@@ -69,7 +69,7 @@ export default class CajasComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dataService.ubicacionActual = 'Dashboard - Listado de cajas';
+    this.dataService.ubicacionActual = 'Equinoccio - Listado de cajas';
     this.alertService.loading();
     this.listarCajas();
   }
